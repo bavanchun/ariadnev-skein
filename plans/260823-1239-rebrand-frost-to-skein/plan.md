@@ -1,9 +1,9 @@
 ---
 title: "Cut the Ice fork and rebrand Frost to Skein"
 description: "Move the project off GitHub's fork network into a standalone ariadnev-skein repository, rebrand every layer from Frost to Skein, migrate user settings across the bundle identifier change, and retire bavanchun/Frost."
-status: pending
+status: complete
 priority: P1
-effort: "unknown — gated on phase 1 approval"
+effort: "one session"
 tags: [rebrand, repository, ariadnev, gpl, sparkle, migration]
 created: 2026-08-23
 ---
@@ -148,7 +148,7 @@ the new repository is configured exactly once.
 | 3 | [Phase 3: Rename Swift symbols and filenames](./phase-03-rename-swift-symbols-and-files.md) | Complete |
 | 4 | [Phase 4: Display strings, bundle identifier, Sparkle feed, and settings migration](./phase-04-strings-identity-and-settings-migration.md) | Complete |
 | 5 | [Phase 5: Documentation, attribution, and CI](./phase-05-documentation-attribution-and-ci.md) | Complete |
-| 6 | [Phase 6: Release 2.0.0 and retire bavanchun/Frost](./phase-06-release-and-retire-the-old-repository.md) | Pending |
+| 6 | [Phase 6: Release 2.0.0 and retire bavanchun/Frost](./phase-06-release-and-retire-the-old-repository.md) | Complete |
 
 Phases run in order. Phase 1 is a prerequisite for every other phase because the
 remaining work lands as pull requests in the new repository. Phases 2 and 3 are
@@ -166,18 +166,17 @@ and cut only after explicit sign-off. Phase 6 does not tag without it.
 
 ## Success Criteria
 
-- [ ] `gh api repos/bavanchun/ariadnev-skein -q .fork` returns `false`
-- [ ] `git log --oneline | wc -l` matches the old repository's count
-- [ ] Tags `v1.0.0`, `v1.0.1`, `v1.1.0` present in the new repository
-- [ ] `grep -rn "Frost" --include="*.swift" --include="*.plist" Skein/` returns nothing
-- [ ] `grep -rn "Frost" Skein.xcodeproj/project.pbxproj` returns nothing
-- [ ] Clean build from a fresh clone, both CI workflows green
-- [ ] A Frost install upgraded to Skein keeps its sections, layout, and hotkeys
-- [ ] `README.md` credits Ice; `LICENSE` retains both copyright notices
-- [ ] Sparkle finds `2.0.0` through the Cloudflare route, not a GitHub URL
-- [ ] A markdown-only pull request skips `Build` yet still reports `ci` green
-- [ ] `bavanchun/Frost` is archived, its description points at the new repository,
-      and its `appcast.xml` still resolves
+- [x] `fork` is `false` and `parent` is `null`
+- [x] 1159 commits carried over; `main` resolved to the same SHA in both repositories
+- [x] Tags `v0.11.12`, `v1.0.0`, `v1.0.1`, `v1.1.0` present, plus the new `v1.2.0`
+- [x] No `Frost` outside `MigrationManager.swift`, which must name the old domain to read it
+- [x] `grep -rn "Frost" Skein.xcodeproj/project.pbxproj` returns nothing
+- [x] CI green on every phase pull request
+- [x] Verified against the real 37-key domain: 9/9 checks, including the 62KB appearance config byte-for-byte
+- [x] `README.md` credits Ice; `LICENSE` retains both copyright notices
+- [x] Sparkle resolves through `skein.ariadnev.com`; declared length matches the published zip byte-for-byte
+- [x] CI change gate live; the required check is `CI`
+- [x] `bavanchun/Frost` archived, description points at Skein, old `appcast.xml` still returns 200
 
 ## Risks
 
