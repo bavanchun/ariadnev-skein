@@ -39,7 +39,30 @@ gh auth login   # choose github.com, account bavanchun, scope: repo
 gh auth status  # confirm active account is bavanchun
 ```
 
-### 4. SSH tag signing
+### 4. Update feed worker
+
+Sparkle reads `SUFeedURL` from a value compiled into every shipped binary, so a
+repository URL there means renaming or moving the repository silently cuts off
+updates for everything already installed. That is what happened to Frost.
+
+`skein.ariadnev.com` is a Cloudflare Worker that owns the address and proxies
+GitHub Releases, so the backing store can move without stranding anyone. Source
+lives in [`infra/appcast-worker/`](../infra/appcast-worker/).
+
+```bash
+cd infra/appcast-worker
+wrangler deploy
+curl -s https://skein.ariadnev.com/health          # -> ok
+```
+
+It is deliberately its own worker on its own hostname rather than a route inside
+`ariadnev-edge`, which serves `ariadnev.com` and the CLI install script. An
+update feed has no business sharing that blast radius.
+
+A `404` from `/appcast.xml` means no release is published yet; Sparkle reads
+that as "no update available", which is correct.
+
+### 5. SSH tag signing
 
 Release tags are signed with the maintainer's SSH key rather than GPG. Configured per-repo:
 
@@ -218,7 +241,7 @@ gh release create v${VERSION} \
   --notes "Personal build of Skein ${VERSION} (build ${BUILD})."
 ```
 
-**Both assets must upload to the same release.** Sparkle fetches `releases/latest/download/appcast.xml` (GitHub redirects to the latest release's `appcast.xml`), which then points at the same release's `Skein-${VERSION}.zip`.
+**Both assets must upload to the same release.** Sparkle fetches `https://skein.ariadnev.com/appcast.xml`, which the worker proxies to `releases/latest/download/appcast.xml` (GitHub redirects to the latest release's `appcast.xml`), which then points at the same release's `Skein-${VERSION}.zip`.
 
 ### Step 7 — Install locally
 
@@ -258,7 +281,7 @@ xattr -dr com.apple.quarantine /Applications/Skein.app
 ### Sparkle "No updates available" but release is published
 
 - Confirm `appcast.xml` is attached to the **latest** GitHub release (not an older one).
-- Confirm `SUFeedURL` in `Skein/Info.plist` is `https://github.com/bavanchun/ariadnev-skein/releases/latest/download/appcast.xml`.
+- Confirm `SUFeedURL` in `Skein/Info.plist` is `https://skein.ariadnev.com/appcast.xml`.
 - Confirm `SUPublicEDKey` matches the Keychain's public key (`generate_keys -p`).
 - Confirm `sparkle:edSignature` was generated with the matching private key.
 - The shipped `sparkle:version` must be strictly greater than the installed build's `CFBundleVersion`.
@@ -285,7 +308,7 @@ If missing, regenerate through Xcode Accounts → team → "Manage Certificates"
 - [ ] Update `appcast.xml` (append `<item>`, bump `pubDate`)
 - [ ] `git tag -s v<x.y.z>` (SSH-signed) + `git push origin v<x.y.z>`
 - [ ] `gh release create v<x.y.z> Skein-<x.y.z>.zip appcast.xml`
-- [ ] Verify `curl -sIL .../releases/latest/download/appcast.xml` → 302 to new release
+- [ ] Verify `curl -s https://skein.ariadnev.com/appcast.xml` returns the new appcast
 - [ ] Install locally, confirm process is running (`pgrep -fl Skein.app`) and `defaults read com.ariadnev.Skein` shows fork-owned keys
 - [ ] Settings → About → Check for Updates reports current version
 

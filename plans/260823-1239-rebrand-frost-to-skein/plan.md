@@ -161,7 +161,7 @@ This is a **breaking change**: the bundle identifier moves, macOS sees a new
 application, and permissions must be re-granted. `docs/release-guide.md` §
 "Versioning Policy" makes that a major bump.
 
-**Proposed: `2.0.0`.** Per `docs/release-guide.md`, the version is proposed here
+**Approved: `1.2.0`.** Per `docs/release-guide.md`, the version is proposed here
 and cut only after explicit sign-off. Phase 6 does not tag without it.
 
 ## Success Criteria

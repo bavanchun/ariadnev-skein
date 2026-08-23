@@ -1,0 +1,17 @@
+# Serves Skein's Sparkle update feed at a stable address.
+#
+# Deliberately a separate worker on its own hostname rather than a route inside
+# ariadnev-edge: that worker serves ariadnev.com, including the CLI install
+# script, and an update feed has no business sharing its blast radius.
+
+name = "ariadnev-skein-edge"
+main = "index.js"
+compatibility_date = "2026-08-23"
+
+# The only public origin is the bound hostname.
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "skein.ariadnev.com", custom_domain = true }
+]
