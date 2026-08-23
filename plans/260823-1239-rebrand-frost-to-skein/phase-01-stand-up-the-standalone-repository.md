@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Stand up ariadnev-skein as a standalone repository"
-status: pending
+status: complete
 priority: P1
 effort: "30m"
 dependencies: []
@@ -69,12 +69,16 @@ the history intact.
 
 ## Success Criteria
 
-- [ ] `gh api repos/bavanchun/ariadnev-skein -q .fork` prints `false`
-- [ ] No "forked from" banner on the repository page
-- [ ] `git rev-list --count main` identical in both repositories
-- [ ] Tags `v1.0.0`, `v1.0.1`, `v1.1.0` all present
-- [ ] `origin` points at `ariadnev-skein`; `upstream` still points at Ice
-- [ ] `bavanchun/Frost` still public and unmodified
+Completed 2026-08-23.
+
+- [x] `gh api repos/bavanchun/ariadnev-skein -q .fork` prints `false`, `parent` is `null`
+- [x] No "forked from" banner on the repository page
+- [x] `main` resolves to `b970cf6` in both repositories; 1159 commits carried over
+- [x] Tags `v0.11.12`, `v1.0.0`, `v1.0.1`, `v1.1.0` all present
+- [x] `origin` points at `ariadnev-skein`; `upstream` still points at Ice
+- [x] `bavanchun/Frost` still public, `archived: false`, unmodified
+- [x] Squash-only merges and head-branch auto-delete applied
+- [x] Branch protection deliberately unset; phase 5 configures it once
 
 ## Risk Assessment
 
