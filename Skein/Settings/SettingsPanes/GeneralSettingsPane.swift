@@ -111,15 +111,15 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var skeinIconOptions: some View {
-        Toggle("Show Frost icon", isOn: manager.bindings.showSkeinIcon)
+        Toggle("Show Skein icon", isOn: manager.bindings.showSkeinIcon)
             .annotation {
                 if !manager.showSkeinIcon {
-                    Text("You can still access Frost's settings by right-clicking an empty area in the menu bar")
+                    Text("You can still access Skein's settings by right-clicking an empty area in the menu bar")
                 }
             }
         if manager.showSkeinIcon {
-            SkeinMenu("Frost icon") {
-                Picker("Frost icon", selection: manager.bindings.skeinIcon) {
+            SkeinMenu("Skein icon") {
+                Picker("Skein icon", selection: manager.bindings.skeinIcon) {
                     ForEach(ControlItemImageSet.userSelectableSkeinIcons) { imageSet in
                         Button {
                             manager.skeinIcon = imageSet
@@ -183,7 +183,7 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var useSkeinBar: some View {
-        Toggle("Use Frost Bar", isOn: manager.bindings.useSkeinBar)
+        Toggle("Use Skein Bar", isOn: manager.bindings.useSkeinBar)
             .annotation("Show hidden menu bar items in a separate bar below the menu bar")
     }
 
@@ -197,11 +197,11 @@ struct GeneralSettingsPane: View {
         .annotation {
             switch manager.skeinBarLocation {
             case .dynamic:
-                Text("The Frost Bar's location changes based on context")
+                Text("The Skein Bar's location changes based on context")
             case .mousePointer:
-                Text("The Frost Bar is centered below the mouse pointer")
+                Text("The Skein Bar is centered below the mouse pointer")
             case .skeinIcon:
-                Text("The Frost Bar is centered below the Frost icon")
+                Text("The Skein Bar is centered below the Skein icon")
             }
         }
     }

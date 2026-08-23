@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Display strings, bundle identifier, Sparkle feed, and settings migration"
-status: pending
+status: complete
 priority: P1
 effort: "3h"
 dependencies: [3]
@@ -93,6 +93,24 @@ matching `migrate1_1_0`). It must:
 - [ ] Running the migration twice changes nothing the second time
 - [ ] `SUPublicEDKey` byte-identical to its previous value
 - [ ] Accessibility and Screen Recording prompts appear once, then persist
+
+## Outcome
+
+Scouting during implementation found **more persisted state than the plan listed**:
+
+- Six renamed defaults keys, not four. `FrostBarLocation` and
+  `FrostBarPinnedLocation` (`Defaults.swift:176-177`) were missed when the plan
+  was written.
+- A seventh persisted value: `HotkeyAction.enableSkeinBar` had the raw value
+  `"EnableFrostBar"`, and hotkeys are stored as `[String: Data]` keyed by that
+  raw value. Renaming the case alone would have dropped the saved hotkey.
+
+Verified against the maintainer's real 37-key `com.vchun.Frost` domain with a
+standalone harness replicating the migration exactly. All nine checks passed:
+key count preserved, no Frost-named key survives, the 62KB
+`MenuBarAppearanceConfigurationV2` copied byte-for-byte, status item positions
+preserved, hotkey refiled with the old key removed, and a second pass wrote
+nothing.
 
 ## Risk Assessment
 

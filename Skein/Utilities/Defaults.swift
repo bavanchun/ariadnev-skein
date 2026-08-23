@@ -140,10 +140,10 @@ extension Defaults {
 
         // MARK: General Settings
 
-        case showSkeinIcon = "ShowFrostIcon"
-        case skeinIcon = "FrostIcon"
-        case customSkeinIconIsTemplate = "CustomFrostIconIsTemplate"
-        case useSkeinBar = "UseFrostBar"
+        case showSkeinIcon = "ShowSkeinIcon"
+        case skeinIcon = "SkeinIcon"
+        case customSkeinIconIsTemplate = "CustomSkeinIconIsTemplate"
+        case useSkeinBar = "UseSkeinBar"
         case showOnClick = "ShowOnClick"
         case showOnHover = "ShowOnHover"
         case showOnScroll = "ShowOnScroll"
@@ -173,8 +173,8 @@ extension Defaults {
 
         // MARK: Skein Bar Settings
 
-        case skeinBarLocation = "FrostBarLocation"
-        case skeinBarPinnedLocation = "FrostBarPinnedLocation"
+        case skeinBarLocation = "SkeinBarLocation"
+        case skeinBarPinnedLocation = "SkeinBarPinnedLocation"
 
         // MARK: Migration
 
@@ -183,6 +183,7 @@ extension Defaults {
         case hasMigrated0_10_1 = "hasMigrated0_10_1"
         case hasMigrated0_11_10 = "hasMigrated0_11_10"
         case hasMigrated1_1_0 = "hasMigrated1_1_0"
+        case hasMigrated2_0_0 = "hasMigrated2_0_0"
 
         // MARK: Deprecated
 

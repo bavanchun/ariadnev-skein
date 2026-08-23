@@ -41,7 +41,7 @@ struct HotkeysSettingsPane: View {
                 case .searchMenuBarItems:
                     Text("Search menu bar items")
                 case .enableSkeinBar:
-                    Text("Enable the Frost Bar")
+                    Text("Enable the Skein Bar")
                 case .showSectionDividers:
                     Text("Show section dividers")
                 case .toggleApplicationMenus:

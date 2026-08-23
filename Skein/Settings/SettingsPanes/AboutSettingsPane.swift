@@ -20,7 +20,7 @@ struct AboutSettingsPane: View {
 
     private var contributeURL: URL {
         // swiftlint:disable:next force_unwrapping
-        URL(string: "https://github.com/bavanchun/Frost")!
+        URL(string: "https://github.com/bavanchun/Skein")!
     }
 
     private var issuesURL: URL {
@@ -73,7 +73,7 @@ struct AboutSettingsPane: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text("Frost")
+                    Text("Skein")
                         .font(.system(size: 72, weight: .medium))
                         .foregroundStyle(.primary)
 
@@ -132,7 +132,7 @@ struct AboutSettingsPane: View {
     @ViewBuilder
     private var bottomBar: some View {
         HStack {
-            Button("Quit Frost") {
+            Button("Quit Skein") {
                 NSApp.terminate(nil)
             }
             Spacer()

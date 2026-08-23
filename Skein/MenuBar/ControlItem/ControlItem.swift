@@ -422,10 +422,10 @@ final class ControlItem {
             return hotkeySettingsManager.hotkey(withAction: action)
         }
 
-        let menu = NSMenu(title: "Frost")
+        let menu = NSMenu(title: "Skein")
 
         let settingsItem = NSMenuItem(
-            title: "Frost Settings…",
+            title: "Skein Settings…",
             action: #selector(AppDelegate.openSettingsWindow),
             keyEquivalent: ","
         )
@@ -504,7 +504,7 @@ final class ControlItem {
         menu.addItem(.separator())
 
         let quitItem = NSMenuItem(
-            title: "Quit Frost",
+            title: "Quit Skein",
             action: #selector(NSApp.terminate),
             keyEquivalent: "q"
         )
