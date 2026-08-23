@@ -147,7 +147,7 @@ the new repository is configured exactly once.
 | 2 | [Phase 2: Rename the Xcode project, target, scheme, and source folder](./phase-02-rename-the-xcode-project.md) | Complete |
 | 3 | [Phase 3: Rename Swift symbols and filenames](./phase-03-rename-swift-symbols-and-files.md) | Complete |
 | 4 | [Phase 4: Display strings, bundle identifier, Sparkle feed, and settings migration](./phase-04-strings-identity-and-settings-migration.md) | Complete |
-| 5 | [Phase 5: Documentation, attribution, and CI](./phase-05-documentation-attribution-and-ci.md) | Pending |
+| 5 | [Phase 5: Documentation, attribution, and CI](./phase-05-documentation-attribution-and-ci.md) | Complete |
 | 6 | [Phase 6: Release 2.0.0 and retire bavanchun/Frost](./phase-06-release-and-retire-the-old-repository.md) | Pending |
 
 Phases run in order. Phase 1 is a prerequisite for every other phase because the

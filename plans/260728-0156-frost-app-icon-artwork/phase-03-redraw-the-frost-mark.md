@@ -1,17 +1,17 @@
 ---
 phase: 3
-title: "Redraw the Frost mark"
+title: "Redraw the Skein mark"
 status: pending
 priority: P2
 effort: "30m once artwork exists"
 dependencies: [1]
 ---
 
-# Phase 3: Redraw the Frost mark
+# Phase 3: Redraw the Skein mark
 
 ## Overview
 
-Replace `FrostMarkStroke.png` with the phase 1 silhouette. The imageset already
+Replace `SkeinMarkStroke.png` with the phase 1 silhouette. The imageset already
 carries its final name and structure — only the pixels change.
 
 ## Requirements
@@ -25,12 +25,12 @@ carries its final name and structure — only the pixels change.
 
 - `template-rendering-intent: template` stays. The system tints this image; without
   that intent it renders as raw black in dark mode.
-- The imageset keeps its name, so the generated `.frostMarkStroke` symbol is
+- The imageset keeps its name, so the generated `.skeinMarkStroke` symbol is
   unchanged and neither call site needs editing.
 
 ## Architecture
 
-`Frost/Assets.xcassets/FrostMarkStroke.imageset/` currently holds one 2x PNG
+`Skein/Assets.xcassets/SkeinMarkStroke.imageset/` currently holds one 2x PNG
 (1.4 KB) with empty 1x and 3x slots — the shape it inherited when
 [`260728-0123`](../260728-0123-snowflake-icon-and-sparkle-plist-comments/phase-02-retire-the-ice-cube-asset.md)
 moved it out of `ControlItemImages/`. That worked, so the slot layout is left alone.
@@ -39,15 +39,15 @@ Two consumers, both via the Xcode-generated symbol:
 
 | Consumer | Line | Role |
 |---|---|---|
-| `Frost/Settings/SettingsView.swift` | 105 — `case .about: .assetCatalog(.frostMarkStroke)` | About tab icon |
-| `Frost/MenuBar/Search/MenuBarSearchPanel.swift` | 360 — `Image(.frostMarkStroke)` | search panel settings button |
+| `Skein/Settings/SettingsView.swift` | 105 — `case .about: .assetCatalog(.skeinMarkStroke)` | About tab icon |
+| `Skein/MenuBar/Search/MenuBarSearchPanel.swift` | 360 — `Image(.skeinMarkStroke)` | search panel settings button |
 
 Because the name does not change, neither line is touched and there is no compile-time
 signal if the image is wrong — only a visual one.
 
 ## Related Code Files
 
-- Replace: `Frost/Assets.xcassets/FrostMarkStroke.imageset/FrostMarkStroke.png`
+- Replace: `Skein/Assets.xcassets/SkeinMarkStroke.imageset/SkeinMarkStroke.png`
 - Unchanged: that imageset's `Contents.json`, both call sites
 
 ## Implementation Steps
@@ -69,7 +69,7 @@ signal if the image is wrong — only a visual one.
 - [ ] Search panel settings button shows the new mark
 - [ ] Legible at rendered size in both light and dark menu bars
 - [ ] `Contents.json` unchanged (`git diff` shows the PNG only)
-- [ ] No cube remains anywhere in `Frost/Assets.xcassets/`
+- [ ] No cube remains anywhere in `Skein/Assets.xcassets/`
 
 ## Risk Assessment
 
