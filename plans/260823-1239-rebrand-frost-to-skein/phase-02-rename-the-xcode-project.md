@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Rename the Xcode project, target, scheme, and source folder"
-status: pending
+status: complete
 priority: P1
 effort: "1h"
 dependencies: [1]

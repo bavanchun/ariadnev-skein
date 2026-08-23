@@ -26,16 +26,16 @@ jobs:
           swift --version
 
       - name: Resolve package dependencies
-        run: xcodebuild -resolvePackageDependencies -scheme Frost -project Frost.xcodeproj
+        run: xcodebuild -resolvePackageDependencies -scheme Skein -project Skein.xcodeproj
 
-      # Signing is deliberately disabled. Frost releases are signed locally with
+      # Signing is deliberately disabled. Skein releases are signed locally with
       # a free Personal Team certificate that cannot exist on a hosted runner;
       # see docs/release-guide.md. CI verifies that the project compiles.
       - name: Build
         run: |
           xcodebuild build \
-            -scheme Frost \
-            -project Frost.xcodeproj \
+            -scheme Skein \
+            -project Skein.xcodeproj \
             -configuration Release \
             -derivedDataPath .ci-output \
             CODE_SIGNING_ALLOWED=NO \

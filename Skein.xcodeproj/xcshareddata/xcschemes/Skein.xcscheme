@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "716683292A767E6A006ABF84"
-               BuildableName = "Frost.app"
-               BlueprintName = "Frost"
-               ReferencedContainer = "container:Frost.xcodeproj">
+               BuildableName = "Skein.app"
+               BlueprintName = "Skein"
+               ReferencedContainer = "container:Skein.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "716683292A767E6A006ABF84"
-            BuildableName = "Frost.app"
-            BlueprintName = "Frost"
-            ReferencedContainer = "container:Frost.xcodeproj">
+            BuildableName = "Skein.app"
+            BlueprintName = "Skein"
+            ReferencedContainer = "container:Skein.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "716683292A767E6A006ABF84"
-            BuildableName = "Frost.app"
-            BlueprintName = "Frost"
-            ReferencedContainer = "container:Frost.xcodeproj">
+            BuildableName = "Skein.app"
+            BlueprintName = "Skein"
+            ReferencedContainer = "container:Skein.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
