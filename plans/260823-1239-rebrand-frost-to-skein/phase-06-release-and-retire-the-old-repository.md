@@ -1,7 +1,7 @@
 ---
 phase: 6
 title: "Release 2.0.0 and retire bavanchun/Frost"
-status: in-progress
+status: complete
 priority: P2
 effort: "2h"
 dependencies: [5]
