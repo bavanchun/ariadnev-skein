@@ -27,7 +27,7 @@ enum Constants {
     static let permissionsWindowID = "PermissionsWindow"
 
     /// The title for the settings window.
-    static let settingsWindowTitle = "Frost"
+    static let settingsWindowTitle = "Skein"
 
     /// The title for the permissions window.
     static let permissionsWindowTitle = "Permissions"

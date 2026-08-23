@@ -12,7 +12,7 @@ enum HotkeyAction: String, Codable, CaseIterable {
     case searchMenuBarItems = "SearchMenuBarItems"
 
     // Other
-    case enableSkeinBar = "EnableFrostBar"
+    case enableSkeinBar = "EnableSkeinBar"
     case showSectionDividers = "ShowSectionDividers"
     case toggleApplicationMenus = "ToggleApplicationMenus"
 

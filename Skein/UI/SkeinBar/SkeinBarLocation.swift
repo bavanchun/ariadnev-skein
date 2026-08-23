@@ -23,7 +23,7 @@ enum SkeinBarLocation: Int, CaseIterable, Identifiable {
         switch self {
         case .dynamic: "Dynamic"
         case .mousePointer: "Mouse pointer"
-        case .skeinIcon: "Frost icon"
+        case .skeinIcon: "Skein icon"
         }
     }
 }

@@ -106,7 +106,7 @@ final class GeneralSettingsManager: ObservableObject {
             do {
                 skeinIcon = try decoder.decode(ControlItemImageSet.self, from: data)
             } catch {
-                Logger.generalSettingsManager.error("Error decoding Frost icon: \(error)")
+                Logger.generalSettingsManager.error("Error decoding Skein icon: \(error)")
             }
             if case .custom = skeinIcon.name {
                 lastCustomSkeinIcon = skeinIcon
@@ -137,7 +137,7 @@ final class GeneralSettingsManager: ObservableObject {
                     let data = try encoder.encode(skeinIcon)
                     Defaults.set(data, forKey: .skeinIcon)
                 } catch {
-                    Logger.generalSettingsManager.error("Error encoding Frost icon: \(error)")
+                    Logger.generalSettingsManager.error("Error encoding Skein icon: \(error)")
                 }
             }
             .store(in: &c)

@@ -146,7 +146,7 @@ the new repository is configured exactly once.
 | 1 | [Phase 1: Stand up ariadnev-skein as a standalone repository](./phase-01-stand-up-the-standalone-repository.md) | Complete |
 | 2 | [Phase 2: Rename the Xcode project, target, scheme, and source folder](./phase-02-rename-the-xcode-project.md) | Complete |
 | 3 | [Phase 3: Rename Swift symbols and filenames](./phase-03-rename-swift-symbols-and-files.md) | Complete |
-| 4 | [Phase 4: Display strings, bundle identifier, Sparkle feed, and settings migration](./phase-04-strings-identity-and-settings-migration.md) | Pending |
+| 4 | [Phase 4: Display strings, bundle identifier, Sparkle feed, and settings migration](./phase-04-strings-identity-and-settings-migration.md) | Complete |
 | 5 | [Phase 5: Documentation, attribution, and CI](./phase-05-documentation-attribution-and-ci.md) | Pending |
 | 6 | [Phase 6: Release 2.0.0 and retire bavanchun/Frost](./phase-06-release-and-retire-the-old-repository.md) | Pending |
 
