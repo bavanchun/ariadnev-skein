@@ -1,10 +1,10 @@
-# Frost Development Workflow
+# Skein Development Workflow
 
 ## 1. Purpose
 
-This document defines the mandatory development workflow for Frost.
+This document defines the mandatory development workflow for Skein.
 
-Frost is a personal macOS application forked from Ice. The project follows a lightweight trunk-based development model designed to keep the codebase stable, reviewable, releasable, and easy to synchronize with upstream.
+Skein is a personal macOS application forked from Ice. The project follows a lightweight trunk-based development model designed to keep the codebase stable, reviewable, releasable, and easy to synchronize with upstream.
 
 All contributors and coding agents must follow this workflow unless an explicit exception is documented.
 
@@ -12,7 +12,7 @@ All contributors and coding agents must follow this workflow unless an explicit 
 
 ## 2. Branching Model
 
-Frost does not use a permanent `dev` branch.
+Skein does not use a permanent `dev` branch.
 
 The repository uses the following flow:
 
@@ -28,7 +28,7 @@ release tag
 
 The `main` branch is the single integration branch and must always remain buildable and releasable.
 
-### Why Frost does not use `dev`
+### Why Skein does not use `dev`
 
 A permanent `dev` branch would introduce:
 
@@ -39,7 +39,7 @@ A permanent `dev` branch would introduce:
 * Greater risk that `main` and `dev` behave differently.
 * Additional process overhead without meaningful benefit for a small project.
 
-A `dev` branch may only be introduced in the future if Frost has:
+A `dev` branch may only be introduced in the future if Skein has:
 
 * Multiple active development teams.
 * A dedicated QA environment.
@@ -113,7 +113,7 @@ Examples:
 
 ```text
 feat/menu-bar-profiles
-fix/frost-bar-display-wake
+fix/skein-bar-display-wake
 refactor/settings-persistence
 perf/menu-item-discovery
 docs/release-process
@@ -253,7 +253,7 @@ Good scope:
 
 ```text
 Add named menu bar layout profiles.
-Fix Frost Bar visibility after display wake.
+Fix Skein Bar visibility after display wake.
 Extract settings persistence into a dedicated service.
 ```
 
@@ -271,7 +271,7 @@ Formatting-only changes must not be mixed with functional changes unless they ar
 
 ## 9. Commit Convention
 
-Frost uses Conventional Commits.
+Skein uses Conventional Commits.
 
 Commit format:
 
@@ -436,7 +436,7 @@ The Pull Request title must follow Conventional Commit format:
 
 ```text
 feat(profiles): add named menu bar layouts
-fix(frost-bar): restore visibility after display wake
+fix(skein-bar): restore visibility after display wake
 ```
 
 Recommended Pull Request body:
@@ -476,7 +476,7 @@ Describe possible regressions and affected components.
 
 ## Upstream impact
 
-- [ ] Frost-only change
+- [ ] Skein-only change
 - [ ] Derived from upstream Ice
 - [ ] Candidate for upstream contribution
 - [ ] May create future upstream conflicts
@@ -532,7 +532,7 @@ No hard-coded local paths exist
 No credentials or secrets are included
 No unnecessary dependency was added
 No user-facing Ice branding was reintroduced
-Frost identifiers remain correct
+Skein identifiers remain correct
 Tests cover important behavior
 Documentation reflects user-visible behavior
 ```
@@ -579,7 +579,7 @@ After rebasing, rerun all relevant validation.
 
 ## 17. Merge Strategy
 
-Frost uses Squash and Merge for normal Pull Requests.
+Skein uses Squash and Merge for normal Pull Requests.
 
 Recommended repository merge settings:
 
@@ -653,7 +653,7 @@ Code existing only on a feature branch is not considered complete.
 
 ## 20. Upstream Ice Workflow
 
-Frost tracks Ice as an upstream project.
+Skein tracks Ice as an upstream project.
 
 Configure remotes:
 
@@ -665,7 +665,7 @@ git fetch upstream
 Expected remotes:
 
 ```text
-origin    Frost repository
+origin    Skein repository
 upstream  Ice repository
 ```
 
@@ -722,24 +722,24 @@ The following areas are expected to conflict during upstream synchronization:
 Xcode project and scheme names
 Bundle identifiers
 App display names
-Frost assets and icons
-User-facing Frost strings
+Skein assets and icons
+User-facing Skein strings
 Sparkle update configuration
 Release scripts
 Documentation
 Copyright and attribution
 ```
 
-After every upstream merge, verify that Frost identity remains intact.
+After every upstream merge, verify that Skein identity remains intact.
 
-Do not combine a large upstream merge and unrelated Frost feature work in the same Pull Request.
+Do not combine a large upstream merge and unrelated Skein feature work in the same Pull Request.
 
 Recommended upstream commit sequence:
 
 ```text
 chore(upstream): merge Ice vX.Y.Z
-fix(branding): restore Frost identifiers after upstream sync
-fix(updater): retain Frost release feed configuration
+fix(branding): restore Skein identifiers after upstream sync
+fix(updater): retain Skein release feed configuration
 docs(upstream): record synchronized Ice revision
 ```
 
@@ -756,26 +756,27 @@ docs/UPSTREAM.md
 Recommended content:
 
 ```markdown
-# Upstream Relationship
+# Provenance
 
-Frost is derived from jordanbaird/Ice.
+Skein is derived from jordanbaird/Ice and is developed independently
+rather than as a maintained fork. It remains GPL-3.0.
 
-## Upstream
+## Origin
 
 - Repository: https://github.com/jordanbaird/Ice
 - Tracking branch: upstream/main
 - Last synchronized revision: <commit SHA>
 - Last synchronized release: <tag>
 
-## Frost-specific changes
+## Skein-specific changes
 
-- Frost product identity and branding
-- Frost bundle identifiers
-- Frost release infrastructure
-- Frost-specific features
-- Frost update configuration
+- Skein product identity and branding
+- Skein bundle identifiers
+- Skein release infrastructure
+- Skein-specific features
+- Skein update configuration
 
-## Sync policy
+## Integration policy
 
 Security and critical fixes are prioritized.
 Features are evaluated individually.
@@ -837,7 +838,7 @@ Do not use a permanent `release` branch.
 
 ## 24. Semantic Versioning
 
-Frost follows Semantic Versioning as `MAJOR.MINOR.PATCH`.
+Skein follows Semantic Versioning as `MAJOR.MINOR.PATCH`.
 
 The bump rules and the mandatory approval gate are defined in
 `docs/release-guide.md` → Versioning Policy. Two rules from that policy govern
@@ -861,7 +862,7 @@ Pre-release versions:
 Release tags are signed and pushed only after the version is approved:
 
 ```bash
-git tag -s v1.2.0 -m "Frost 1.2.0"
+git tag -s v1.2.0 -m "Skein 1.2.0"
 git push origin v1.2.0
 ```
 
@@ -933,7 +934,7 @@ Do not bypass Pull Requests unless the repository is inaccessible or an exceptio
 
 ## 27. Changelog Rules
 
-Frost should maintain:
+Skein should maintain:
 
 ```text
 CHANGELOG.md
@@ -962,7 +963,7 @@ Recommended structure:
 
 ### Fixed
 
-- Fixed Frost Bar visibility after display wake.
+- Fixed Skein Bar visibility after display wake.
 ```
 
 Only include changes relevant to users or maintainers.
@@ -1009,7 +1010,7 @@ Records under `docs/DECISIONS/`, which is created with the first such record.
 
 ## 29. Architecture Decision Records
 
-Use ADRs for decisions that are difficult to reverse or affect the long-term structure of Frost.
+Use ADRs for decisions that are difficult to reverse or affect the long-term structure of Skein.
 
 Example files:
 
@@ -1111,14 +1112,14 @@ Security-related fixes should use private disclosure when appropriate.
 
 ## 32. Coding Agent Rules
 
-A coding agent working on Frost must follow these rules:
+A coding agent working on Skein must follow these rules:
 
 1. Read the issue, relevant documentation, and nearby implementation before editing.
 2. Confirm the current branch before making changes.
 3. Never work directly on `main`.
 4. Keep changes limited to the requested scope.
 5. Preserve existing architecture unless the task requires architectural change.
-6. Preserve Frost branding and identifiers.
+6. Preserve Skein branding and identifiers.
 7. Preserve GPL attribution and upstream credit.
 8. Avoid unnecessary dependencies.
 9. Avoid broad formatting changes.
@@ -1272,11 +1273,11 @@ git branch -d feat/example-feature
 
 ## 35. Core Project Principles
 
-All Frost development must follow these principles:
+All Skein development must follow these principles:
 
 1. `main` is always releasable.
 2. No direct development occurs on `main`.
-3. Frost does not use a permanent `dev` branch.
+3. Skein does not use a permanent `dev` branch.
 4. Every meaningful change uses a short-lived branch.
 5. Every meaningful change enters through a Pull Request.
 6. Each branch and Pull Request has one primary objective.
@@ -1285,16 +1286,16 @@ All Frost development must follow these principles:
 9. CI must pass before merge.
 10. User-visible changes require documentation or changelog updates.
 11. Upstream Ice changes use dedicated branches and Pull Requests.
-12. Frost-specific changes must remain distinguishable from upstream.
+12. Skein-specific changes must remain distinguishable from upstream.
 13. Security-sensitive data must never enter Git.
 14. Release tags are created only from `main`.
 15. Maintainability takes priority over short-term implementation speed.
 
 ---
 
-## 36. Canonical Frost Workflow
+## 36. Canonical Skein Workflow
 
-The official Frost development workflow is:
+The official Skein development workflow is:
 
 ```text
 Create or select issue
@@ -1330,4 +1331,4 @@ Delete branch
 Release from main when appropriate
 ```
 
-This workflow is mandatory for all normal Frost development.
+This workflow is mandatory for all normal Skein development.

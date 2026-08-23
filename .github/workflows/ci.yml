@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Always runs, and is cheap. Its output decides whether the expensive jobs
+  # have anything to do, without ever filtering the workflow itself out of a
+  # pull request — a filtered required check never reports and blocks the merge
+  # forever.
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'Skein/**'
+              - 'Skein.xcodeproj/**'
+              - '.swiftlint.yml'
+              - '.github/workflows/**'
+
+  build:
+    name: Build (unsigned)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache Swift package dependencies
+        uses: actions/cache@v4
+        with:
+          path: .ci-output/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('Skein.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Resolve package dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -scheme Skein \
+            -project Skein.xcodeproj \
+            -derivedDataPath .ci-output
+
+      # Signing is deliberately disabled. Skein releases are signed locally with
+      # a free Personal Team certificate that cannot exist on a hosted runner;
+      # see docs/release-guide.md. CI verifies that the project compiles.
+      - name: Build
+        run: |
+          xcodebuild build \
+            -scheme Skein \
+            -project Skein.xcodeproj \
+            -configuration Release \
+            -derivedDataPath .ci-output \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+  swiftlint:
+    name: SwiftLint
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: --strict
+
+  # The required status check. Always reports, so a documentation-only pull
+  # request stays mergeable, while a skipped job that should have run still
+  # fails the gate.
+  ci:
+    name: CI
+    needs: [ changes, build, swiftlint ]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify required jobs
+        env:
+          CODE_CHANGED: ${{ needs.changes.outputs.code }}
+          BUILD: ${{ needs.build.result }}
+          LINT: ${{ needs.swiftlint.result }}
+        run: |
+          if [ "$CODE_CHANGED" != "true" ]; then
+            echo "No code changed; build and lint were skipped."
+            exit 0
+          fi
+          echo "build=$BUILD lint=$LINT"
+          [ "$BUILD" = "success" ] && [ "$LINT" = "success" ]

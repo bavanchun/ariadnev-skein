@@ -1,6 +1,6 @@
-# Frost Release Guide
+# Skein Release Guide
 
-Personal-build release workflow for the `bavanchun/Frost` fork. Targets macOS 14+, signed with a free Personal Apple Developer account (no notarization, runs locally only).
+Personal-build release workflow for the `bavanchun/ariadnev-skein` fork. Targets macOS 14+, signed with a free Personal Apple Developer account (no notarization, runs locally only).
 
 This document owns release mechanics. The surrounding process rules — branching, pull requests, and the version approval gate — live in [`DEVELOPMENT_WORKFLOW.md`](DEVELOPMENT_WORKFLOW.md).
 
@@ -8,23 +8,23 @@ This document owns release mechanics. The surrounding process rules — branchin
 
 ### 1. Sparkle Ed25519 keypair
 
-Sparkle auto-updates require an EdDSA keypair. Private key lives in the macOS Keychain; public key is embedded in `Frost/Info.plist` as `SUPublicEDKey`.
+Sparkle auto-updates require an EdDSA keypair. Private key lives in the macOS Keychain; public key is embedded in `Skein/Info.plist` as `SUPublicEDKey`.
 
 ```bash
-SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Frost-*/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_keys)
+SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Skein-*/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_keys)
 
 # Generate keys (auto-stored in Keychain); prints the public key + Info.plist snippet
 "$SIGN_UPDATE"
 
 # Backup the private key to a file OUTSIDE the repo (in case of Keychain loss)
-"$SIGN_UPDATE" -x ~/.config/frost/sparkle-private-ed25519-key
-chmod 600 ~/.config/frost/sparkle-private-ed25519-key
+"$SIGN_UPDATE" -x ~/.config/skein/sparkle-private-ed25519-key
+chmod 600 ~/.config/skein/sparkle-private-ed25519-key
 
 # Re-lookup the public key later (for verifying Info.plist)
 "$SIGN_UPDATE" -p
 ```
 
-Copy the printed public key (base64, 44 chars) into `Frost/Info.plist` → `SUPublicEDKey`. Never commit the private key.
+Copy the printed public key (base64, 44 chars) into `Skein/Info.plist` → `SUPublicEDKey`. Never commit the private key.
 
 ### 2. Signing approach: unsigned build + manual codesign
 
@@ -53,7 +53,7 @@ The same public key must be registered on GitHub as a **signing** key (separate 
 
 ```bash
 gh auth refresh -h github.com -s admin:ssh_signing_key
-gh ssh-key add ~/.ssh/id_ed25519.pub --type signing --title "Frost tag signing"
+gh ssh-key add ~/.ssh/id_ed25519.pub --type signing --title "Skein tag signing"
 ```
 
 Verify signing works before a release: `git tag -s _sigtest -m t && git cat-file -p _sigtest | grep "SSH SIGNATURE" && git tag -d _sigtest`.
@@ -80,7 +80,7 @@ When the correct bump is unclear, prefer PATCH over MINOR, and MINOR over MAJOR.
 
 ### Step 1 — Bump version (if needed)
 
-Pick the new version per the Versioning Policy above, then edit `Frost.xcodeproj/project.pbxproj`:
+Pick the new version per the Versioning Policy above, then edit `Skein.xcodeproj/project.pbxproj`:
 
 ```
 MARKETING_VERSION = <new.version>;       # e.g., 0.11.13
@@ -94,11 +94,11 @@ Both Debug and Release configs must match. Bump build number for every release, 
 Confirm before each release:
 
 ```bash
-grep -E "PRODUCT_BUNDLE_IDENTIFIER|DEVELOPMENT_TEAM|NSHumanReadableCopyright" Frost.xcodeproj/project.pbxproj | sort -u
+grep -E "PRODUCT_BUNDLE_IDENTIFIER|DEVELOPMENT_TEAM|NSHumanReadableCopyright" Skein.xcodeproj/project.pbxproj | sort -u
 ```
 
 Expected:
-- `PRODUCT_BUNDLE_IDENTIFIER = com.vchun.Frost;`
+- `PRODUCT_BUNDLE_IDENTIFIER = com.ariadnev.Skein;`
 - `DEVELOPMENT_TEAM = LC6N3KUML9;`
 - `INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © <year> VChun";`
 
@@ -106,28 +106,28 @@ Expected:
 
 ```bash
 # Refresh SPM deps (only if Package.resolved changed)
-xcodebuild -resolvePackageDependencies -scheme Frost -project Frost.xcodeproj
+xcodebuild -resolvePackageDependencies -scheme Skein -project Skein.xcodeproj
 
 # Clean + build UNSIGNED (output dir avoids the literal word 'build' which trips some hooks)
 rm -rf .release-output/
 xcodebuild build \
-  -scheme Frost \
-  -project Frost.xcodeproj \
+  -scheme Skein \
+  -project Skein.xcodeproj \
   -configuration Release \
   -derivedDataPath .release-output/DerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
 
 # Copy to a clean path for signing
-APP_PATH=$(find .release-output -name "Frost.app" -type d | head -1)
+APP_PATH=$(find .release-output -name "Skein.app" -type d | head -1)
 mkdir -p .release-output/sign
-cp -R "$APP_PATH" .release-output/sign/Frost.app
+cp -R "$APP_PATH" .release-output/sign/Skein.app
 ```
 
 Now codesign every nested bundle **inside-out** — XPC services and helper apps first, then the enclosing framework, then the main app last:
 
 ```bash
-APP=".release-output/sign/Frost.app"
+APP=".release-output/sign/Skein.app"
 CERT=$(security find-identity -v -p codesigning | grep "Apple Development" | head -1 | awk -F'"' '{print $2}')
 SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
 
@@ -143,7 +143,7 @@ codesign --force --options runtime --sign "$CERT" "$APP/Contents/Frameworks/Spar
 
 # 4. Main app, with entitlements, last
 codesign --force --options runtime \
-  --entitlements Frost/Frost.entitlements \
+  --entitlements Skein/Skein.entitlements \
   --sign "$CERT" "$APP"
 
 # Verify
@@ -151,7 +151,7 @@ codesign --verify --verbose=4 "$APP"
 codesign -dv --verbose=4 "$APP"
 ```
 
-Expected: `Authority=Apple Development: <apple-id> (<TEAM_ID>)` chained to WWDR + Apple Root CA, `flags=0x10000(runtime)` (Hardened Runtime), `Identifier=com.vchun.Frost`. `codesign --verify` must print `valid on disk` + `satisfies its Designated Requirement`.
+Expected: `Authority=Apple Development: <apple-id> (<TEAM_ID>)` chained to WWDR + Apple Root CA, `flags=0x10000(runtime)` (Hardened Runtime), `Identifier=com.ariadnev.Skein`. `codesign --verify` must print `valid on disk` + `satisfies its Designated Requirement`.
 
 If any nested bundle is missing from `Contents/Frameworks/`, re-run `find "$APP" -name "*.app" -o -name "*.xpc" -o -name "*.framework"` and sign every hit before the main app.
 
@@ -163,12 +163,12 @@ BUILD=1119
 
 # Zip preserving .app bundle structure (ditto -k preserves resource forks/signature)
 cd .release-output/sign
-ditto -c -k --keepParent Frost.app "../Frost-${VERSION}.zip"
+ditto -c -k --keepParent Skein.app "../Skein-${VERSION}.zip"
 cd ../..
 
 # Sign the zip with Sparkle private key (auto-read from Keychain)
-SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Frost-*/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update)
-"$SIGN_UPDATE" ".release-output/Frost-${VERSION}.zip"
+SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Skein-*/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update)
+"$SIGN_UPDATE" ".release-output/Skein-${VERSION}.zip"
 # Output: sparkle:edSignature="<sig>" length="<bytes>"
 ```
 
@@ -180,8 +180,8 @@ Drop the signature + length from Step 4 into the enclosure:
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
   <channel>
-    <title>Frost</title>
-    <link>https://github.com/bavanchun/Frost/releases</link>
+    <title>Skein</title>
+    <link>https://github.com/bavanchun/ariadnev-skein/releases</link>
     <description>Personal fork of Ice</description>
     <language>en</language>
     <item>
@@ -191,7 +191,7 @@ Drop the signature + length from Step 4 into the enclosure:
       <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
       <sparkle:edSignature>INSERT_SIGNATURE_HERE</sparkle:edSignature>
       <enclosure
-        url="https://github.com/bavanchun/Frost/releases/download/v${VERSION}/Frost-${VERSION}.zip"
+        url="https://github.com/bavanchun/ariadnev-skein/releases/download/v${VERSION}/Skein-${VERSION}.zip"
         sparkle:os="macos"
         length="INSERT_LENGTH_HERE"
         type="application/octet-stream"/>
@@ -207,36 +207,36 @@ For subsequent releases, **append** a new `<item>` above the previous one. Spark
 Confirm the version was approved (see Versioning Policy) before running this — pushing a tag is the point of no return.
 
 ```bash
-git tag -s v${VERSION} -m "Frost ${VERSION}"
+git tag -s v${VERSION} -m "Skein ${VERSION}"
 git push origin v${VERSION}
 
 gh release create v${VERSION} \
-  ".release-output/Frost-${VERSION}.zip" \
+  ".release-output/Skein-${VERSION}.zip" \
   ".release-output/appcast.xml" \
-  --repo bavanchun/Frost \
+  --repo bavanchun/ariadnev-skein \
   --title "${VERSION}" \
-  --notes "Personal build of Frost ${VERSION} (build ${BUILD})."
+  --notes "Personal build of Skein ${VERSION} (build ${BUILD})."
 ```
 
-**Both assets must upload to the same release.** Sparkle fetches `releases/latest/download/appcast.xml` (GitHub redirects to the latest release's `appcast.xml`), which then points at the same release's `Frost-${VERSION}.zip`.
+**Both assets must upload to the same release.** Sparkle fetches `releases/latest/download/appcast.xml` (GitHub redirects to the latest release's `appcast.xml`), which then points at the same release's `Skein-${VERSION}.zip`.
 
 ### Step 7 — Install locally
 
 ```bash
-rm -rf /Applications/Frost.app
-cp -R .release-output/sign/Frost.app /Applications/
+rm -rf /Applications/Skein.app
+cp -R .release-output/sign/Skein.app /Applications/
 
 # Clear quarantine (Personal Team signing — Gatekeeper may warn)
-xattr -cr /Applications/Frost.app
+xattr -cr /Applications/Skein.app
 
-open /Applications/Frost.app
+open /Applications/Skein.app
 ```
 
-On first launch: grant Accessibility (required) and ScreenRecording (optional, for Frost Bar + appearance editor) permissions. Verify the process is alive and using the fork's own UserDefaults domain:
+On first launch: grant Accessibility (required) and ScreenRecording (optional, for Skein Bar + appearance editor) permissions. Verify the process is alive and using the fork's own UserDefaults domain:
 
 ```bash
-pgrep -fl "Frost.app/Contents/MacOS/Frost"
-defaults read com.vchun.Frost SUHasLaunchedBefore   # 1 once Sparkle has initialized
+pgrep -fl "Skein.app/Contents/MacOS/Skein"
+defaults read com.ariadnev.Skein SUHasLaunchedBefore   # 1 once Sparkle has initialized
 ```
 
 ## Troubleshooting
@@ -252,13 +252,13 @@ This is the actual blocker on Xcode 26.6 with a free Personal Team, confirmed by
 ### `xattr` quarantine warning persists
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/Frost.app
+xattr -dr com.apple.quarantine /Applications/Skein.app
 ```
 
 ### Sparkle "No updates available" but release is published
 
 - Confirm `appcast.xml` is attached to the **latest** GitHub release (not an older one).
-- Confirm `SUFeedURL` in `Frost/Info.plist` is `https://github.com/bavanchun/Frost/releases/latest/download/appcast.xml`.
+- Confirm `SUFeedURL` in `Skein/Info.plist` is `https://github.com/bavanchun/ariadnev-skein/releases/latest/download/appcast.xml`.
 - Confirm `SUPublicEDKey` matches the Keychain's public key (`generate_keys -p`).
 - Confirm `sparkle:edSignature` was generated with the matching private key.
 - The shipped `sparkle:version` must be strictly greater than the installed build's `CFBundleVersion`.
@@ -276,24 +276,24 @@ If missing, regenerate through Xcode Accounts → team → "Manage Certificates"
 ## Future-Release Checklist
 
 - [ ] Choose the bump per the Versioning Policy and get the version explicitly approved
-- [ ] Bump `MARKETING_VERSION` + `CURRENT_PROJECT_VERSION` in `Frost.xcodeproj/project.pbxproj` (Debug + Release)
+- [ ] Bump `MARKETING_VERSION` + `CURRENT_PROJECT_VERSION` in `Skein.xcodeproj/project.pbxproj` (Debug + Release)
 - [ ] Commit changes on `main`
-- [ ] `xcodebuild build` (unsigned) → `.release-output/sign/Frost.app`
+- [ ] `xcodebuild build` (unsigned) → `.release-output/sign/Skein.app`
 - [ ] `codesign` inside-out (XPC services → Updater.app → Sparkle.framework → main app)
 - [ ] `codesign --verify --verbose=4` confirms "valid on disk"
 - [ ] `ditto` zip + `sign_update` for EdDSA signature
 - [ ] Update `appcast.xml` (append `<item>`, bump `pubDate`)
 - [ ] `git tag -s v<x.y.z>` (SSH-signed) + `git push origin v<x.y.z>`
-- [ ] `gh release create v<x.y.z> Frost-<x.y.z>.zip appcast.xml`
+- [ ] `gh release create v<x.y.z> Skein-<x.y.z>.zip appcast.xml`
 - [ ] Verify `curl -sIL .../releases/latest/download/appcast.xml` → 302 to new release
-- [ ] Install locally, confirm process is running (`pgrep -fl Frost.app`) and `defaults read com.vchun.Frost` shows fork-owned keys
+- [ ] Install locally, confirm process is running (`pgrep -fl Skein.app`) and `defaults read com.ariadnev.Skein` shows fork-owned keys
 - [ ] Settings → About → Check for Updates reports current version
 
 ## Pitfalls
 
 - **Appcast must be on the latest release.** GitHub's `releases/latest/download/<file>` only resolves assets on the most recent published release.
-- **Bundle ID conflict.** If upstream `com.jordanbaird.Ice` is also installed, both apps share UserDefaults + keychain. Fork uses `com.vchun.Frost` to avoid this — do not revert.
-- **Private key safety.** `~/.config/frost/sparkle-private-ed25519-key` is the only offline backup of the Sparkle signing key. If lost, all future updates require shipping a new `SUPublicEDKey` (forces a manual reinstall, breaking auto-update).
+- **Bundle ID conflict.** If upstream `com.jordanbaird.Ice` is also installed, both apps share UserDefaults + keychain. Fork uses `com.ariadnev.Skein` to avoid this — do not revert.
+- **Private key safety.** `~/.config/skein/sparkle-private-ed25519-key` is the only offline backup of the Sparkle signing key. If lost, all future updates require shipping a new `SUPublicEDKey` (forces a manual reinstall, breaking auto-update).
 - **Personal Team non-distributability.** Apps signed with the free Personal Team cert run only on Macs registered to the same Apple ID. Notarization requires a paid Apple Developer Program membership.
 - **`xcodebuild archive` cannot sign this app on a free Personal Team.** Confirmed across automatic and manual signing styles on Xcode 26.6 — always falls back to `xcodebuild build` (unsigned) + manual `codesign`. Do not spend time retrying archive-based signing flags on a fresh Personal Team; go straight to the unsigned-build path.
-- **Sign nested bundles before the outer one.** `codesign` on `Frost.app` alone does not re-sign `Sparkle.framework`'s nested `Updater.app`/`Downloader.xpc`/`Installer.xpc` — each needs its own `codesign` call, innermost first, or the outer signature's sealed resources will mismatch and `codesign --verify` fails.
+- **Sign nested bundles before the outer one.** `codesign` on `Skein.app` alone does not re-sign `Sparkle.framework`'s nested `Updater.app`/`Downloader.xpc`/`Installer.xpc` — each needs its own `codesign` call, innermost first, or the outer signature's sealed resources will mismatch and `codesign --verify` fails.

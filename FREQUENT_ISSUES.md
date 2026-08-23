@@ -1,35 +1,35 @@
 # Frequent Issues <!-- omit in toc -->
 
 - [Items are moved to the always-hidden section](#items-are-moved-to-the-always-hidden-section)
-- [Frost removed an item](#frost-removed-an-item)
-- [Frost does not remember the order of items](#frost-does-not-remember-the-order-of-items)
-- [How do I solve the `Frost cannot arrange menu bar items in automatically hidden menu bars` error?](#how-do-i-solve-the-frost-cannot-arrange-menu-bar-items-in-automatically-hidden-menu-bars-error)
+- [Skein removed an item](#skein-removed-an-item)
+- [Skein does not remember the order of items](#skein-does-not-remember-the-order-of-items)
+- [How do I solve the `Skein cannot arrange menu bar items in automatically hidden menu bars` error?](#how-do-i-solve-the-skein-cannot-arrange-menu-bar-items-in-automatically-hidden-menu-bars-error)
 
 ## Items are moved to the always-hidden section
 
-By default, macOS adds new items to the far left of the menu bar, which is also the location of Frost's always-hidden section. Most apps are configured
+By default, macOS adds new items to the far left of the menu bar, which is also the location of Skein's always-hidden section. Most apps are configured
 to remember the positions of their items, but some are not. macOS treats the items of these apps as new items each time they appear. This results in
 these items appearing in the always-hidden section, even if they have been previously been moved.
 
-Frost does not currently manage individual items, and in fact cannot, as of the current release. Once issues
-[#6](https://github.com/jordanbaird/Ice/issues/6) and [#26](https://github.com/jordanbaird/Ice/issues/26) are implemented, Frost will be able to
+Skein does not currently manage individual items, and in fact cannot, as of the current release. Once issues
+[#6](https://github.com/jordanbaird/Ice/issues/6) and [#26](https://github.com/jordanbaird/Ice/issues/26) are implemented, Skein will be able to
 monitor the items in the menu bar, and move the ones it recognizes to their previous locations, even if macOS rearranges them.
 
-## Frost removed an item
+## Skein removed an item
 
-Frost does not have the ability to move or remove items. It likely got placed in the always-hidden section by macOS. Option + click the Frost icon to show
+Skein does not have the ability to move or remove items. It likely got placed in the always-hidden section by macOS. Option + click the Skein icon to show
 the always-hidden section, then Command + drag the item into a different section.
 
-## Frost does not remember the order of items
+## Skein does not remember the order of items
 
 This is not a bug, but a missing feature. It is being tracked in [#26](https://github.com/jordanbaird/Ice/issues/26).
 
-## How do I solve the `Frost cannot arrange menu bar items in automatically hidden menu bars` error?
+## How do I solve the `Skein cannot arrange menu bar items in automatically hidden menu bars` error?
 
 1. Open `System Settings` on your Mac
 2. Go to `Control Center`
 3. Select `Never` as shown in the image below
-4. Update your `Menu Bar Items` in `Frost`
+4. Update your `Menu Bar Items` in `Skein`
 5. Return `Automatically hide and show the menu bar` to your preferred settings
 
 ![Disable Menu Bar Hiding](https://github.com/user-attachments/assets/74c1fde6-d310-4fe3-9f2b-703d8ccb636a)

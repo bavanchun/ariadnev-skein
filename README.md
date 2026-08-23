@@ -1,26 +1,28 @@
 <div align="center">
-    <img src="Frost/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width=200 height=200>
-    <h1>Frost</h1>
+    <img src="Skein/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width=200 height=200>
+    <h1>Skein</h1>
 </div>
 
-Frost is a personal fork of [Ice](https://github.com/jordanbaird/Ice), a powerful menu bar management tool for macOS. Its primary function is hiding and showing menu bar items, alongside a range of additional features for customizing and arranging the menu bar.
+Skein is a menu bar manager for macOS. It hides and shows menu bar items, and gives you a set of tools for arranging and customising the menu bar around them.
 
-This fork is maintained for personal use. It is not affiliated with or endorsed by the upstream project.
+It is part of the [Ariadnev](https://ariadnev.com) ecosystem.
+
+**Skein is derived from [Ice](https://github.com/jordanbaird/Ice) by Jordan Baird**, and the overwhelming majority of its source code originates there. Skein is an independent project rather than a maintained fork: it has its own name, releases, and direction, and it is not affiliated with or endorsed by the upstream project. It remains licensed under GPL-3.0, and Jordan Baird's copyright is preserved in [`LICENSE`](LICENSE). See [`docs/UPSTREAM.md`](docs/UPSTREAM.md) for the full provenance record.
 
 ![Banner](https://github.com/user-attachments/assets/4423085c-4e4b-4f3d-ad0f-90a217c03470)
 
-[![Download](https://img.shields.io/badge/download-latest-brightgreen?style=flat-square)](https://github.com/bavanchun/Frost/releases/latest)
+[![Download](https://img.shields.io/badge/download-latest-brightgreen?style=flat-square)](https://github.com/bavanchun/ariadnev-skein/releases/latest)
 ![Platform](https://img.shields.io/badge/platform-macOS-blue?style=flat-square)
 ![Requirements](https://img.shields.io/badge/requirements-macOS%2014%2B-fa4e49?style=flat-square)
-[![License](https://img.shields.io/github/license/bavanchun/Frost?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/bavanchun/ariadnev-skein?style=flat-square)](LICENSE)
 
 ## Install
 
-Download the `Frost-<version>.zip` file from the [latest release](https://github.com/bavanchun/Frost/releases/latest) and move the unzipped app into your `Applications` folder.
+Download the `Skein-<version>.zip` file from the [latest release](https://github.com/bavanchun/ariadnev-skein/releases/latest) and move the unzipped app into your `Applications` folder.
 
-Frost is signed with a personal development certificate rather than a Developer ID, so on first launch macOS may require you to allow it explicitly in System Settings → Privacy & Security.
+Skein is signed with a personal development certificate rather than a Developer ID, so on first launch macOS may require you to allow it explicitly in System Settings → Privacy & Security.
 
-Frost needs Accessibility and Screen Recording permissions to manage and capture menu bar items.
+Skein needs Accessibility and Screen Recording permissions to manage and capture menu bar items.
 
 ## Features
 
@@ -56,7 +58,7 @@ Frost needs Accessibility and Screen Recording permissions to manage and capture
 
 - [x] Toggle individual menu bar sections
 - [x] Show the search panel
-- [x] Enable/disable the Frost Bar
+- [x] Enable/disable the Skein Bar
 - [x] Show/hide section divider icons
 - [x] Toggle application menus
 - [ ] Enable/disable auto rehide
@@ -68,15 +70,15 @@ Frost needs Accessibility and Screen Recording permissions to manage and capture
 - [x] Automatic updates
 - [ ] Menu bar widgets
 
-## Why does Frost only support macOS 14 and later?
+## Why does Skein only support macOS 14 and later?
 
-Frost uses a number of system APIs that are available starting in macOS 14. As such, there are no plans to support earlier versions of macOS.
+Skein uses a number of system APIs that are available starting in macOS 14. As such, there are no plans to support earlier versions of macOS.
 
 ## Gallery
 
 #### Show hidden menu bar items below the menu bar
 
-![Frost Bar](https://github.com/user-attachments/assets/f1429589-6186-4e1b-8aef-592219d49b9b)
+![Skein Bar](https://github.com/user-attachments/assets/f1429589-6186-4e1b-8aef-592219d49b9b)
 
 #### Drag-and-drop interface to arrange menu bar items
 
@@ -96,8 +98,8 @@ Frost uses a number of system APIs that are available starting in macOS 14. As s
 
 ## Credits
 
-Frost is a fork of [jordanbaird/Ice](https://github.com/jordanbaird/Ice) by Jordan Baird, licensed under GPL-3.0. All original functionality and the overwhelming majority of the source code originate from that project.
+Skein is a fork of [jordanbaird/Ice](https://github.com/jordanbaird/Ice) by Jordan Baird, licensed under GPL-3.0. All original functionality and the overwhelming majority of the source code originate from that project.
 
 ## License
 
-Frost is available under the [GPL-3.0 license](LICENSE), inherited from Ice.
+Skein is available under the [GPL-3.0 license](LICENSE), inherited from Ice.

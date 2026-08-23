@@ -53,7 +53,7 @@ shown at inside the app, so softness there is visible in a way the Dock hides.
 
 ## Related Code Files
 
-- Replace: all ten PNGs in `Frost/Assets.xcassets/AppIcon.appiconset/`
+- Replace: all ten PNGs in `Skein/Assets.xcassets/AppIcon.appiconset/`
 - Unchanged: that folder's `Contents.json`, `project.pbxproj`, `README.md`
 
 ## Implementation Steps
@@ -80,7 +80,7 @@ shown at inside the app, so softness there is visible in a way the Dock hides.
    the build:
 
    ```bash
-   /usr/libexec/PlistBuddy -c "Print CFBundleIconName" <product>/Frost.app/Contents/Info.plist
+   /usr/libexec/PlistBuddy -c "Print CFBundleIconName" <product>/Skein.app/Contents/Info.plist
    ```
 
 5. Install and check every surface in Success Criteria. A stale Dock icon is

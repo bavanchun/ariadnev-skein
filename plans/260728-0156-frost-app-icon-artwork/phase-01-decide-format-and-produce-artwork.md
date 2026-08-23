@@ -14,18 +14,26 @@ dependencies: []
 Two decisions and one deliverable. Nothing in phases 2 or 3 can start until this
 closes, and no honest estimate exists for the rest of the plan until it does.
 
-## Decision A — what Frost's mark is
+## Decision A — what Skein's mark is
+
+> **Reopened 2026-08-23.** This decision was written while the app was named
+> Frost, and the options below still argue from that name — snowflakes, ice
+> crystals, frost formation. The app is now **Skein**, so the naming tie-in the
+> table weighs has changed entirely: a skein is a coiled length of thread,
+> Ariadne's thread through the labyrinth. Re-evaluate from there; the options as
+> written are stale, not merely renamed.
+
 
 Blocking, and not answerable from the repo. Options, with the argument against each:
 
 | Direction | Against |
 |---|---|
 | Snowflake | Repeats the menu bar control item icon exactly. Coherent, but the app icon and the menu bar icon doing the same thing may read as unimaginative — and the menu bar icon is user-changeable, so the pairing breaks the moment someone picks Door. |
-| Frost/ice crystal formation, not a discrete snowflake | Keeps the name's meaning without duplicating the control item. Harder to make legible at 16 pt. |
-| Abstract mark unrelated to weather | Most distinctive, least self-explanatory. Loses the naming tie-in that makes "Frost" memorable. |
+| Skein/ice crystal formation, not a discrete snowflake | Keeps the name's meaning without duplicating the control item. Harder to make legible at 16 pt. |
+| Abstract mark unrelated to weather | Most distinctive, least self-explanatory. Loses the naming tie-in that makes "Skein" memorable. |
 | Keep a geometric solid, restyled and de-Iced | Cheapest continuity with the existing mark, but the cube is Ice's identity — carrying its silhouette forward defeats the point of the rebrand. |
 
-**Recommendation: frost/crystal formation.** It earns the name without making the
+**Recommendation: skein/crystal formation.** It earns the name without making the
 app icon a copy of a setting the user can change. Not a decision this plan can
 make alone.
 
@@ -50,7 +58,7 @@ migration and a redesign out of the same PR keeps two independent risks apart,
 and the 1024×1024 master this phase produces is the input either way.
 
 Phases 2 and 3 therefore target the ten-slot `.appiconset` and the single-slot
-`FrostMarkStroke.imageset` exactly as they stand today. No project file change is
+`SkeinMarkStroke.imageset` exactly as they stand today. No project file change is
 needed — `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` continues to resolve.
 
 ## Requirements
@@ -58,7 +66,7 @@ needed — `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` continues to resolve.
 **Functional**
 
 - A master image at **1024×1024** with transparency, from which every slot is exported.
-- A separate **16 pt-first silhouette** for `FrostMarkStroke` — solid black on transparent, no gradients, no colour, no interior detail.
+- A separate **16 pt-first silhouette** for `SkeinMarkStroke` — solid black on transparent, no gradients, no colour, no interior detail.
 - Both read as the same identity, not two designs that happen to ship together.
 
 **Non-functional**

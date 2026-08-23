@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "Documentation, attribution, and CI"
-status: pending
+status: complete
 priority: P1
 effort: "2h"
 dependencies: [4]
