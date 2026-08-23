@@ -4,11 +4,13 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-23
+
 ### Changed
 
 - The app is now **Skein**, part of the Ariadnev ecosystem. Everything visible was renamed: app name, Xcode project and scheme, source folder, Swift symbols, menu titles, and documentation.
 - The bundle identifier moved to `com.ariadnev.Skein`. Settings, the menu bar layout, and hotkeys are imported automatically on first launch, so nothing needs to be rebuilt by hand.
-- Update checks now resolve through `ariadnev.com` rather than a GitHub repository URL. The feed address is baked into every build, so routing it through a stable address means a future move cannot cut off updates again.
+- Update checks now resolve through `skein.ariadnev.com` rather than a GitHub repository URL. The feed address is baked into every build, so routing it through an address the project controls means a future move cannot cut off updates again.
 - The project left GitHub's fork network and lives at [`bavanchun/ariadnev-skein`](https://github.com/bavanchun/ariadnev-skein). It remains GPL-3.0 and derived from [Ice](https://github.com/jordanbaird/Ice); Jordan Baird's copyright is unchanged.
 
 ### Upgrade notes
@@ -63,7 +65,9 @@ macOS ties Accessibility and Screen Recording to an app's bundle identifier, so 
 
 Releases before this fork are documented in [jordanbaird/Ice](https://github.com/jordanbaird/Ice/releases).
 
-[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/bavanchun/ariadnev-skein/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/bavanchun/ariadnev-skein/compare/v0.11.12...v1.0.0
 [0.11.12]: https://github.com/bavanchun/ariadnev-skein/releases/tag/v0.11.12

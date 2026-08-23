@@ -1,7 +1,7 @@
 ---
 phase: 6
 title: "Release 2.0.0 and retire bavanchun/Frost"
-status: pending
+status: in-progress
 priority: P2
 effort: "2h"
 dependencies: [5]
@@ -21,7 +21,9 @@ The bundle identifier moves, macOS sees a new application, and permissions must
 be re-granted. `docs/release-guide.md` § "Versioning Policy" makes that a major
 bump.
 
-**Proposed: `2.0.0`.** Per repository policy the version is proposed and cut only
+**Approved 2026-08-23: `1.2.0`.** The maintainer chose the minor bump over the proposed `2.0.0`, on the recorded counter-argument that a personal app with one known install has no compatibility surface to break. Build counter 1120 -> 1121.
+
+~~Proposed: `2.0.0`.~~ Per repository policy the version is proposed and cut only
 after the maintainer signs off. **Do not tag without it.**
 
 The counter-argument, recorded so the decision is informed: with one known
