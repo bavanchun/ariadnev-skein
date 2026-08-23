@@ -1,5 +1,5 @@
 included:
-  - Frost
+  - Skein
 
 disabled_rules:
   - cyclomatic_complexity
