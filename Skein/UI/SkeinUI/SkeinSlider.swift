@@ -1,12 +1,12 @@
 //
-//  FrostSlider.swift
-//  Frost
+//  SkeinSlider.swift
+//  Skein
 //
 
 import CompactSlider
 import SwiftUI
 
-struct FrostSlider<Value: BinaryFloatingPoint, ValueLabel: View, ValueLabelSelectability: TextSelectability>: View {
+struct SkeinSlider<Value: BinaryFloatingPoint, ValueLabel: View, ValueLabelSelectability: TextSelectability>: View {
     private let value: Binding<Value>
     private let bounds: ClosedRange<Value>
     private let step: Value

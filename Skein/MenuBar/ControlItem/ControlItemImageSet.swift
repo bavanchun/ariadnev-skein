@@ -1,6 +1,6 @@
 //
 //  ControlItemImageSet.swift
-//  Frost
+//  Skein
 //
 
 /// A named set of images that are used by control items.
@@ -36,26 +36,26 @@ struct ControlItemImageSet: Codable, Hashable, Identifiable {
 }
 
 extension ControlItemImageSet {
-    /// The default image set for the Frost icon.
-    static let defaultFrostIcon = ControlItemImageSet(
+    /// The default image set for the Skein icon.
+    static let defaultSkeinIcon = ControlItemImageSet(
         name: .dot,
         hidden: .catalog("DotFill"),
         visible: .catalog("DotStroke")
     )
 
-    /// The image set for the snowflake Frost icon.
+    /// The image set for the snowflake Skein icon.
     ///
     /// Named on its own because the `1.1.0` migration writes it directly. Reaching
-    /// into `userSelectableFrostIcons` for it would leave the migration silently
+    /// into `userSelectableSkeinIcons` for it would leave the migration silently
     /// doing nothing if this entry were ever renamed.
-    static let snowflakeFrostIcon = ControlItemImageSet(
+    static let snowflakeSkeinIcon = ControlItemImageSet(
         name: .snowflake,
         hidden: .symbol("snowflake.circle.fill"),
         visible: .symbol("snowflake.circle")
     )
 
-    /// The image sets that the user can choose to display in the Frost icon.
-    static let userSelectableFrostIcons = [
+    /// The image sets that the user can choose to display in the Skein icon.
+    static let userSelectableSkeinIcons = [
         ControlItemImageSet(
             name: .arrow,
             hidden: .symbol("arrowshape.left.fill"),
@@ -81,7 +81,7 @@ extension ControlItemImageSet {
             hidden: .catalog("EllipsisFill"),
             visible: .catalog("EllipsisStroke")
         ),
-        snowflakeFrostIcon,
+        snowflakeSkeinIcon,
         ControlItemImageSet(
             name: .sunglasses,
             hidden: .symbol("sunglasses.fill"),

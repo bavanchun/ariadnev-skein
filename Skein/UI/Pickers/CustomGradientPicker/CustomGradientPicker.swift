@@ -1,6 +1,6 @@
 //
 //  CustomGradientPicker.swift
-//  Frost
+//  Skein
 //
 
 import Combine

@@ -1,6 +1,6 @@
 //
 //  RunLoopLocalEventMonitor.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

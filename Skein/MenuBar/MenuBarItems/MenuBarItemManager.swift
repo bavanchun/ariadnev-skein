@@ -1,6 +1,6 @@
 //
 //  MenuBarItemManager.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -21,7 +21,7 @@ final class MenuBarItemManager: ObservableObject {
             }
         }
 
-        /// The cached menu bar items managed by Frost.
+        /// The cached menu bar items managed by Skein.
         var managedItems: [MenuBarItem] {
             MenuBarSection.Name.allCases.reduce(into: []) { result, section in
                 result.append(contentsOf: managedItems(for: section))
@@ -33,7 +33,7 @@ final class MenuBarItemManager: ObservableObject {
             items.removeAll()
         }
 
-        /// Returns the cached menu bar items managed by Frost for the given section.
+        /// Returns the cached menu bar items managed by Skein for the given section.
         func managedItems(for section: MenuBarSection.Name) -> [MenuBarItem] {
             self[section].filter { item in
                 // Filter out items that can't be hidden.
@@ -42,8 +42,8 @@ final class MenuBarItemManager: ObservableObject {
                 }
 
                 if item.owningApplication == .current {
-                    // Frost icon is the only item owned by Frost that should be included.
-                    guard item.title == ControlItem.Identifier.frostIcon.rawValue else {
+                    // Skein icon is the only item owned by Skein that should be included.
+                    guard item.title == ControlItem.Identifier.skeinIcon.rawValue else {
                         return false
                     }
                 }

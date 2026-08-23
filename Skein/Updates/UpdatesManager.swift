@@ -1,6 +1,6 @@
 //
 //  UpdatesManager.swift
-//  Frost
+//  Skein
 //
 
 import Sparkle

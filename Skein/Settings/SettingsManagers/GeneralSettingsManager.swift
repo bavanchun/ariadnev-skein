@@ -1,6 +1,6 @@
 //
 //  GeneralSettingsManager.swift
-//  Frost
+//  Skein
 //
 
 import Combine
@@ -8,27 +8,27 @@ import Foundation
 
 @MainActor
 final class GeneralSettingsManager: ObservableObject {
-    /// A Boolean value that indicates whether the Frost icon
+    /// A Boolean value that indicates whether the Skein icon
     /// should be shown.
-    @Published var showFrostIcon = true
+    @Published var showSkeinIcon = true
 
     /// An icon to show in the menu bar, with a different image
     /// for when items are visible or hidden.
-    @Published var frostIcon: ControlItemImageSet = .defaultFrostIcon
+    @Published var skeinIcon: ControlItemImageSet = .defaultSkeinIcon
 
-    /// The last user-selected custom Frost icon.
-    @Published var lastCustomFrostIcon: ControlItemImageSet?
+    /// The last user-selected custom Skein icon.
+    @Published var lastCustomSkeinIcon: ControlItemImageSet?
 
-    /// A Boolean value that indicates whether custom Frost icons
+    /// A Boolean value that indicates whether custom Skein icons
     /// should be rendered as template images.
-    @Published var customFrostIconIsTemplate = false
+    @Published var customSkeinIconIsTemplate = false
 
     /// A Boolean value that indicates whether to show hidden items
     /// in a separate bar below the menu bar.
-    @Published var useFrostBar = false
+    @Published var useSkeinBar = false
 
-    /// The location where the Frost Bar appears.
-    @Published var frostBarLocation: FrostBarLocation = .dynamic
+    /// The location where the Skein Bar appears.
+    @Published var skeinBarLocation: SkeinBarLocation = .dynamic
 
     /// A Boolean value that indicates whether the hidden section
     /// should be shown when the mouse pointer clicks in an empty
@@ -81,9 +81,9 @@ final class GeneralSettingsManager: ObservableObject {
     }
 
     private func loadInitialState() {
-        Defaults.ifPresent(key: .showFrostIcon, assign: &showFrostIcon)
-        Defaults.ifPresent(key: .customFrostIconIsTemplate, assign: &customFrostIconIsTemplate)
-        Defaults.ifPresent(key: .useFrostBar, assign: &useFrostBar)
+        Defaults.ifPresent(key: .showSkeinIcon, assign: &showSkeinIcon)
+        Defaults.ifPresent(key: .customSkeinIconIsTemplate, assign: &customSkeinIconIsTemplate)
+        Defaults.ifPresent(key: .useSkeinBar, assign: &useSkeinBar)
         Defaults.ifPresent(key: .showOnClick, assign: &showOnClick)
         Defaults.ifPresent(key: .showOnHover, assign: &showOnHover)
         Defaults.ifPresent(key: .showOnScroll, assign: &showOnScroll)
@@ -91,9 +91,9 @@ final class GeneralSettingsManager: ObservableObject {
         Defaults.ifPresent(key: .autoRehide, assign: &autoRehide)
         Defaults.ifPresent(key: .rehideInterval, assign: &rehideInterval)
 
-        Defaults.ifPresent(key: .frostBarLocation) { rawValue in
-            if let location = FrostBarLocation(rawValue: rawValue) {
-                frostBarLocation = location
+        Defaults.ifPresent(key: .skeinBarLocation) { rawValue in
+            if let location = SkeinBarLocation(rawValue: rawValue) {
+                skeinBarLocation = location
             }
         }
         Defaults.ifPresent(key: .rehideStrategy) { rawValue in
@@ -102,14 +102,14 @@ final class GeneralSettingsManager: ObservableObject {
             }
         }
 
-        if let data = Defaults.data(forKey: .frostIcon) {
+        if let data = Defaults.data(forKey: .skeinIcon) {
             do {
-                frostIcon = try decoder.decode(ControlItemImageSet.self, from: data)
+                skeinIcon = try decoder.decode(ControlItemImageSet.self, from: data)
             } catch {
                 Logger.generalSettingsManager.error("Error decoding Frost icon: \(error)")
             }
-            if case .custom = frostIcon.name {
-                lastCustomFrostIcon = frostIcon
+            if case .custom = skeinIcon.name {
+                lastCustomSkeinIcon = skeinIcon
             }
         }
     }
@@ -117,49 +117,49 @@ final class GeneralSettingsManager: ObservableObject {
     private func configureCancellables() {
         var c = Set<AnyCancellable>()
 
-        $showFrostIcon
+        $showSkeinIcon
             .receive(on: DispatchQueue.main)
-            .sink { showFrostIcon in
-                Defaults.set(showFrostIcon, forKey: .showFrostIcon)
+            .sink { showSkeinIcon in
+                Defaults.set(showSkeinIcon, forKey: .showSkeinIcon)
             }
             .store(in: &c)
 
-        $frostIcon
+        $skeinIcon
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] frostIcon in
+            .sink { [weak self] skeinIcon in
                 guard let self else {
                     return
                 }
-                if case .custom = frostIcon.name {
-                    lastCustomFrostIcon = frostIcon
+                if case .custom = skeinIcon.name {
+                    lastCustomSkeinIcon = skeinIcon
                 }
                 do {
-                    let data = try encoder.encode(frostIcon)
-                    Defaults.set(data, forKey: .frostIcon)
+                    let data = try encoder.encode(skeinIcon)
+                    Defaults.set(data, forKey: .skeinIcon)
                 } catch {
                     Logger.generalSettingsManager.error("Error encoding Frost icon: \(error)")
                 }
             }
             .store(in: &c)
 
-        $customFrostIconIsTemplate
+        $customSkeinIconIsTemplate
             .receive(on: DispatchQueue.main)
             .sink { isTemplate in
-                Defaults.set(isTemplate, forKey: .customFrostIconIsTemplate)
+                Defaults.set(isTemplate, forKey: .customSkeinIconIsTemplate)
             }
             .store(in: &c)
 
-        $useFrostBar
+        $useSkeinBar
             .receive(on: DispatchQueue.main)
-            .sink { useFrostBar in
-                Defaults.set(useFrostBar, forKey: .useFrostBar)
+            .sink { useSkeinBar in
+                Defaults.set(useSkeinBar, forKey: .useSkeinBar)
             }
             .store(in: &c)
 
-        $frostBarLocation
+        $skeinBarLocation
             .receive(on: DispatchQueue.main)
             .sink { location in
-                Defaults.set(location.rawValue, forKey: .frostBarLocation)
+                Defaults.set(location.rawValue, forKey: .skeinBarLocation)
             }
             .store(in: &c)
 

@@ -1,6 +1,6 @@
 //
 //  MigrationManager.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -143,7 +143,7 @@ extension MigrationManager {
 
             let identifier = switch name {
             case .visible:
-                ControlItem.Identifier.frostIcon.deprecatedRawValue
+                ControlItem.Identifier.skeinIcon.deprecatedRawValue
             case .hidden:
                 ControlItem.Identifier.hidden.deprecatedRawValue
             case .alwaysHidden:
@@ -314,13 +314,13 @@ extension MigrationManager {
             return
         }
         try MigrationManager.performAll(blocks: [
-            migrateFrostIcon1_1_0,
+            migrateSkeinIcon1_1_0,
         ])
         Defaults.set(true, forKey: .hasMigrated1_1_0)
         Logger.migration.info("Successfully migrated to 1.1.0 settings")
     }
 
-    /// Migrates a saved Frost icon that names the retired ice cube image set
+    /// Migrates a saved Skein icon that names the retired ice cube image set
     /// to the snowflake image set that replaced it.
     ///
     /// The retired name is no longer a case of `ControlItemImageSet.Name`, so a
@@ -328,14 +328,14 @@ extension MigrationManager {
     /// failure is only logged and the icon quietly reverts to the default,
     /// discarding a choice the user made. Any other icon that fails to decode is
     /// past repair and would be discarded the same way, so both are rewritten.
-    private func migrateFrostIcon1_1_0() throws {
+    private func migrateSkeinIcon1_1_0() throws {
         guard
-            let data = Defaults.data(forKey: .frostIcon),
+            let data = Defaults.data(forKey: .skeinIcon),
             (try? decoder.decode(ControlItemImageSet.self, from: data)) == nil
         else {
             return
         }
-        Defaults.set(try encoder.encode(ControlItemImageSet.snowflakeFrostIcon), forKey: .frostIcon)
+        Defaults.set(try encoder.encode(ControlItemImageSet.snowflakeSkeinIcon), forKey: .skeinIcon)
         Logger.migration.info("Replaced an unreadable Frost icon with the snowflake icon")
     }
 }
@@ -430,7 +430,7 @@ extension MigrationManager {
 private extension ControlItem.Identifier {
     var deprecatedRawValue: String {
         switch self {
-        case .frostIcon: "IceIcon"
+        case .skeinIcon: "IceIcon"
         case .hidden: "HItem"
         case .alwaysHidden: "AHItem"
         }

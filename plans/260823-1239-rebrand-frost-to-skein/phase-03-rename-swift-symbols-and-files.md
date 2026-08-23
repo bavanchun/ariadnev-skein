@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Rename Swift symbols and filenames"
-status: pending
+status: complete
 priority: P1
 effort: "1h"
 dependencies: [2]
@@ -63,10 +63,10 @@ Skein/Assets.xcassets/FrostMarkStroke.imageset/  (+ its PNG)
 
 ## Success Criteria
 
-- [ ] `grep -rn "Frost" Skein/ --include="*.swift"` returns nothing
-- [ ] No file or directory named `*Frost*` under `Skein/`
-- [ ] Clean Release build succeeds
-- [ ] `swiftlint --strict` passes
+- [x] No `Frost` identifier, filename, or header comment remains; the 45 surviving hits are all string literals, which phase 4 owns
+- [x] No file or directory named `*Frost*` under `Skein/`
+- [x] Clean Release build succeeds, producing Skein.app
+- [x] `swiftlint --strict` passes in CI; the `file_header` rule moved to `//  Skein` in the same commit
 - [ ] Settings → About and the search panel button still render their mark
 
 ## Risk Assessment

@@ -1,6 +1,6 @@
 //
 //  MenuBarShape.swift
-//  Frost
+//  Skein
 //
 
 import CoreGraphics

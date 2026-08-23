@@ -1,6 +1,6 @@
 //
 //  Defaults.swift
-//  Frost
+//  Skein
 //
 
 import Foundation
@@ -140,10 +140,10 @@ extension Defaults {
 
         // MARK: General Settings
 
-        case showFrostIcon = "ShowFrostIcon"
-        case frostIcon = "FrostIcon"
-        case customFrostIconIsTemplate = "CustomFrostIconIsTemplate"
-        case useFrostBar = "UseFrostBar"
+        case showSkeinIcon = "ShowFrostIcon"
+        case skeinIcon = "FrostIcon"
+        case customSkeinIconIsTemplate = "CustomFrostIconIsTemplate"
+        case useSkeinBar = "UseFrostBar"
         case showOnClick = "ShowOnClick"
         case showOnHover = "ShowOnHover"
         case showOnScroll = "ShowOnScroll"
@@ -171,10 +171,10 @@ extension Defaults {
 
         case menuBarAppearanceConfigurationV2 = "MenuBarAppearanceConfigurationV2"
 
-        // MARK: Frost Bar Settings
+        // MARK: Skein Bar Settings
 
-        case frostBarLocation = "FrostBarLocation"
-        case frostBarPinnedLocation = "FrostBarPinnedLocation"
+        case skeinBarLocation = "FrostBarLocation"
+        case skeinBarPinnedLocation = "FrostBarPinnedLocation"
 
         // MARK: Migration
 

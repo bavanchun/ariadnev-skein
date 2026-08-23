@@ -1,6 +1,6 @@
 //
 //  RemoveSidebarToggle.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI

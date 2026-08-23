@@ -1,6 +1,6 @@
 //
 //  MenuBarSearchPanel.swift
-//  Frost
+//  Skein
 //
 
 import Combine
@@ -357,7 +357,7 @@ private struct SettingsButton: View {
 
     var body: some View {
         BottomBarButton(action: action) {
-            Image(.frostMarkStroke)
+            Image(.skeinMarkStroke)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)

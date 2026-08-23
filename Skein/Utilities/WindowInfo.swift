@@ -1,6 +1,6 @@
 //
 //  WindowInfo.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

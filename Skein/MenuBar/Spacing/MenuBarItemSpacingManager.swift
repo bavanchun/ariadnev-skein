@@ -1,6 +1,6 @@
 //
 //  MenuBarItemSpacingManager.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

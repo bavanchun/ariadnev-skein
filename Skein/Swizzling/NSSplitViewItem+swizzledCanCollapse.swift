@@ -1,6 +1,6 @@
 //
 //  NSSplitViewItem+swizzledCanCollapse.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

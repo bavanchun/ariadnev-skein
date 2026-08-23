@@ -1,33 +1,33 @@
 //
-//  FrostSection.swift
-//  Frost
+//  SkeinSection.swift
+//  Skein
 //
 
 import SwiftUI
 
-struct FrostSectionOptions: OptionSet {
+struct SkeinSectionOptions: OptionSet {
     let rawValue: Int
 
-    static let isBordered = FrostSectionOptions(rawValue: 1 << 0)
-    static let hasDividers = FrostSectionOptions(rawValue: 1 << 1)
+    static let isBordered = SkeinSectionOptions(rawValue: 1 << 0)
+    static let hasDividers = SkeinSectionOptions(rawValue: 1 << 1)
 
-    static let plain: FrostSectionOptions = []
-    static let `default`: FrostSectionOptions = [.isBordered, .hasDividers]
+    static let plain: SkeinSectionOptions = []
+    static let `default`: SkeinSectionOptions = [.isBordered, .hasDividers]
 }
 
-struct FrostSection<Header: View, Content: View, Footer: View>: View {
+struct SkeinSection<Header: View, Content: View, Footer: View>: View {
     private let header: Header
     private let content: Content
     private let footer: Footer
     private let spacing: CGFloat
-    private let options: FrostSectionOptions
+    private let options: SkeinSectionOptions
 
     private var isBordered: Bool { options.contains(.isBordered) }
     private var hasDividers: Bool { options.contains(.hasDividers) }
 
     init(
         spacing: CGFloat = 10,
-        options: FrostSectionOptions = .default,
+        options: SkeinSectionOptions = .default,
         @ViewBuilder header: () -> Header,
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
@@ -41,7 +41,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
 
     init(
         spacing: CGFloat = 10,
-        options: FrostSectionOptions = .default,
+        options: SkeinSectionOptions = .default,
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
     ) where Header == EmptyView {
@@ -56,7 +56,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
 
     init(
         spacing: CGFloat = 10,
-        options: FrostSectionOptions = .default,
+        options: SkeinSectionOptions = .default,
         @ViewBuilder header: () -> Header,
         @ViewBuilder content: () -> Content
     ) where Footer == EmptyView {
@@ -71,7 +71,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
 
     init(
         spacing: CGFloat = 10,
-        options: FrostSectionOptions = .default,
+        options: SkeinSectionOptions = .default,
         @ViewBuilder content: () -> Content
     ) where Header == EmptyView, Footer == EmptyView {
         self.init(spacing: spacing, options: options) {
@@ -86,7 +86,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
     init(
         _ title: LocalizedStringKey,
         spacing: CGFloat = 10,
-        options: FrostSectionOptions = .default,
+        options: SkeinSectionOptions = .default,
         @ViewBuilder content: () -> Content
     ) where Header == Text, Footer == EmptyView {
         self.init(spacing: spacing, options: options) {
@@ -99,7 +99,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
 
     var body: some View {
         if isBordered {
-            FrostGroupBox(padding: spacing) {
+            SkeinGroupBox(padding: spacing) {
                 header
             } content: {
                 dividedContent
@@ -118,7 +118,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
     @ViewBuilder
     private var dividedContent: some View {
         if hasDividers {
-            _VariadicView.Tree(FrostSectionLayout(spacing: spacing)) {
+            _VariadicView.Tree(SkeinSectionLayout(spacing: spacing)) {
                 content
                     .frame(maxWidth: .infinity)
             }
@@ -129,7 +129,7 @@ struct FrostSection<Header: View, Content: View, Footer: View>: View {
     }
 }
 
-private struct FrostSectionLayout: _VariadicView_UnaryViewRoot {
+private struct SkeinSectionLayout: _VariadicView_UnaryViewRoot {
     let spacing: CGFloat
 
     @ViewBuilder

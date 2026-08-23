@@ -1,11 +1,11 @@
 //
-//  FrostMenu.swift
-//  Frost
+//  SkeinMenu.swift
+//  Skein
 //
 
 import SwiftUI
 
-struct FrostMenu<Title: View, Label: View, Content: View>: View {
+struct SkeinMenu<Title: View, Label: View, Content: View>: View {
     private let title: Title
     private let label: Label
     private let content: Content
@@ -47,7 +47,7 @@ struct FrostMenu<Title: View, Label: View, Content: View>: View {
     }
 
     var body: some View {
-        FrostLabeledContent {
+        SkeinLabeledContent {
             Menu {
                 content
                     .labelStyle(.titleAndIcon)

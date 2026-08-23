@@ -1,6 +1,6 @@
 //
 //  Constants.swift
-//  Frost
+//  Skein
 //
 
 import Foundation

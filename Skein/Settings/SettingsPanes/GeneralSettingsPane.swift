@@ -1,6 +1,6 @@
 //
 //  GeneralSettingsPane.swift
-//  Frost
+//  Skein
 //
 
 import LaunchAtLogin
@@ -8,7 +8,7 @@ import SwiftUI
 
 struct GeneralSettingsPane: View {
     @EnvironmentObject var appState: AppState
-    @State private var isImportingCustomFrostIcon = false
+    @State private var isImportingCustomSkeinIcon = false
     @State private var isPresentingError = false
     @State private var presentedError: LocalizedErrorWrapper?
     @State private var isApplyingOffset = false
@@ -53,25 +53,25 @@ struct GeneralSettingsPane: View {
     }
 
     var body: some View {
-        FrostForm {
-            FrostSection {
+        SkeinForm {
+            SkeinSection {
                 launchAtLogin
             }
-            FrostSection {
-                frostIconOptions
+            SkeinSection {
+                skeinIconOptions
             }
-            FrostSection {
-                frostBarOptions
+            SkeinSection {
+                skeinBarOptions
             }
-            FrostSection {
+            SkeinSection {
                 showOnClick
                 showOnHover
                 showOnScroll
             }
-            FrostSection {
+            SkeinSection {
                 autoRehideOptions
             }
-            FrostSection {
+            SkeinSection {
                 spacingOptions
             }
         }
@@ -110,31 +110,31 @@ struct GeneralSettingsPane: View {
     }
 
     @ViewBuilder
-    private var frostIconOptions: some View {
-        Toggle("Show Frost icon", isOn: manager.bindings.showFrostIcon)
+    private var skeinIconOptions: some View {
+        Toggle("Show Frost icon", isOn: manager.bindings.showSkeinIcon)
             .annotation {
-                if !manager.showFrostIcon {
+                if !manager.showSkeinIcon {
                     Text("You can still access Frost's settings by right-clicking an empty area in the menu bar")
                 }
             }
-        if manager.showFrostIcon {
-            FrostMenu("Frost icon") {
-                Picker("Frost icon", selection: manager.bindings.frostIcon) {
-                    ForEach(ControlItemImageSet.userSelectableFrostIcons) { imageSet in
+        if manager.showSkeinIcon {
+            SkeinMenu("Frost icon") {
+                Picker("Frost icon", selection: manager.bindings.skeinIcon) {
+                    ForEach(ControlItemImageSet.userSelectableSkeinIcons) { imageSet in
                         Button {
-                            manager.frostIcon = imageSet
+                            manager.skeinIcon = imageSet
                         } label: {
                             menuItem(for: imageSet)
                         }
                         .tag(imageSet)
                     }
-                    if let lastCustomFrostIcon = manager.lastCustomFrostIcon {
+                    if let lastCustomSkeinIcon = manager.lastCustomSkeinIcon {
                         Button {
-                            manager.frostIcon = lastCustomFrostIcon
+                            manager.skeinIcon = lastCustomSkeinIcon
                         } label: {
-                            menuItem(for: lastCustomFrostIcon)
+                            menuItem(for: lastCustomSkeinIcon)
                         }
-                        .tag(lastCustomFrostIcon)
+                        .tag(lastCustomSkeinIcon)
                     }
                 }
                 .pickerStyle(.inline)
@@ -143,14 +143,14 @@ struct GeneralSettingsPane: View {
                 Divider()
 
                 Button("Choose image…") {
-                    isImportingCustomFrostIcon = true
+                    isImportingCustomSkeinIcon = true
                 }
             } title: {
-                menuItem(for: manager.frostIcon)
+                menuItem(for: manager.skeinIcon)
             }
             .annotation("Choose a custom icon to show in the menu bar")
             .fileImporter(
-                isPresented: $isImportingCustomFrostIcon,
+                isPresented: $isImportingCustomSkeinIcon,
                 allowedContentTypes: [.image]
             ) { result in
                 do {
@@ -158,7 +158,7 @@ struct GeneralSettingsPane: View {
                     if url.startAccessingSecurityScopedResource() {
                         defer { url.stopAccessingSecurityScopedResource() }
                         let data = try Data(contentsOf: url)
-                        manager.frostIcon = ControlItemImageSet(name: .custom, image: .data(data))
+                        manager.skeinIcon = ControlItemImageSet(name: .custom, image: .data(data))
                     }
                 } catch {
                     presentedError = LocalizedErrorWrapper(error)
@@ -166,41 +166,41 @@ struct GeneralSettingsPane: View {
                 }
             }
 
-            if case .custom = manager.frostIcon.name {
-                Toggle("Apply system theme to icon", isOn: manager.bindings.customFrostIconIsTemplate)
+            if case .custom = manager.skeinIcon.name {
+                Toggle("Apply system theme to icon", isOn: manager.bindings.customSkeinIconIsTemplate)
                     .annotation("Display the icon as a monochrome image matching the system appearance")
             }
         }
     }
 
     @ViewBuilder
-    private var frostBarOptions: some View {
-        useFrostBar
-        if manager.useFrostBar {
-            frostBarLocationPicker
+    private var skeinBarOptions: some View {
+        useSkeinBar
+        if manager.useSkeinBar {
+            skeinBarLocationPicker
         }
     }
 
     @ViewBuilder
-    private var useFrostBar: some View {
-        Toggle("Use Frost Bar", isOn: manager.bindings.useFrostBar)
+    private var useSkeinBar: some View {
+        Toggle("Use Frost Bar", isOn: manager.bindings.useSkeinBar)
             .annotation("Show hidden menu bar items in a separate bar below the menu bar")
     }
 
     @ViewBuilder
-    private var frostBarLocationPicker: some View {
-        FrostPicker("Location", selection: manager.bindings.frostBarLocation) {
-            ForEach(FrostBarLocation.allCases) { location in
+    private var skeinBarLocationPicker: some View {
+        SkeinPicker("Location", selection: manager.bindings.skeinBarLocation) {
+            ForEach(SkeinBarLocation.allCases) { location in
                 Text(location.localized).tag(location)
             }
         }
         .annotation {
-            switch manager.frostBarLocation {
+            switch manager.skeinBarLocation {
             case .dynamic:
                 Text("The Frost Bar's location changes based on context")
             case .mousePointer:
                 Text("The Frost Bar is centered below the mouse pointer")
-            case .frostIcon:
+            case .skeinIcon:
                 Text("The Frost Bar is centered below the Frost icon")
             }
         }
@@ -226,8 +226,8 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var spacingOptions: some View {
-        FrostLabeledContent {
-            FrostSlider(
+        SkeinLabeledContent {
+            SkeinSlider(
                 localizedOffsetString(for: tempItemSpacingOffset),
                 value: $tempItemSpacingOffset,
                 in: -16...16,
@@ -235,7 +235,7 @@ struct GeneralSettingsPane: View {
             )
             .disabled(isApplyingOffset)
         } label: {
-            FrostLabeledContent {
+            SkeinLabeledContent {
                 Button("Apply") {
                     applyOffset()
                 }
@@ -269,7 +269,7 @@ struct GeneralSettingsPane: View {
             spacing: 2
         )
         .annotation(spacing: 10, font: .callout.bold()) {
-            FrostGroupBox {
+            SkeinGroupBox {
                 Label {
                     Text("Note: You may need to log out and back in for this setting to apply properly.")
                 } icon: {
@@ -285,7 +285,7 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var rehideStrategyPicker: some View {
-        FrostPicker("Strategy", selection: manager.bindings.rehideStrategy) {
+        SkeinPicker("Strategy", selection: manager.bindings.rehideStrategy) {
             ForEach(RehideStrategy.allCases) { strategy in
                 Text(strategy.localized).tag(strategy)
             }
@@ -309,7 +309,7 @@ struct GeneralSettingsPane: View {
             if case .timed = manager.rehideStrategy {
                 VStack {
                     rehideStrategyPicker
-                    FrostSlider(
+                    SkeinSlider(
                         rehideIntervalKey,
                         value: manager.bindings.rehideInterval,
                         in: 0...30,

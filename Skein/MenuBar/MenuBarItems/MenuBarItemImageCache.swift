@@ -1,6 +1,6 @@
 //
 //  MenuBarItemImageCache.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -226,10 +226,10 @@ final class MenuBarItemImageCache: ObservableObject {
             return
         }
 
-        let isFrostBarPresented = await appState.navigationState.isFrostBarPresented
+        let isSkeinBarPresented = await appState.navigationState.isSkeinBarPresented
         let isSearchPresented = await appState.navigationState.isSearchPresented
 
-        if !isFrostBarPresented && !isSearchPresented {
+        if !isSkeinBarPresented && !isSearchPresented {
             guard await appState.navigationState.isAppFrontmost else {
                 logSkippingCache(reason: "Frost Bar not visible, app not frontmost")
                 return
@@ -263,7 +263,7 @@ final class MenuBarItemImageCache: ObservableObject {
             return
         }
 
-        let isFrostBarPresented = await appState.navigationState.isFrostBarPresented
+        let isSkeinBarPresented = await appState.navigationState.isSkeinBarPresented
         let isSearchPresented = await appState.navigationState.isSearchPresented
         let isSettingsPresented = await appState.navigationState.isSettingsPresented
 
@@ -271,8 +271,8 @@ final class MenuBarItemImageCache: ObservableObject {
         if isSettingsPresented || isSearchPresented {
             sectionsNeedingDisplay = MenuBarSection.Name.allCases
         } else if
-            isFrostBarPresented,
-            let section = await appState.menuBarManager.frostBarPanel.currentSection
+            isSkeinBarPresented,
+            let section = await appState.menuBarManager.skeinBarPanel.currentSection
         {
             sectionsNeedingDisplay.append(section)
         }

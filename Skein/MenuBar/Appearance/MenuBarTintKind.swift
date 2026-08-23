@@ -1,6 +1,6 @@
 //
 //  MenuBarTintKind.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI

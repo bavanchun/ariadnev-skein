@@ -1,6 +1,6 @@
 //
 //  LayoutBarItemView.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

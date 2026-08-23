@@ -1,6 +1,6 @@
 //
 //  CodableColor.swift
-//  Frost
+//  Skein
 //
 
 import CoreGraphics

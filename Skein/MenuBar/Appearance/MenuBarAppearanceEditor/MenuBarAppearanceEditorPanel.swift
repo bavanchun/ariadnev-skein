@@ -1,6 +1,6 @@
 //
 //  MenuBarAppearanceEditorPanel.swift
-//  Frost
+//  Skein
 //
 
 import Combine

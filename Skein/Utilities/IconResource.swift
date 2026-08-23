@@ -1,6 +1,6 @@
 //
 //  IconResource.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI

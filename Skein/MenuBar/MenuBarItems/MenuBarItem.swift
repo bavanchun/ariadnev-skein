@@ -1,6 +1,6 @@
 //
 //  MenuBarItem.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

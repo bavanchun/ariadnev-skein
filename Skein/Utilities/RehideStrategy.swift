@@ -1,6 +1,6 @@
 //
 //  RehideStrategy.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
