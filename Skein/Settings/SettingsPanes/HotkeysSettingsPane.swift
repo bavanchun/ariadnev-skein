@@ -1,6 +1,6 @@
 //
 //  HotkeysSettingsPane.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
@@ -13,16 +13,16 @@ struct HotkeysSettingsPane: View {
     }
 
     var body: some View {
-        FrostForm {
-            FrostSection("Menu Bar Sections") {
+        SkeinForm {
+            SkeinSection("Menu Bar Sections") {
                 hotkeyRecorder(forSection: .hidden)
                 hotkeyRecorder(forSection: .alwaysHidden)
             }
-            FrostSection("Menu Bar Items") {
+            SkeinSection("Menu Bar Items") {
                 hotkeyRecorder(forAction: .searchMenuBarItems)
             }
-            FrostSection("Other") {
-                hotkeyRecorder(forAction: .enableFrostBar)
+            SkeinSection("Other") {
+                hotkeyRecorder(forAction: .enableSkeinBar)
                 hotkeyRecorder(forAction: .showSectionDividers)
                 hotkeyRecorder(forAction: .toggleApplicationMenus)
             }
@@ -40,7 +40,7 @@ struct HotkeysSettingsPane: View {
                     Text("Toggle the always-hidden section")
                 case .searchMenuBarItems:
                     Text("Search menu bar items")
-                case .enableFrostBar:
+                case .enableSkeinBar:
                     Text("Enable the Frost Bar")
                 case .showSectionDividers:
                     Text("Show section dividers")

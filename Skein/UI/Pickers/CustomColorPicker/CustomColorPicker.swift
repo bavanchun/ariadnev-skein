@@ -1,6 +1,6 @@
 //
 //  CustomColorPicker.swift
-//  Frost
+//  Skein
 //
 
 import Combine

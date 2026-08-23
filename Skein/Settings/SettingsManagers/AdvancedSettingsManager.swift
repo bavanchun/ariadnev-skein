@@ -1,6 +1,6 @@
 //
 //  AdvancedSettingsManager.swift
-//  Frost
+//  Skein
 //
 
 import Combine

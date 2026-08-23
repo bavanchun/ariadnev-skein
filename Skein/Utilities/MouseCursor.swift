@@ -1,6 +1,6 @@
 //
 //  MouseCursor.swift
-//  Frost
+//  Skein
 //
 
 import CoreGraphics

@@ -1,6 +1,6 @@
 //
 //  LocalizedErrorWrapper.swift
-//  Frost
+//  Skein
 //
 
 import Foundation

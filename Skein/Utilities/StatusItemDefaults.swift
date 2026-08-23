@@ -1,6 +1,6 @@
 //
 //  StatusItemDefaults.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

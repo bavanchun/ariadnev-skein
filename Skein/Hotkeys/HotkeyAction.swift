@@ -1,6 +1,6 @@
 //
 //  HotkeyAction.swift
-//  Frost
+//  Skein
 //
 
 enum HotkeyAction: String, Codable, CaseIterable {
@@ -12,7 +12,7 @@ enum HotkeyAction: String, Codable, CaseIterable {
     case searchMenuBarItems = "SearchMenuBarItems"
 
     // Other
-    case enableFrostBar = "EnableFrostBar"
+    case enableSkeinBar = "EnableFrostBar"
     case showSectionDividers = "ShowSectionDividers"
     case toggleApplicationMenus = "ToggleApplicationMenus"
 
@@ -39,8 +39,8 @@ enum HotkeyAction: String, Codable, CaseIterable {
             }
         case .searchMenuBarItems:
             await appState.menuBarManager.searchPanel.toggle()
-        case .enableFrostBar:
-            appState.settingsManager.generalSettingsManager.useFrostBar.toggle()
+        case .enableSkeinBar:
+            appState.settingsManager.generalSettingsManager.useSkeinBar.toggle()
         case .showSectionDividers:
             appState.settingsManager.advancedSettingsManager.showSectionDividers.toggle()
         case .toggleApplicationMenus:

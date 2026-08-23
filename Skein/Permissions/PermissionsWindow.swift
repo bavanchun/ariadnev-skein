@@ -1,6 +1,6 @@
 //
 //  PermissionsWindow.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI

@@ -1,6 +1,6 @@
 //
 //  MenuBarOverlayPanel.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

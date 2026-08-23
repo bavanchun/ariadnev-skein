@@ -1,11 +1,11 @@
 //
-//  FrostForm.swift
-//  Frost
+//  SkeinForm.swift
+//  Skein
 //
 
 import SwiftUI
 
-struct FrostForm<Content: View>: View {
+struct SkeinForm<Content: View>: View {
     @Environment(\.isScrollEnabled) private var isScrollEnabled
     @State private var contentFrame = CGRect.zero
 
@@ -62,16 +62,16 @@ struct FrostForm<Content: View>: View {
     private var contentStack: some View {
         VStack(alignment: alignment, spacing: spacing) {
             content
-                .toggleStyle(FrostFormToggleStyle())
+                .toggleStyle(SkeinFormToggleStyle())
         }
         .padding(padding)
         .onFrameChange(update: $contentFrame)
     }
 }
 
-private struct FrostFormToggleStyle: ToggleStyle {
+private struct SkeinFormToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
-        FrostLabeledContent {
+        SkeinLabeledContent {
             Toggle(isOn: configuration.$isOn) {
                 configuration.label
             }

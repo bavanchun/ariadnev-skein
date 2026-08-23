@@ -1,16 +1,16 @@
 //
 //  Logging.swift
-//  Frost
+//  Skein
 //
 
 import OSLog
 
-/// A type that encapsulates logging behavior for Frost.
+/// A type that encapsulates logging behavior for Skein.
 struct Logger {
     /// The unified logger at the base of this logger.
     private let base: os.Logger
 
-    /// Creates a logger for Frost using the specified category.
+    /// Creates a logger for Skein using the specified category.
     init(category: String) {
         self.base = os.Logger(subsystem: Constants.bundleIdentifier, category: category)
     }

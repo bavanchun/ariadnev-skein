@@ -1,6 +1,6 @@
 //
 //  Injection.swift
-//  Frost
+//  Skein
 //
 
 /// Updates the given value in place using a closure.

@@ -56,7 +56,7 @@ file_header:
   required_pattern: |
     //
     //  SWIFTLINT_CURRENT_FILENAME
-    //  Frost
+    //  Skein
     //
 
 modifier_order:

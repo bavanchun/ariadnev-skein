@@ -1,6 +1,6 @@
 //
 //  ColorStop.swift
-//  Frost
+//  Skein
 //
 
 import CoreGraphics

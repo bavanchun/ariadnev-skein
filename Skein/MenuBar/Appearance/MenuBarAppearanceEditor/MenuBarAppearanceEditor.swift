@@ -1,6 +1,6 @@
 //
 //  MenuBarAppearanceEditor.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
@@ -58,8 +58,8 @@ struct MenuBarAppearanceEditor: View {
 
     @ViewBuilder
     private var mainForm: some View {
-        FrostForm(padding: mainFormPadding) {
-            FrostSection {
+        SkeinForm(padding: mainFormPadding) {
+            SkeinSection {
                 isDynamicToggle
             }
             if appearanceManager.configuration.isDynamic {
@@ -68,12 +68,12 @@ struct MenuBarAppearanceEditor: View {
             } else {
                 StaticPartialEditor()
             }
-            FrostSection("Menu Bar Shape") {
+            SkeinSection("Menu Bar Shape") {
                 shapePicker
                 isInset
             }
             if case .settings = location {
-                FrostGroupBox {
+                SkeinGroupBox {
                     AnnotationView(
                         alignment: .center,
                         font: .callout.bold()
@@ -133,11 +133,11 @@ private struct UnlabeledPartialEditor: View {
     @Binding var configuration: MenuBarAppearancePartialConfiguration
 
     var body: some View {
-        FrostSection {
+        SkeinSection {
             tintPicker
             shadowToggle
         }
-        FrostSection {
+        SkeinSection {
             borderToggle
             borderColor
             borderWidth
@@ -146,9 +146,9 @@ private struct UnlabeledPartialEditor: View {
 
     @ViewBuilder
     private var tintPicker: some View {
-        FrostLabeledContent("Tint") {
+        SkeinLabeledContent("Tint") {
             HStack {
-                FrostPicker("Tint", selection: $configuration.tintKind) {
+                SkeinPicker("Tint", selection: $configuration.tintKind) {
                     ForEach(MenuBarTintKind.allCases) { tintKind in
                         Text(tintKind.localized).tag(tintKind)
                     }
@@ -190,7 +190,7 @@ private struct UnlabeledPartialEditor: View {
     @ViewBuilder
     private var borderColor: some View {
         if configuration.hasBorder {
-            FrostLabeledContent("Border Color") {
+            SkeinLabeledContent("Border Color") {
                 CustomColorPicker(
                     selection: $configuration.borderColor,
                     supportsOpacity: true,
@@ -203,7 +203,7 @@ private struct UnlabeledPartialEditor: View {
     @ViewBuilder
     private var borderWidth: some View {
         if configuration.hasBorder {
-            FrostPicker(
+            SkeinPicker(
                 "Border Width",
                 selection: $configuration.borderWidth
             ) {
@@ -223,7 +223,7 @@ private struct LabeledPartialEditor: View {
     let appearance: SystemAppearance
 
     var body: some View {
-        FrostSection(options: .plain) {
+        SkeinSection(options: .plain) {
             labelStack
         } content: {
             partialEditor

@@ -1,6 +1,6 @@
 //
 //  HotkeySettingsManager.swift
-//  Frost
+//  Skein
 //
 
 import Combine

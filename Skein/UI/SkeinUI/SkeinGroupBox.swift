@@ -1,11 +1,11 @@
 //
-//  FrostGroupBox.swift
-//  Frost
+//  SkeinGroupBox.swift
+//  Skein
 //
 
 import SwiftUI
 
-struct FrostGroupBox<Header: View, Content: View, Footer: View>: View {
+struct SkeinGroupBox<Header: View, Content: View, Footer: View>: View {
     private let header: Header
     private let content: Content
     private let footer: Footer

@@ -1,6 +1,6 @@
 //
 //  LayoutBarPaddingView.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

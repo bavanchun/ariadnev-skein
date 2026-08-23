@@ -1,6 +1,6 @@
 //
 //  HotkeyRecorder.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
@@ -16,7 +16,7 @@ struct HotkeyRecorder<Label: View>: View {
     }
 
     var body: some View {
-        FrostLabeledContent {
+        SkeinLabeledContent {
             HStack(spacing: 1) {
                 leadingSegment
                 trailingSegment

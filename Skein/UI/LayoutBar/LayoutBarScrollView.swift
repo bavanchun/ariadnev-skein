@@ -1,6 +1,6 @@
 //
 //  LayoutBarScrollView.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

@@ -1,6 +1,6 @@
 //
 //  MenuBarAppearanceManager.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

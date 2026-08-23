@@ -1,6 +1,6 @@
 //
 //  HotkeyRecorderModel.swift
-//  Frost
+//  Skein
 //
 
 import Combine

@@ -1,6 +1,6 @@
 //
 //  AboutSettingsPane.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
@@ -46,7 +46,7 @@ struct AboutSettingsPane: View {
 
     @ViewBuilder
     private var mainForm: some View {
-        FrostForm(padding: EdgeInsets(top: 5, leading: 30, bottom: 30, trailing: 30), spacing: 0) {
+        SkeinForm(padding: EdgeInsets(top: 5, leading: 30, bottom: 30, trailing: 30), spacing: 0) {
             appIconAndCopyrightSection
                 .layoutPriority(1)
 
@@ -63,7 +63,7 @@ struct AboutSettingsPane: View {
 
     @ViewBuilder
     private var appIconAndCopyrightSection: some View {
-        FrostSection(options: .plain) {
+        SkeinSection(options: .plain) {
             HStack(spacing: 10) {
                 if let nsImage = NSImage(named: NSImage.applicationIconName) {
                     Image(nsImage: nsImage)
@@ -91,7 +91,7 @@ struct AboutSettingsPane: View {
 
     @ViewBuilder
     private var updatesSection: some View {
-        FrostSection(options: .hasDividers) {
+        SkeinSection(options: .hasDividers) {
             automaticallyCheckForUpdates
             automaticallyDownloadUpdates
             if updatesManager.canCheckForUpdates {

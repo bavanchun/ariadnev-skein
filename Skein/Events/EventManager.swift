@@ -1,6 +1,6 @@
 //
 //  EventManager.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -192,8 +192,8 @@ extension EventManager {
             }
         }
 
-        // Make sure clicking the Frost Bar doesn't trigger rehide.
-        guard event.window !== appState.menuBarManager.frostBarPanel else {
+        // Make sure clicking the Skein Bar doesn't trigger rehide.
+        guard event.window !== appState.menuBarManager.skeinBarPanel else {
             return
         }
 
@@ -271,7 +271,7 @@ extension EventManager {
         guard
             let appState,
             appState.settingsManager.generalSettingsManager.showOnHover,
-            !appState.settingsManager.generalSettingsManager.useFrostBar,
+            !appState.settingsManager.generalSettingsManager.useSkeinBar,
             isMouseInsideMenuBar
         else {
             return
@@ -280,9 +280,9 @@ extension EventManager {
         if isMouseInsideMenuBarItem {
             switch event.type {
             case .leftMouseDown:
-                if appState.menuBarManager.sections.contains(where: { !$0.isHidden }) || isMouseInsideFrostIcon {
+                if appState.menuBarManager.sections.contains(where: { !$0.isHidden }) || isMouseInsideSkeinIcon {
                     // We have a left click that is inside the menu bar while at least one
-                    // section is visible or the mouse is inside the Frost icon.
+                    // section is visible or the mouse is inside the Skein icon.
                     appState.preventShowOnHover()
                 }
             case .rightMouseDown:
@@ -379,7 +379,7 @@ extension EventManager {
             } else {
                 guard
                     !self.isMouseInsideMenuBar,
-                    !self.isMouseInsideFrostBar
+                    !self.isMouseInsideSkeinBar
                 else {
                     return
                 }
@@ -387,7 +387,7 @@ extension EventManager {
                 // Make sure the mouse is still outside.
                 guard
                     !self.isMouseInsideMenuBar,
-                    !self.isMouseInsideFrostBar
+                    !self.isMouseInsideSkeinBar
                 else {
                     return
                 }
@@ -520,33 +520,33 @@ extension EventManager {
     }
 
     /// A Boolean value that indicates whether the mouse pointer is within
-    /// the bounds of the Frost Bar panel.
-    var isMouseInsideFrostBar: Bool {
+    /// the bounds of the Skein Bar panel.
+    var isMouseInsideSkeinBar: Bool {
         guard
             let appState,
             let mouseLocation = MouseCursor.locationAppKit
         else {
             return false
         }
-        let panel = appState.menuBarManager.frostBarPanel
+        let panel = appState.menuBarManager.skeinBarPanel
         // Pad the frame to be more forgiving if the user accidentally
-        // moves their mouse outside of the Frost Bar.
+        // moves their mouse outside of the Skein Bar.
         let paddedFrame = panel.frame.insetBy(dx: -10, dy: -10)
         return paddedFrame.contains(mouseLocation)
     }
 
     /// A Boolean value that indicates whether the mouse pointer is within
-    /// the bounds of the Frost icon.
-    var isMouseInsideFrostIcon: Bool {
+    /// the bounds of the Skein icon.
+    var isMouseInsideSkeinIcon: Bool {
         guard
             let appState,
             let visibleSection = appState.menuBarManager.section(withName: .visible),
-            let frostIconFrame = visibleSection.controlItem.windowFrame,
+            let skeinIconFrame = visibleSection.controlItem.windowFrame,
             let mouseLocation = MouseCursor.locationAppKit
         else {
             return false
         }
-        return frostIconFrame.contains(mouseLocation)
+        return skeinIconFrame.contains(mouseLocation)
     }
 }
 

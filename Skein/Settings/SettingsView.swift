@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI
@@ -102,7 +102,7 @@ struct SettingsView: View {
         case .menuBarAppearance: .systemSymbol("swatchpalette")
         case .hotkeys: .systemSymbol("keyboard")
         case .advanced: .systemSymbol("gearshape.2")
-        case .about: .assetCatalog(.frostMarkStroke)
+        case .about: .assetCatalog(.skeinMarkStroke)
         }
     }
 }

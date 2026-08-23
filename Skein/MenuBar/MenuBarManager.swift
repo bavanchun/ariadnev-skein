@@ -1,6 +1,6 @@
 //
 //  MenuBarManager.swift
-//  Frost
+//  Skein
 //
 
 import AXSwift
@@ -34,8 +34,8 @@ final class MenuBarManager: ObservableObject {
     /// The managed sections in the menu bar.
     private(set) var sections = [MenuBarSection]()
 
-    /// The panel that contains the Frost Bar interface.
-    let frostBarPanel: FrostBarPanel
+    /// The panel that contains the Skein Bar interface.
+    let skeinBarPanel: SkeinBarPanel
 
     /// The panel that contains the menu bar search interface.
     let searchPanel: MenuBarSearchPanel
@@ -48,7 +48,7 @@ final class MenuBarManager: ObservableObject {
 
     /// Initializes a new menu bar manager instance.
     init(appState: AppState) {
-        self.frostBarPanel = FrostBarPanel(appState: appState)
+        self.skeinBarPanel = SkeinBarPanel(appState: appState)
         self.searchPanel = MenuBarSearchPanel(appState: appState)
         self.appState = appState
     }
@@ -57,7 +57,7 @@ final class MenuBarManager: ObservableObject {
     func performSetup() {
         initializeSections()
         configureCancellables()
-        frostBarPanel.performSetup()
+        skeinBarPanel.performSetup()
     }
 
     /// Performs the initial setup of the menu bar manager's sections.

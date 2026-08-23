@@ -1,12 +1,12 @@
 //
-//  FrostApp.swift
-//  Frost
+//  SkeinApp.swift
+//  Skein
 //
 
 import SwiftUI
 
 @main
-struct FrostApp: App {
+struct SkeinApp: App {
     @NSApplicationDelegateAdaptor var appDelegate: AppDelegate
     @ObservedObject var appState = AppState()
 

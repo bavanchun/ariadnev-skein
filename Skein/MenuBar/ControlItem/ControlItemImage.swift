@@ -1,6 +1,6 @@
 //
 //  ControlItemImage.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -41,7 +41,7 @@ enum ControlItemImage: Codable, Hashable {
         case .data(let data):
             let image = NSImage(data: data)
             let generalSettingsManager = appState.settingsManager.generalSettingsManager
-            image?.isTemplate = generalSettingsManager.customFrostIconIsTemplate
+            image?.isTemplate = generalSettingsManager.customSkeinIconIsTemplate
             return image
         }
     }

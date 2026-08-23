@@ -1,6 +1,6 @@
 //
 //  EventTap.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

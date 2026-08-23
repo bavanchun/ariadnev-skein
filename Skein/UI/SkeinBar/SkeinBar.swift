@@ -1,19 +1,19 @@
 //
-//  FrostBar.swift
-//  Frost
+//  SkeinBar.swift
+//  Skein
 //
 
 import Combine
 import SwiftUI
 
-// MARK: - FrostBarPanel
+// MARK: - SkeinBarPanel
 
-final class FrostBarPanel: NSPanel {
+final class SkeinBarPanel: NSPanel {
     private weak var appState: AppState?
 
     private(set) var currentSection: MenuBarSection.Name?
 
-    private lazy var colorManager = FrostBarColorManager(frostBarPanel: self)
+    private lazy var colorManager = SkeinBarColorManager(skeinBarPanel: self)
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -64,7 +64,7 @@ final class FrostBarPanel: NSPanel {
                     guard
                         let self,
                         let appState,
-                        // Only continue if the menu bar is automatically hidden, as Frost
+                        // Only continue if the menu bar is automatically hidden, as Skein
                         // can't currently display its menu bar items.
                         appState.menuBarManager.isMenuBarHiddenBySystemUserDefaults,
                         let info = window.flatMap({ WindowInfo(windowID: CGWindowID($0.windowNumber)) }),
@@ -102,7 +102,7 @@ final class FrostBarPanel: NSPanel {
             return
         }
 
-        func getOrigin(for frostBarLocation: FrostBarLocation) -> CGPoint {
+        func getOrigin(for skeinBarLocation: SkeinBarLocation) -> CGPoint {
             let menuBarHeight = screen.getMenuBarHeight() ?? 0
             let originY = ((screen.frame.maxY - 1) - menuBarHeight) - frame.height
 
@@ -110,15 +110,15 @@ final class FrostBarPanel: NSPanel {
                 CGPoint(x: screen.frame.maxX - frame.width, y: originY)
             }
 
-            switch frostBarLocation {
+            switch skeinBarLocation {
             case .dynamic:
                 if appState.eventManager.isMouseInsideEmptyMenuBarSpace {
                     return getOrigin(for: .mousePointer)
                 }
-                return getOrigin(for: .frostIcon)
+                return getOrigin(for: .skeinIcon)
             case .mousePointer:
                 guard let location = MouseCursor.locationAppKit else {
-                    return getOrigin(for: .frostIcon)
+                    return getOrigin(for: .skeinIcon)
                 }
 
                 let lowerBound = screen.frame.minX
@@ -129,7 +129,7 @@ final class FrostBarPanel: NSPanel {
                 }
 
                 return CGPoint(x: (location.x - frame.width / 2).clamped(to: lowerBound...upperBound), y: originY)
-            case .frostIcon:
+            case .skeinIcon:
                 let lowerBound = screen.frame.minX
                 let upperBound = screen.frame.maxX - frame.width
 
@@ -148,7 +148,7 @@ final class FrostBarPanel: NSPanel {
             }
         }
 
-        setFrameOrigin(getOrigin(for: appState.settingsManager.generalSettingsManager.frostBarLocation))
+        setFrameOrigin(getOrigin(for: appState.settingsManager.generalSettingsManager.skeinBarLocation))
     }
 
     func show(section: MenuBarSection.Name, on screen: NSScreen) async {
@@ -157,7 +157,7 @@ final class FrostBarPanel: NSPanel {
         }
 
         // Important that we set the navigation state and current section before updating the cache.
-        appState.navigationState.isFrostBarPresented = true
+        appState.navigationState.isSkeinBarPresented = true
         currentSection = section
 
         await appState.itemManager.cacheItemsIfNeeded()
@@ -166,7 +166,7 @@ final class FrostBarPanel: NSPanel {
             await appState.imageCache.updateCache()
         }
 
-        contentView = FrostBarHostingView(appState: appState, colorManager: colorManager, screen: screen, section: section) { [weak self] in
+        contentView = SkeinBarHostingView(appState: appState, colorManager: colorManager, screen: screen, section: section) { [weak self] in
             self?.close()
         }
 
@@ -185,26 +185,26 @@ final class FrostBarPanel: NSPanel {
         super.close()
         contentView = nil
         currentSection = nil
-        appState?.navigationState.isFrostBarPresented = false
+        appState?.navigationState.isSkeinBarPresented = false
     }
 }
 
-// MARK: - FrostBarHostingView
+// MARK: - SkeinBarHostingView
 
-private final class FrostBarHostingView: NSHostingView<AnyView> {
+private final class SkeinBarHostingView: NSHostingView<AnyView> {
     override var safeAreaInsets: NSEdgeInsets {
         NSEdgeInsets()
     }
 
     init(
         appState: AppState,
-        colorManager: FrostBarColorManager,
+        colorManager: SkeinBarColorManager,
         screen: NSScreen,
         section: MenuBarSection.Name,
         closePanel: @escaping () -> Void
     ) {
         super.init(
-            rootView: FrostBarContentView(screen: screen, section: section, closePanel: closePanel)
+            rootView: SkeinBarContentView(screen: screen, section: section, closePanel: closePanel)
                 .environmentObject(appState)
                 .environmentObject(appState.imageCache)
                 .environmentObject(appState.itemManager)
@@ -229,11 +229,11 @@ private final class FrostBarHostingView: NSHostingView<AnyView> {
     }
 }
 
-// MARK: - FrostBarContentView
+// MARK: - SkeinBarContentView
 
-private struct FrostBarContentView: View {
+private struct SkeinBarContentView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var colorManager: FrostBarColorManager
+    @EnvironmentObject var colorManager: SkeinBarColorManager
     @EnvironmentObject var itemManager: MenuBarItemManager
     @EnvironmentObject var imageCache: MenuBarItemImageCache
     @EnvironmentObject var menuBarManager: MenuBarManager
@@ -333,7 +333,7 @@ private struct FrostBarContentView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
                     ForEach(items, id: \.windowID) { item in
-                        FrostBarItemView(item: item, closePanel: closePanel)
+                        SkeinBarItemView(item: item, closePanel: closePanel)
                     }
                 }
             }
@@ -347,9 +347,9 @@ private struct FrostBarContentView: View {
     }
 }
 
-// MARK: - FrostBarItemView
+// MARK: - SkeinBarItemView
 
-private struct FrostBarItemView: View {
+private struct SkeinBarItemView: View {
     @EnvironmentObject var imageCache: MenuBarItemImageCache
     @EnvironmentObject var itemManager: MenuBarItemManager
 
@@ -401,7 +401,7 @@ private struct FrostBarItemView: View {
             Image(nsImage: image)
                 .contentShape(Rectangle())
                 .overlay {
-                    FrostBarItemClickView(item: item, leftClickAction: leftClickAction, rightClickAction: rightClickAction)
+                    SkeinBarItemClickView(item: item, leftClickAction: leftClickAction, rightClickAction: rightClickAction)
                 }
                 .accessibilityLabel(item.displayName)
                 .accessibilityAction(named: "left click", leftClickAction)
@@ -410,9 +410,9 @@ private struct FrostBarItemView: View {
     }
 }
 
-// MARK: - FrostBarItemClickView
+// MARK: - SkeinBarItemClickView
 
-private struct FrostBarItemClickView: NSViewRepresentable {
+private struct SkeinBarItemClickView: NSViewRepresentable {
     private final class Represented: NSView {
         let item: MenuBarItem
 

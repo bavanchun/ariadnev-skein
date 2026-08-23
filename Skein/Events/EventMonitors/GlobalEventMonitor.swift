@@ -1,6 +1,6 @@
 //
 //  GlobalEventMonitor.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa

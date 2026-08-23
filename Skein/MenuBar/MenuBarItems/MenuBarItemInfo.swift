@@ -1,6 +1,6 @@
 //
 //  MenuBarItemInfo.swift
-//  Frost
+//  Skein
 //
 
 /// A simplified version of a menu bar item.
@@ -36,24 +36,24 @@ extension MenuBarItemInfo {
     /// An array of items that can be moved, but cannot be hidden.
     static let nonHideableItems = [audioVideoModule, faceTime, musicRecognition]
 
-    /// Information for an item that represents the Frost icon, a.k.a. the
+    /// Information for an item that represents the Skein icon, a.k.a. the
     /// control item for the visible section.
-    static let frostIcon = MenuBarItemInfo(
-        namespace: .frost,
-        title: ControlItem.Identifier.frostIcon.rawValue
+    static let skeinIcon = MenuBarItemInfo(
+        namespace: .skein,
+        title: ControlItem.Identifier.skeinIcon.rawValue
     )
 
     /// Information for an item that represents the control item for the
     /// hidden section.
     static let hiddenControlItem = MenuBarItemInfo(
-        namespace: .frost,
+        namespace: .skein,
         title: ControlItem.Identifier.hidden.rawValue
     )
 
     /// Information for an item that represents the control item for the
     /// always-hidden section.
     static let alwaysHiddenControlItem = MenuBarItemInfo(
-        namespace: .frost,
+        namespace: .skein,
         title: ControlItem.Identifier.alwaysHidden.rawValue
     )
 
@@ -203,8 +203,8 @@ extension MenuBarItemInfo {
 
 // MARK: MenuBarItemInfo.Namespace Constants
 extension MenuBarItemInfo.Namespace {
-    /// The namespace for menu bar items owned by Frost.
-    static let frost = Self(Constants.bundleIdentifier)
+    /// The namespace for menu bar items owned by Skein.
+    static let skein = Self(Constants.bundleIdentifier)
 
     /// The namespace for menu bar items owned by Control Center.
     static let controlCenter = Self("com.apple.controlcenter")

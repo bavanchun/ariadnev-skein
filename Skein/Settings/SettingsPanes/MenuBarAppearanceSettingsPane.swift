@@ -1,6 +1,6 @@
 //
 //  MenuBarAppearanceSettingsPane.swift
-//  Frost
+//  Skein
 //
 
 import SwiftUI

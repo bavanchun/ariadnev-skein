@@ -1,11 +1,11 @@
 //
-//  FrostLabeledContent.swift
-//  Frost
+//  SkeinLabeledContent.swift
+//  Skein
 //
 
 import SwiftUI
 
-struct FrostLabeledContent<Label: View, Content: View>: View {
+struct SkeinLabeledContent<Label: View, Content: View>: View {
     private let label: Label
     private let content: Content
 

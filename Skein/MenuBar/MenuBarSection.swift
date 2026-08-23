@@ -1,6 +1,6 @@
 //
 //  MenuBarSection.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -49,18 +49,18 @@ final class MenuBarSection {
     /// is outside of the menu bar.
     private var rehideMonitor: UniversalEventMonitor?
 
-    /// A Boolean value that indicates whether the Frost Bar should be used.
-    private var useFrostBar: Bool {
-        appState?.settingsManager.generalSettingsManager.useFrostBar ?? false
+    /// A Boolean value that indicates whether the Skein Bar should be used.
+    private var useSkeinBar: Bool {
+        appState?.settingsManager.generalSettingsManager.useSkeinBar ?? false
     }
 
-    /// A weak reference to the menu bar manager's Frost Bar panel.
-    private weak var frostBarPanel: FrostBarPanel? {
-        appState?.menuBarManager.frostBarPanel
+    /// A weak reference to the menu bar manager's Skein Bar panel.
+    private weak var skeinBarPanel: SkeinBarPanel? {
+        appState?.menuBarManager.skeinBarPanel
     }
 
-    /// The best screen to show the Frost Bar on.
-    private weak var screenForFrostBar: NSScreen? {
+    /// The best screen to show the Skein Bar on.
+    private weak var screenForSkeinBar: NSScreen? {
         guard let appState else {
             return nil
         }
@@ -73,25 +73,25 @@ final class MenuBarSection {
 
     /// A Boolean value that indicates whether the section is hidden.
     var isHidden: Bool {
-        if useFrostBar {
+        if useSkeinBar {
             if controlItem.state == .showItems {
                 return false
             }
             switch name {
             case .visible, .hidden:
-                return frostBarPanel?.currentSection != .hidden
+                return skeinBarPanel?.currentSection != .hidden
             case .alwaysHidden:
-                return frostBarPanel?.currentSection != .alwaysHidden
+                return skeinBarPanel?.currentSection != .alwaysHidden
             }
         }
         switch name {
         case .visible, .hidden:
-            if frostBarPanel?.currentSection == .hidden {
+            if skeinBarPanel?.currentSection == .hidden {
                 return false
             }
             return controlItem.state == .hideItems
         case .alwaysHidden:
-            if frostBarPanel?.currentSection == .alwaysHidden {
+            if skeinBarPanel?.currentSection == .alwaysHidden {
                 return false
             }
             return controlItem.state == .hideItems
@@ -118,7 +118,7 @@ final class MenuBarSection {
     convenience init(name: Name, appState: AppState) {
         let controlItem = switch name {
         case .visible:
-            ControlItem(identifier: .frostIcon, appState: appState)
+            ControlItem(identifier: .skeinIcon, appState: appState)
         case .hidden:
             ControlItem(identifier: .hidden, appState: appState)
         case .alwaysHidden:
@@ -141,40 +141,40 @@ final class MenuBarSection {
             return
         }
         switch name {
-        case .visible where useFrostBar, .hidden where useFrostBar:
+        case .visible where useSkeinBar, .hidden where useSkeinBar:
             Task {
-                if let screenForFrostBar {
-                    await frostBarPanel?.show(section: .hidden, on: screenForFrostBar)
+                if let screenForSkeinBar {
+                    await skeinBarPanel?.show(section: .hidden, on: screenForSkeinBar)
                 }
                 for section in appState.menuBarManager.sections {
                     section.controlItem.state = .hideItems
                 }
             }
-        case .alwaysHidden where useFrostBar:
+        case .alwaysHidden where useSkeinBar:
             Task {
-                if let screenForFrostBar {
-                    await frostBarPanel?.show(section: .alwaysHidden, on: screenForFrostBar)
+                if let screenForSkeinBar {
+                    await skeinBarPanel?.show(section: .alwaysHidden, on: screenForSkeinBar)
                 }
                 for section in appState.menuBarManager.sections {
                     section.controlItem.state = .hideItems
                 }
             }
         case .visible:
-            frostBarPanel?.close()
+            skeinBarPanel?.close()
             guard let hiddenSection = appState.menuBarManager.section(withName: .hidden) else {
                 return
             }
             controlItem.state = .showItems
             hiddenSection.controlItem.state = .showItems
         case .hidden:
-            frostBarPanel?.close()
+            skeinBarPanel?.close()
             guard let visibleSection = appState.menuBarManager.section(withName: .visible) else {
                 return
             }
             controlItem.state = .showItems
             visibleSection.controlItem.state = .showItems
         case .alwaysHidden:
-            frostBarPanel?.close()
+            skeinBarPanel?.close()
             guard
                 let hiddenSection = appState.menuBarManager.section(withName: .hidden),
                 let visibleSection = appState.menuBarManager.section(withName: .visible)
@@ -196,9 +196,9 @@ final class MenuBarSection {
         else {
             return
         }
-        frostBarPanel?.close()
+        skeinBarPanel?.close()
         switch name {
-        case _ where useFrostBar:
+        case _ where useSkeinBar:
             for section in appState.menuBarManager.sections {
                 section.controlItem.state = .hideItems
             }

@@ -1,6 +1,6 @@
 //
 //  ControlItem.swift
-//  Frost
+//  Skein
 //
 
 import Cocoa
@@ -11,7 +11,7 @@ import Combine
 final class ControlItem {
     /// Possible identifiers for control items.
     enum Identifier: String, CaseIterable {
-        case frostIcon = "SItem"
+        case skeinIcon = "SItem"
         case hidden = "HItem"
         case alwaysHidden = "AHItem"
     }
@@ -72,7 +72,7 @@ final class ControlItem {
     /// A Boolean value that indicates whether the control item serves as
     /// a divider between sections.
     var isSectionDivider: Bool {
-        identifier != .frostIcon
+        identifier != .skeinIcon
     }
 
     /// A Boolean value that indicates whether the control item is currently
@@ -89,7 +89,7 @@ final class ControlItem {
         // according to the identifier.
         if StatusItemDefaults[.preferredPosition, autosaveName] == nil {
             switch identifier {
-            case .frostIcon:
+            case .skeinIcon:
                 StatusItemDefaults[.preferredPosition, autosaveName] = 0
             case .hidden:
                 StatusItemDefaults[.preferredPosition, autosaveName] = 1
@@ -227,16 +227,16 @@ final class ControlItem {
             .store(in: &c)
 
         if let appState {
-            appState.settingsManager.generalSettingsManager.$showFrostIcon
+            appState.settingsManager.generalSettingsManager.$showSkeinIcon
                 .receive(on: DispatchQueue.main)
-                .sink { [weak self] showFrostIcon in
+                .sink { [weak self] showSkeinIcon in
                     guard
                         let self,
                         !isSectionDivider
                     else {
                         return
                     }
-                    if showFrostIcon {
+                    if showSkeinIcon {
                         addToMenuBar()
                     } else {
                         removeFromMenuBar()
@@ -244,7 +244,7 @@ final class ControlItem {
                 }
                 .store(in: &c)
 
-            appState.settingsManager.generalSettingsManager.$frostIcon
+            appState.settingsManager.generalSettingsManager.$skeinIcon
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     guard let self else {
@@ -254,7 +254,7 @@ final class ControlItem {
                 }
                 .store(in: &c)
 
-            appState.settingsManager.generalSettingsManager.$customFrostIconIsTemplate
+            appState.settingsManager.generalSettingsManager.$customSkeinIconIsTemplate
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     guard let self else {
@@ -264,16 +264,16 @@ final class ControlItem {
                 }
                 .store(in: &c)
 
-            appState.settingsManager.generalSettingsManager.$useFrostBar
+            appState.settingsManager.generalSettingsManager.$useSkeinBar
                 .receive(on: DispatchQueue.main)
-                .sink { [weak self] useFrostBar in
+                .sink { [weak self] useSkeinBar in
                     guard
                         let self,
                         let button = statusItem.button
                     else {
                         return
                     }
-                    if useFrostBar {
+                    if useSkeinBar {
                         button.sendAction(on: [.leftMouseDown, .rightMouseUp])
                     } else {
                         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -344,7 +344,7 @@ final class ControlItem {
             isVisible = true
             // Enable the cell, as it may have been previously disabled.
             button.cell?.isEnabled = true
-            let icon = appState.settingsManager.generalSettingsManager.frostIcon
+            let icon = appState.settingsManager.generalSettingsManager.skeinIcon
             // We can usually just set the image directly from the icon.
             button.image = switch state {
             case .hideItems: icon.hidden.nsImage(for: appState)

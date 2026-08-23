@@ -1,6 +1,6 @@
 //
 //  SettingsNavigationIdentifier.swift
-//  Frost
+//  Skein
 //
 
 /// An identifier used for navigation in the settings interface.

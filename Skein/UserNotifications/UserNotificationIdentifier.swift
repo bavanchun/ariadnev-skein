@@ -1,6 +1,6 @@
 //
 //  UserNotificationIdentifier.swift
-//  Frost
+//  Skein
 //
 
 /// An identifier for a user notification.
