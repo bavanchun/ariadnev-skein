@@ -101,7 +101,7 @@ extension Bridging {
             Logger.bridging.error("CGSGetWindowList failed with error \(result.logString)")
             return []
         }
-        return [CGWindowID](list[..<Int(realCount)])
+        return [CGWindowID](list.prefix(Int(realCount)))
     }
 
     private static func getOnScreenWindowList() -> [CGWindowID] {
@@ -119,7 +119,7 @@ extension Bridging {
             Logger.bridging.error("CGSGetOnScreenWindowList failed with error \(result.logString)")
             return []
         }
-        return [CGWindowID](list[..<Int(realCount)])
+        return [CGWindowID](list.prefix(Int(realCount)))
     }
 
     private static func getMenuBarWindowList() -> [CGWindowID] {
@@ -137,7 +137,7 @@ extension Bridging {
             Logger.bridging.error("CGSGetProcessMenuBarWindowList failed with error \(result.logString)")
             return []
         }
-        return [CGWindowID](list[..<Int(realCount)])
+        return [CGWindowID](list.prefix(Int(realCount)))
     }
 
     private static func getOnScreenMenuBarWindowList() -> [CGWindowID] {
