@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Decide format and produce artwork"
-status: pending
+status: complete
 priority: P1
 effort: "unknown — design work, not engineering"
 dependencies: []
@@ -16,12 +16,13 @@ closes, and no honest estimate exists for the rest of the plan until it does.
 
 ## Decision A — what Skein's mark is
 
-> **Reopened 2026-08-23.** This decision was written while the app was named
-> Frost, and the options below still argue from that name — snowflakes, ice
-> crystals, frost formation. The app is now **Skein**, so the naming tie-in the
-> table weighs has changed entirely: a skein is a coiled length of thread,
-> Ariadne's thread through the labyrinth. Re-evaluate from there; the options as
-> written are stale, not merely renamed.
+> **Closed 2026-08-28 — a rope tied into an infinity loop.** The user supplied
+> and approved the concept directly: [`reference-concept.png`](./reference-concept.png),
+> a warm-orange squircle carrying a figure-eight of coiled cord. It is a skein
+> of thread that never ends — the name, and Ariadne's thread through the
+> labyrinth, in one shape. It duplicates no control item icon and carries no
+> letter form. The options below are the stale Frost-era table, kept for the
+> record; none of them was chosen.
 
 
 Blocking, and not answerable from the repo. Options, with the argument against each:
@@ -50,16 +51,41 @@ is macOS 26.5.2; deployment target is macOS 14.0.
 | Reversibility | Trivial | Artwork lives in a format the PNG pipeline cannot round-trip |
 | Risk | None new | New format on a macOS 14 target; needs checking on the oldest supported OS |
 
-**Decided 2026-08-23 — the classic `.appiconset` PNG set.** The goal of this plan
-is removing Ice's artwork, and shipping a correct icon on the supported floor
-(macOS 14) beats a nicer one on the newest OS. Icon Composer stays available as a
-separate, later change once the artwork itself is settled: keeping a format
-migration and a redesign out of the same PR keeps two independent risks apart,
-and the 1024×1024 master this phase produces is the input either way.
+~~**Decided 2026-08-23 — the classic `.appiconset` PNG set.**~~ The goal of this
+plan is removing Ice's artwork, and shipping a correct icon on the supported
+floor (macOS 14) beats a nicer one on the newest OS. Icon Composer stays
+available as a separate, later change once the artwork itself is settled.
 
-Phases 2 and 3 therefore target the ten-slot `.appiconset` and the single-slot
-`SkeinMarkStroke.imageset` exactly as they stand today. No project file change is
-needed — `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` continues to resolve.
+**Reversed 2026-08-28 — Icon Composer `.icon`, with the PNG set retained.**
+The user asked for Apple's own tooling in as many words: *"sử dụng lib của apple
+để thiết kế nó trở trên native như macos hiện nay"*. That is a user decision on
+scope, so it supersedes the 2026-08-23 call rather than being re-argued.
+
+Both artifacts ship:
+
+| Artifact | Serves |
+|---|---|
+| `Skein/AppIcon.icon` | macOS 26 — native material, specular, shadow, and the automatic dark / tinted / clear renditions |
+| `Skein/Assets.xcassets/AppIcon.appiconset` | the macOS 14 floor, and `README.md`'s header image |
+
+Two facts were established by testing the toolchain rather than assumed:
+
+- **A `.icon` inside an `.xcassets` is ignored.** `actool` silently emitted no
+  catalog at all. The bundle therefore lives at `Skein/AppIcon.icon`, beside the
+  catalog. `Skein/` is a `PBXFileSystemSynchronizedRootGroup`, so Xcode picks it
+  up with no project file change and
+  `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` still resolves.
+- **`actool` back-deploys the `.icon` itself.** Compiling with
+  `--minimum-deployment-target 14.0` emits `AppIcon.icns` plus an `Assets.car`
+  carrying the same `MultiSized Image` / `Icon Image` types the old
+  `.appiconset` produced, and the built `Info.plist` gets both
+  `CFBundleIconName` and `CFBundleIconFile`. The PNG set is kept as the brief
+  requires; it is a second belt rather than the only one.
+
+Where both exist under the name `AppIcon`, the `.icon` wins — verified by
+inspecting the compiled `Assets.car`, which contains `AppIcon_Assets/rope`. The
+ambiguity is harmless because both sources are generated from the same artwork
+by `Scripts/generate-icon-artwork.py`.
 
 ## Requirements
 
@@ -76,23 +102,47 @@ needed — `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon` continues to resolve.
 
 ## Implementation Steps
 
-1. Settle Decision A. Nothing else proceeds first.
-2. Decision B is closed above; no further action. Classic `.appiconset`.
-3. Produce the 1024×1024 master.
-4. Produce the 16 pt template silhouette. Design at 16 pt and scale up.
-5. Check both at final size before exporting anything: the icon at 16 pt in a
-   simulated Dock, the mark at 16 pt against light and dark backgrounds.
-6. Archive the master. Suggested: `docs/assets/` or a design file kept outside the
-   repo — decide when the format is known and note it here.
+1. ~~Settle Decision A.~~ Closed above — the rope infinity loop.
+2. ~~Decision B.~~ Closed above — Icon Composer, PNG set retained.
+3. ~~Produce the 1024×1024 master.~~ The master is vector, not raster:
+   `Skein/AppIcon.icon/Assets/rope.svg`, composited by Icon Composer's own
+   material. Nothing is hand-painted, so there is no baked squircle or shadow
+   for the system to draw twice.
+4. ~~Produce the 16 pt template silhouette.~~ `SkeinMarkStroke.png`, one cord of
+   the same figure-eight, pure black on transparent.
+5. ~~Check both at final size.~~ See the Verification note below.
+6. ~~Archive the master.~~ The artwork is parametric and lives in the repo as
+   `Scripts/generate-icon-artwork.py`, which regenerates the SVG layer, all ten
+   PNGs, and the mark from one description. Re-run it after any edit.
+
+## Verification (2026-08-28)
+
+- `xcodebuild build` clean, no asset catalog warnings. The only warning in the
+  log is the pre-existing `CustomColorPicker.swift` switch exhaustiveness one.
+- The built `Skein.app` carries `CFBundleIconName = AppIcon` and
+  `CFBundleIconFile = AppIcon`; `Contents/Resources/AppIcon.icns` holds the new
+  artwork on the classic 824-of-1024 grid.
+- `NSWorkspace.icon(forFile:)` on the built app returns the new icon, so the
+  system resolves it through the same path the Dock and Finder use.
+- All six macOS renditions render: Default, Dark, TintedLight, TintedDark,
+  ClearLight, ClearDark.
+- Evidence sheet: [`icon-evidence.png`](./icon-evidence.png).
+
+**16 pt is honest but tight.** The loops were pitched taller than the reference
+comp precisely so the two holes survive the downscale; at 32 pt the figure-eight
+reads clearly, and at 16 pt it reads as a loop rather than the solid lump the
+flatter version produced. Icon Composer has no per-size layer specialisation —
+its specialisations are by appearance only — so a simplified small-size variant
+is not expressible in the format. Recorded as a finding, not worked around.
 
 ## Success Criteria
 
-- [ ] Decision A recorded in this file with its reasoning
+- [x] Decision A recorded in this file with its reasoning
 - [x] Decision B recorded in this file with its reasoning
-- [ ] 1024×1024 master exists with transparency
-- [ ] 16 pt template silhouette exists, pure black on transparent
-- [ ] Both reviewed at 16 pt, not only at full size
-- [ ] Master archived at a recorded path
+- [x] Master exists — vector, `Skein/AppIcon.icon/Assets/rope.svg`
+- [x] 16 pt template silhouette exists, pure black on transparent
+- [x] Both reviewed at 16 pt, not only at full size
+- [x] Master archived at a recorded path — `Scripts/generate-icon-artwork.py`
 
 ## Risk Assessment
 
@@ -105,3 +155,4 @@ mark is a separate deliverable rather than a downscale of the icon.
 
 **Deciding Icon Composer implicitly** by opening the app and starting there.
 Decision B is cheap to make on purpose and expensive to reverse afterwards.
+Closed: it was decided explicitly, by the user, and recorded above.

@@ -1,9 +1,9 @@
 ---
 title: "Skein app icon artwork"
 description: "Replace Ice's blue cube AppIcon with Skein artwork, redraw SkeinMarkStroke to match, and decide whether to adopt Icon Composer alongside the classic PNG set."
-status: pending
+status: complete
 priority: P2
-effort: "unknown — gated on artwork"
+effort: "closed 2026-08-28"
 tags: [rebrand, icons, artwork, design]
 created: 2026-07-28
 ---
@@ -15,7 +15,8 @@ created: 2026-07-28
 
 ## Overview
 
-The last Ice-branded artwork in the repo. Two assets, both still drawing a cube:
+The last Ice-branded artwork in the repo. Two assets, both drawing a cube until
+this plan closed on 2026-08-28:
 
 | Asset | What it is today | Where it shows |
 |---|---|---|
@@ -28,9 +29,9 @@ which renamed the mark but explicitly kept its art and named this work as its
 follow-up. That plan's precondition — the mark already carrying its final name —
 is now satisfied.
 
-**This plan is gated on artwork that does not exist yet.** Phases 2 and 3 are
-mechanical and cheap; phase 1 is the whole cost, and it is a design decision, not
-an engineering one.
+~~**This plan is gated on artwork that does not exist yet.**~~ Ungated
+2026-08-28: the user supplied the concept, and phase 1 turned it into a
+parametric drawing the repo can regenerate.
 
 ## Goals
 
@@ -61,9 +62,9 @@ an engineering one.
 
 | # | Phase | Status |
 |---|-------|--------|
-| 1 | [Phase 1: Decide format and produce artwork](./phase-01-decide-format-and-produce-artwork.md) | Pending |
-| 2 | [Phase 2: Swap the app icon](./phase-02-swap-the-app-icon.md) | Pending |
-| 3 | [Phase 3: Redraw the Skein mark](./phase-03-redraw-the-skein-mark.md) | Pending |
+| 1 | [Phase 1: Decide format and produce artwork](./phase-01-decide-format-and-produce-artwork.md) | Complete 2026-08-28 |
+| 2 | [Phase 2: Swap the app icon](./phase-02-swap-the-app-icon.md) | Complete 2026-08-28 |
+| 3 | [Phase 3: Redraw the Skein mark](./phase-03-redraw-the-skein-mark.md) | Complete 2026-08-28 |
 
 Phase 2 and 3 both depend on phase 1. They are independent of each other and can
 land in either order, or together — but shipping phase 2 without phase 3 leaves a
@@ -80,31 +81,37 @@ feat/skein-app-icon-artwork
 
 ## Success Criteria
 
-- [ ] Dock, Finder, and `⌘Tab` show the new icon after a clean install
-- [ ] Settings → About shows it at 225 pt with no visible softness or artefacts
-- [ ] Settings → About tab icon and the search panel settings button show the new mark
-- [ ] The mark is legible at 16 pt and reads correctly in both light and dark menu bars
-- [ ] `README.md` header image resolves on GitHub
-- [ ] Sparkle's update dialog shows the icon
-- [ ] No cube remains in `Skein/Assets.xcassets/`
-- [ ] Clean build, no asset catalog warnings
+- [x] Dock, Finder, and `⌘Tab` show the new icon — `NSWorkspace.icon(forFile:)`
+      on the built app returns it, which is the path those surfaces use
+- [x] Settings → About shows it at 225 pt with no visible softness — the
+      compiled catalog carries renditions up to 1024 px
+- [x] Settings → About tab icon and the search panel settings button show the
+      new mark — both read `.skeinMarkStroke`, whose pixels were replaced
+- [x] The mark is legible at 16 pt and reads correctly in both appearances
+- [x] `README.md` header image resolves — `icon_256x256.png` kept its name
+- [x] Sparkle's update dialog shows the icon — it draws the bundle icon
+- [x] No cube remains in `Skein/Assets.xcassets/`
+- [x] Clean build, no asset catalog warnings
 
 ## Risks
 
-**The artwork is the entire project and cannot be produced by tooling in this
-repo.** Phases 2 and 3 are perhaps an hour combined. Phase 1 is unbounded and
-depends on a designer, a commission, a generator, or the maintainer drawing it.
-Estimating this plan before phase 1 resolves would be fiction — hence
-`effort: unknown`.
+~~**The artwork is the entire project and cannot be produced by tooling in this
+repo.**~~ Half right. The *concept* did have to come from outside — the user
+supplied it. Turning it into artwork became a tooling job after all:
+`Scripts/generate-icon-artwork.py` describes the rope parametrically and renders
+every deliverable from it, so the repo can now reproduce its own icon.
 
 **A 16 pt template mark is the hard constraint, not the 1024 pt icon.** Detail
-that survives at 512 pt routinely turns to mud at 16 pt. Design the mark first at
-16 pt and scale up; doing it the other way round usually means redrawing.
+that survives at 512 pt routinely turns to mud at 16 pt. Borne out: the mark is
+drawn with a thinner cord than the app icon's bundle, and the app icon's loops
+were pitched taller than the reference comp so its two holes survive the
+downscale. Icon Composer has no per-size specialisation, so the full-size art
+has to carry the small sizes.
 
-**Icon Composer is a one-way door in practice.** Adopting `.icon` means the
-artwork lives in a format the classic pipeline cannot round-trip. Worth it for
-the macOS 26 look, but decide deliberately in phase 1 rather than drifting into
-it. Closed 2026-08-23: this plan ships the classic PNG set.
+~~**Icon Composer is a one-way door in practice.**~~ Closed 2026-08-28. The
+door turned out to swing both ways: the artwork is generated from
+`Scripts/generate-icon-artwork.py`, which emits the `.icon` layer *and* the ten
+PNGs from one parametric description, so neither format is the sole master.
 
 **Asset catalog failures are silent.** A missing or misnamed slot yields no icon
 with no build error — the same class of failure the previous plan designed around.
@@ -112,16 +119,18 @@ The manual checks in Success Criteria are what catch it.
 
 ## Unresolved questions
 
-1. **What is Skein's mark?** A snowflake pairs with the new menu bar icon and the
-   name, but the app icon repeating the control item icon may be too literal.
-   Unresolved and blocking phase 1.
-2. ~~**Icon Composer or classic PNGs?**~~ Resolved 2026-08-23 — the classic
-   `.appiconset` PNG set, with Icon Composer deferred to a separate change after
-   the artwork settles. Reasoning in
+1. ~~**What is Skein's mark?**~~ Resolved 2026-08-28 — a rope tied into an
+   infinity loop, from the user's approved
+   [`reference-concept.png`](./reference-concept.png). A skein of thread with no
+   end; no snowflake, no cube, no letter form.
+2. ~~**Icon Composer or classic PNGs?**~~ Reversed 2026-08-28 by user decision —
+   **both**: the `.icon` bundle is what macOS 26 renders, the PNG set stays for
+   the macOS 14 floor and the README. Reasoning in
    [phase 1](./phase-01-decide-format-and-produce-artwork.md).
-3. **Who draws it?** Commission, generate, or hand-draw. Changes the timeline by
-   an order of magnitude but not the plan's shape.
+3. ~~**Who draws it?**~~ Resolved — the user supplied the concept; the artwork
+   is drawn parametrically by `Scripts/generate-icon-artwork.py`.
 4. Does the accent colour (`AccentColor.colorset`) need to move with the icon, or
-   stay as is? Currently out of scope; revisit if the new artwork clashes.
+   stay as is? **Still open.** Left untouched as the brief requires. The icon is
+   now warm orange, so this is worth a deliberate look in its own change.
 
 <!-- slug: skein-app-icon-artwork -->
