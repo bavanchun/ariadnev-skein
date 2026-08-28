@@ -1,12 +1,20 @@
 ---
 title: "Skein app icon artwork"
 description: "Replace Ice's blue cube AppIcon with Skein artwork, redraw SkeinMarkStroke to match, and decide whether to adopt Icon Composer alongside the classic PNG set."
-status: complete
+status: completed
 priority: P2
 effort: "closed 2026-08-28"
 tags: [rebrand, icons, artwork, design]
 created: 2026-07-28
 ---
+
+> **Record note.** Completed 2026-08-28 in
+> [#10](https://github.com/bavanchun/ariadnev-skein/pull/10) — `Skein/AppIcon.icon/`
+> (Icon Composer) plus a redrawn `SkeinMarkStroke`. Decision B in this plan (classic
+> `.appiconset` only) was overridden: the app now ships an Icon Composer bundle, and
+> on Xcode 26 `AppIcon.icon` supersedes the same-named `.appiconset`, which no longer
+> reaches the build. See open question 5 about deleting the dead PNG set.
+
 
 # Skein app icon artwork
 

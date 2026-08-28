@@ -1,12 +1,19 @@
 ---
 title: "Snowflake icon and Sparkle plist comments"
 description: "Replace the Ice-branded 'Ice Cube' menu bar icon option with a Snowflake SF Symbol, migrate the persisted icon setting, retire the IceCube asset, and document the three Sparkle keys in Info.plist."
-status: complete
+status: completed
 priority: P2
 effort: "3h"
 tags: [rebrand, icons, migration, sparkle]
 created: 2026-07-28
 ---
+
+> **Record note.** Shipped in `v1.1.0`. None of the boxes below were ever ticked,
+> so the file reads 0/26 while the work has been live for months. Verify in source
+> instead: `Skein/MenuBar/ControlItem/ControlItemImageSet.swift` defines
+> `case snowflake = "Snowflake"` and `snowflakeSkeinIcon`, and no `"Ice Cube"`
+> string remains. Do not read the checkboxes as outstanding work.
+
 
 # Snowflake icon and Sparkle plist comments
 

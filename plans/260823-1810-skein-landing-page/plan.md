@@ -1,12 +1,20 @@
 ---
 title: "Skein landing page — skein.ariadnev.com"
 description: "Cinematic scroll-driven landing page for Skein, first title in the ariadnev ecosystem, deployed on Cloudflare Pages under skein.ariadnev.com root."
-status: active
+status: in-progress
 priority: P2
 effort: "1–2 weeks (design + build), gated on artwork and content"
 tags: [landing, marketing, cloudflare-pages, astro, gsap]
 created: 2026-08-23
 ---
+
+> **Record note.** The live plan. Phase 1 (Astro skeleton, Cloudflare Pages preview)
+> and the static nine-scene shell with GSAP/ScrollTrigger/Lenis are merged or in
+> review — see [ariadnev-skein-web#1](https://github.com/bavanchun/ariadnev-skein-web/pull/1)
+> (merged) and [#2](https://github.com/bavanchun/ariadnev-skein-web/pull/2) (draft).
+> Remaining work is blocked on real product screenshots and on the DNS/Worker
+> cutover, which needs maintainer approval before `skein.ariadnev.com` moves.
+
 
 # Skein landing page
 

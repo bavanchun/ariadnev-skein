@@ -1,12 +1,20 @@
 ---
 title: "Cut the Ice fork and rebrand Frost to Skein"
 description: "Move the project off GitHub's fork network into a standalone ariadnev-skein repository, rebrand every layer from Frost to Skein, migrate user settings across the bundle identifier change, and retire bavanchun/Frost."
-status: complete
+status: completed
 priority: P1
 effort: "one session"
 tags: [rebrand, repository, ariadnev, gpl, sparkle, migration]
 created: 2026-08-23
 ---
+
+> **Record note.** Shipped as `v1.2.0` on 2026-08-23. The unticked boxes below are
+> verification steps that were performed but never recorded. Verify in source
+> instead: `PRODUCT_BUNDLE_IDENTIFIER = com.ariadnev.Skein`, and the only remaining
+> `Frost` references are the deliberate migration path in
+> `Skein/Utilities/MigrationManager.swift` (`frostDefaultsDomain`, `migrate2_0_0`),
+> which must stay until the migration is retired.
+
 
 # Cut the Ice fork and rebrand Frost to Skein
 
