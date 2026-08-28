@@ -195,6 +195,41 @@ SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Skein-*/SourcePackages/
 # Output: sparkle:edSignature="<sig>" length="<bytes>"
 ```
 
+### Step 4b — Build the DMG (website download only)
+
+The ZIP from Step 4 is what Sparkle downloads. The DMG is what a person
+downloads from `skein.ariadnev.com`. Both ship on the same release; they are
+not alternatives.
+
+```bash
+scripts/make-dmg.sh .release-output/sign/Skein.app
+# → .release-output/Skein-<version>.dmg, plus its size and sha256
+```
+
+The script stages `Skein.app` beside an `/Applications` symlink so the volume
+opens with something to drag into, names the volume `Skein <version>`, writes a
+compressed read-only image (`UDZO`), and codesigns the image with the same
+identity as the app.
+
+**Do not point the appcast enclosure at the DMG.** Sparkle would then have to
+mount a volume on every update instead of unpacking an archive, for no gain.
+Step 5's enclosure keeps referencing the ZIP.
+
+Verify before uploading:
+
+```bash
+hdiutil attach .release-output/Skein-<version>.dmg -nobrowse -readonly
+codesign --verify --verbose=2 "/Volumes/Skein <version>/Skein.app"
+hdiutil detach "/Volumes/Skein <version>"
+```
+
+> **This does not make the app distributable.** The build is signed with a free
+> Personal Team `Apple Development` certificate, so it runs only on Macs
+> registered to that Apple ID, and Gatekeeper blocks it elsewhere whether it
+> arrives as a ZIP or a DMG. Shipping to the public needs a paid Apple Developer
+> Program membership, a `Developer ID Application` certificate, and
+> notarization. The DMG is packaging, not distribution.
+
 ### Step 5 — Write `appcast.xml`
 
 Drop the signature + length from Step 4 into the enclosure:
