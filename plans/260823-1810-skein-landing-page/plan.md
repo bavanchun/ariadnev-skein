@@ -1,7 +1,7 @@
 ---
 title: "Skein landing page — skein.ariadnev.com"
 description: "Cinematic scroll-driven landing page for Skein, first title in the ariadnev ecosystem, deployed on Cloudflare Pages under skein.ariadnev.com root."
-status: proposed
+status: active
 priority: P2
 effort: "1–2 weeks (design + build), gated on artwork and content"
 tags: [landing, marketing, cloudflare-pages, astro, gsap]
