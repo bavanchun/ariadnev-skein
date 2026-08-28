@@ -8,6 +8,13 @@ tags: [rebrand, xcode, swift]
 created: 2026-07-27
 ---
 
+> **Record note.** Superseded. This plan renamed Ice-vc to *Frost*; the name no
+> longer exists — [`260823-1239-rebrand-frost-to-skein`](../260823-1239-rebrand-frost-to-skein/plan.md)
+> renamed Frost to Skein and shipped as `v1.2.0`. The unticked boxes below check
+> for the string "Frost" in the UI and are now meaningless; they are stale record,
+> not outstanding work. Kept for history only.
+
+
 # Rebrand Ice-vc to Frost
 
 ## Overview
