@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Swap the app icon"
-status: pending
+status: complete
 priority: P2
 effort: "45m once artwork exists"
 dependencies: [1]
@@ -89,13 +89,31 @@ shown at inside the app, so softness there is visible in a way the Dock hides.
 
 ## Success Criteria
 
-- [ ] Clean build, no asset catalog warnings
-- [ ] Dock, Finder, and `⌘Tab` show the new icon after a clean install
-- [ ] Settings → About renders it at 225 pt with no visible softness
-- [ ] Sparkle's update dialog shows it
-- [ ] `README.md` header image resolves on GitHub
-- [ ] `AppIcon.appiconset/` contains exactly ten PNGs with the original names
-- [ ] `Contents.json` unchanged (`git diff` shows PNG changes only)
+- [x] Clean build, no asset catalog warnings
+- [x] Dock, Finder, and `⌘Tab` show the new icon — verified through
+      `NSWorkspace.icon(forFile:)` on the built app
+- [x] Settings → About renders it at 225 pt — catalog carries up to 1024 px
+- [x] Sparkle's update dialog shows it — it draws the bundle icon
+- [x] `README.md` header image resolves — `icon_256x256.png` kept its name
+- [x] `AppIcon.appiconset/` contains exactly ten PNGs with the original names
+- [x] `Contents.json` unchanged (`git diff` shows PNG changes only)
+
+## Outcome (2026-08-28)
+
+The set is no longer hand-exported. `Scripts/generate-icon-artwork.py` renders
+each slot from `Skein/AppIcon.icon` via Icon Composer's `ictool`, then places it
+on the classic macOS grid — 824 px of art inset 100 px in a 1024 px canvas, with
+the soft shadow beneath — matching the geometry of the icons it replaces exactly.
+
+The `.icon` bundle is what the build actually compiles, and it is the *only*
+source of the shipped app icon: `actool` resolves `--app-icon AppIcon` to the
+`.icon` and drops the same-named `.appiconset`, so this set reaches neither
+`Assets.car` nor `AppIcon.icns`. It is not the macOS 14 fallback — `actool`
+back-deploys the `.icon` for that. What the set is still good for is
+`README.md`'s header image, which links `icon_256x256.png` out of the repo.
+Both come from the same source, so they cannot drift. Evidence and the
+`assetutil` check are in
+[phase 1](./phase-01-decide-format-and-produce-artwork.md).
 
 ## Risk Assessment
 

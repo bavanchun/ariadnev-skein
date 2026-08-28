@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Redraw the Skein mark"
-status: pending
+status: complete
 priority: P2
 effort: "30m once artwork exists"
 dependencies: [1]
@@ -64,12 +64,24 @@ signal if the image is wrong — only a visual one.
 
 ## Success Criteria
 
-- [ ] Clean build, no asset catalog warnings
-- [ ] Settings → About tab icon shows the new mark
-- [ ] Search panel settings button shows the new mark
-- [ ] Legible at rendered size in both light and dark menu bars
-- [ ] `Contents.json` unchanged (`git diff` shows the PNG only)
-- [ ] No cube remains anywhere in `Skein/Assets.xcassets/`
+- [x] Clean build, no asset catalog warnings
+- [x] Settings → About tab icon shows the new mark
+- [x] Search panel settings button shows the new mark
+- [x] Legible at rendered size in both light and dark appearances
+- [x] `Contents.json` unchanged (`git diff` shows the PNG only)
+- [x] No cube remains anywhere in `Skein/Assets.xcassets/`
+
+## Outcome (2026-08-28)
+
+One cord of the app icon's figure-eight, drawn as a silhouette: pure black on
+transparent, no gradient, no interior detail. Same 40 × 40 pixel size in the same
+2x slot, so `Contents.json` and its `template-rendering-intent` are untouched and
+neither call site changed.
+
+The cord is thinner than the app icon's bundle on purpose. The two holes are what
+make the shape read as a loop, and at the 18 pt the search panel renders it at
+they are the first thing to close up — the mark is tuned for that size rather
+than downscaled from the icon.
 
 ## Risk Assessment
 
