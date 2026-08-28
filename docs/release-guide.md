@@ -202,7 +202,7 @@ downloads from `skein.ariadnev.com`. Both ship on the same release; they are
 not alternatives.
 
 ```bash
-scripts/make-dmg.sh .release-output/sign/Skein.app
+Scripts/make-dmg.sh .release-output/sign/Skein.app
 # → .release-output/Skein-<version>.dmg, plus its size and sha256
 ```
 
