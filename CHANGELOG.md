@@ -4,6 +4,16 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-28
+
+### Changed
+
+- Skein has its own app icon: a rope tied into an infinity loop on a warm orange field, drawn in Icon Composer so macOS 26 renders it with the system's own material, lighting, and dark and tinted variants. The About tab and search panel mark are redrawn from the same figure. This replaces the last artwork inherited from Ice.
+
+### Added
+
+- `Scripts/make-dmg.sh` builds a disk image for the website download, staging the app beside an `/Applications` shortcut. Sparkle continues to update from the ZIP, so the update feed is unchanged.
+
 ## [1.2.0] - 2026-08-23
 
 ### Changed
