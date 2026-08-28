@@ -6,10 +6,16 @@ thread coiled into a loop with no end.
 
 This script owns three outputs:
 
-  Skein/AppIcon.icon/Assets/rope.svg   the layer Icon Composer composites
+  Skein/AppIcon.icon/Assets/rope.svg   the layer Icon Composer composites —
+                                       the only source of the shipped app icon
   Skein/Assets.xcassets/AppIcon.appiconset/*.png
-                                       the classic PNG set, for the macOS 14
-                                       floor and for README.md's header image
+                                       the classic PNG set. NOT the macOS 14
+                                       fallback: actool resolves --app-icon
+                                       AppIcon to the .icon and drops this set
+                                       entirely, back-deploying the .icon to
+                                       AppIcon.icns itself. The set survives
+                                       only as README.md's header image, which
+                                       links icon_256x256.png out of the repo.
   Skein/Assets.xcassets/SkeinMarkStroke.imageset/SkeinMarkStroke.png
                                        the single-colour template mark
 

@@ -66,7 +66,7 @@ Both artifacts ship:
 | Artifact | Serves |
 |---|---|
 | `Skein/AppIcon.icon` | macOS 26 — native material, specular, shadow, and the automatic dark / tinted / clear renditions |
-| `Skein/Assets.xcassets/AppIcon.appiconset` | the macOS 14 floor, and `README.md`'s header image |
+| `Skein/Assets.xcassets/AppIcon.appiconset` | `README.md`'s header image only — it does **not** reach the built app; see below |
 
 Two facts were established by testing the toolchain rather than assumed:
 
@@ -79,13 +79,36 @@ Two facts were established by testing the toolchain rather than assumed:
   `--minimum-deployment-target 14.0` emits `AppIcon.icns` plus an `Assets.car`
   carrying the same `MultiSized Image` / `Icon Image` types the old
   `.appiconset` produced, and the built `Info.plist` gets both
-  `CFBundleIconName` and `CFBundleIconFile`. The PNG set is kept as the brief
-  requires; it is a second belt rather than the only one.
+  `CFBundleIconName` and `CFBundleIconFile`.
 
-Where both exist under the name `AppIcon`, the `.icon` wins — verified by
-inspecting the compiled `Assets.car`, which contains `AppIcon_Assets/rope`. The
-ambiguity is harmless because both sources are generated from the same artwork
-by `Scripts/generate-icon-artwork.py`.
+Where both exist under the name `AppIcon`, the `.icon` wins and the
+`.appiconset` is **dropped entirely** — it is not a second belt, and it is not
+what carries the macOS 14 floor. `actool` back-deploys the `.icon` itself, as
+above.
+
+Corrected 2026-08-28. The brief that opened this stream called the PNG set
+mandatory *because* `MACOSX_DEPLOYMENT_TARGET = 14.0`. That premise is wrong on
+Xcode 26 — the deployment floor is covered by the `.icon` with no PNG set
+present. Recorded here so the reasoning is not re-derived from the brief.
+
+Reproduce on the built app:
+
+```sh
+xcodebuild build -project Skein.xcodeproj -scheme Skein -configuration Release \
+  -derivedDataPath /tmp/dd CODE_SIGNING_ALLOWED=NO
+xcrun --sdk macosx assetutil --info \
+  /tmp/dd/Build/Products/Release/Skein.app/Contents/Resources/Assets.car \
+  | grep -i appicon
+```
+
+The catalog lists `AppIcon`, `AppIcon/Rope` and `AppIcon_Assets/*` — every one
+of them from the `.icon`. None of the ten PNG filenames appear. Editing a PNG
+and rebuilding leaves `Contents/Resources/AppIcon.icns` byte-identical, which is
+the same fact from the other direction.
+
+**Deleting the PNG set is deliberately out of scope here.** It would need
+checking against a real macOS 14 machine first, and `README.md:2` links
+`icon_256x256.png` straight out of the repo, so removal is a separate change.
 
 ## Requirements
 

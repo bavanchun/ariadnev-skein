@@ -105,9 +105,15 @@ each slot from `Skein/AppIcon.icon` via Icon Composer's `ictool`, then places it
 on the classic macOS grid — 824 px of art inset 100 px in a 1024 px canvas, with
 the soft shadow beneath — matching the geometry of the icons it replaces exactly.
 
-The `.icon` bundle is what the build actually compiles; this set is the macOS 14
-belt-and-braces and the README's header image. Both come from the same source,
-so they cannot drift.
+The `.icon` bundle is what the build actually compiles, and it is the *only*
+source of the shipped app icon: `actool` resolves `--app-icon AppIcon` to the
+`.icon` and drops the same-named `.appiconset`, so this set reaches neither
+`Assets.car` nor `AppIcon.icns`. It is not the macOS 14 fallback — `actool`
+back-deploys the `.icon` for that. What the set is still good for is
+`README.md`'s header image, which links `icon_256x256.png` out of the repo.
+Both come from the same source, so they cannot drift. Evidence and the
+`assetutil` check are in
+[phase 1](./phase-01-decide-format-and-produce-artwork.md).
 
 ## Risk Assessment
 

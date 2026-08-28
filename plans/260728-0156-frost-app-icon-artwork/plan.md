@@ -124,13 +124,20 @@ The manual checks in Success Criteria are what catch it.
    [`reference-concept.png`](./reference-concept.png). A skein of thread with no
    end; no snowflake, no cube, no letter form.
 2. ~~**Icon Composer or classic PNGs?**~~ Reversed 2026-08-28 by user decision —
-   **both**: the `.icon` bundle is what macOS 26 renders, the PNG set stays for
-   the macOS 14 floor and the README. Reasoning in
+   **both** are committed, but only the `.icon` ships. `actool` drops the
+   same-named `.appiconset` and back-deploys the `.icon` to `AppIcon.icns`
+   itself, so the PNG set is not the macOS 14 floor; it survives as the
+   README's header image. Evidence and the `assetutil` check in
    [phase 1](./phase-01-decide-format-and-produce-artwork.md).
 3. ~~**Who draws it?**~~ Resolved — the user supplied the concept; the artwork
    is drawn parametrically by `Scripts/generate-icon-artwork.py`.
 4. Does the accent colour (`AccentColor.colorset`) need to move with the icon, or
    stay as is? **Still open.** Left untouched as the brief requires. The icon is
    now warm orange, so this is worth a deliberate look in its own change.
+5. **Should `AppIcon.appiconset` be deleted?** Opened 2026-08-28. It is dead
+   code as far as the built app is concerned — `actool` drops it in favour of
+   the `.icon`. Deleting it would also drop `README.md`'s header image, and the
+   back-deploy behaviour should be confirmed on a real macOS 14 machine before
+   relying on it. Out of scope for the icon PR; its own change.
 
 <!-- slug: skein-app-icon-artwork -->
