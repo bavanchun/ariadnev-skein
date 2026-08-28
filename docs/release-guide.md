@@ -223,12 +223,14 @@ codesign --verify --verbose=2 "/Volumes/Skein <version>/Skein.app"
 hdiutil detach "/Volumes/Skein <version>"
 ```
 
-> **This does not make the app distributable.** The build is signed with a free
-> Personal Team `Apple Development` certificate, so it runs only on Macs
-> registered to that Apple ID, and Gatekeeper blocks it elsewhere whether it
-> arrives as a ZIP or a DMG. Shipping to the public needs a paid Apple Developer
-> Program membership, a `Developer ID Application` certificate, and
-> notarization. The DMG is packaging, not distribution.
+> **The DMG does not remove the Gatekeeper prompt.** The build is signed with a
+> free Personal Team `Apple Development` certificate and is not notarized, so
+> the first launch on someone else's Mac is blocked until they right-click →
+> Open or clear the quarantine flag — the same either way, ZIP or DMG. The app
+> itself runs anywhere: it embeds no provisioning profile, so there is no
+> device-registration limit. Removing the prompt entirely needs a paid Apple
+> Developer Program membership, a `Developer ID Application` certificate, and
+> notarization.
 
 ### Step 5 — Write `appcast.xml`
 
@@ -352,6 +354,6 @@ If missing, regenerate through Xcode Accounts → team → "Manage Certificates"
 - **Appcast must be on the latest release.** GitHub's `releases/latest/download/<file>` only resolves assets on the most recent published release.
 - **Bundle ID conflict.** If upstream `com.jordanbaird.Ice` is also installed, both apps share UserDefaults + keychain. Fork uses `com.ariadnev.Skein` to avoid this — do not revert.
 - **Private key safety.** `~/.config/skein/sparkle-private-ed25519-key` is the only offline backup of the Sparkle signing key. If lost, all future updates require shipping a new `SUPublicEDKey` (forces a manual reinstall, breaking auto-update).
-- **Personal Team non-distributability.** Apps signed with the free Personal Team cert run only on Macs registered to the same Apple ID. Notarization requires a paid Apple Developer Program membership.
+- **Personal Team signing, not distribution signing.** The `Apple Development` cert is not `Developer ID Application`, so the build is not notarized and Gatekeeper blocks the first launch on another Mac until the user right-clicks → Open or clears quarantine. The app embeds no provisioning profile, so it is not limited to registered devices. Notarization requires a paid Apple Developer Program membership.
 - **`xcodebuild archive` cannot sign this app on a free Personal Team.** Confirmed across automatic and manual signing styles on Xcode 26.6 — always falls back to `xcodebuild build` (unsigned) + manual `codesign`. Do not spend time retrying archive-based signing flags on a fresh Personal Team; go straight to the unsigned-build path.
 - **Sign nested bundles before the outer one.** `codesign` on `Skein.app` alone does not re-sign `Sparkle.framework`'s nested `Updater.app`/`Downloader.xpc`/`Installer.xpc` — each needs its own `codesign` call, innermost first, or the outer signature's sealed resources will mismatch and `codesign --verify` fails.
