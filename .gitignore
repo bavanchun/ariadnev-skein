@@ -3,3 +3,6 @@ build/
 xcuserdata/
 .release-output/
 .ci-output/
+
+# ariadnev CLI per-branch plan pointer (local workflow state)
+.ariadnev/
