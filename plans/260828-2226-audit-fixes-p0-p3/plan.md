@@ -1,7 +1,7 @@
 ---
 title: "Audit fixes P0-P3 — three-release ship train"
 description: "Ship the P0/P1/P2/P3 findings from plans/reports/antigravity-260828-2201-project-audit.md as three sequential releases (v1.2.2 patch → v1.3.0 minor → v1.4.0 minor). Claude Code is the project manager and reviewer; agy (Antigravity CLI) executes each phase as the coder."
-status: pending
+status: in-progress
 priority: P1
 effort: "5-7 days total across ~2 weeks calendar"
 branch: main
@@ -22,7 +22,7 @@ Claude Code (this session) is the project manager: it delegates one phase at a t
 
 | # | Goal | Priority | Release |
 |---|------|----------|---------|
-| 1 | Fix 3 HIGH defects (memory leak, loop break, slice crash) and correct About URL; update AccentColor to rope orange | P0 | v1.2.2 |
+| 1 | Fix 3 HIGH defects (memory leak, loop break, slice crash) and correct About URL; update AccentColor to rope orange | P0 | **completed** |
 | 2 | Ship landing page (finalize PR #2, capture real screenshots, verify Frost→Skein install migration) | P1 | v1.3.0 window |
 | 3 | Fix documentation drift, prune 16.4 MB of dead upstream Ice assets, backfill 50 stale plan checkboxes | P1 | v1.3.0 |
 | 4 | Cherry-port HIDEventManager + sourcePID resolution from `upstream/macos-26` to fix macOS 15+ click drops | P2 | v1.4.0 |
