@@ -997,9 +997,10 @@ Current documentation files:
 
 ```text
 docs/
-├── DEVELOPMENT_WORKFLOW.md   this document: process rules
-├── release-guide.md          release mechanics: build, signing, Sparkle, publish
-└── UPSTREAM.md               upstream Ice relationship and sync state
+├── DEVELOPMENT_WORKFLOW.md      this document: process rules
+├── release-guide.md             release mechanics: build, signing, Sparkle, publish
+├── upgrade-frost-to-skein.md    user-facing upgrade path from the Frost bundle identifier
+└── UPSTREAM.md                  upstream Ice relationship and sync state
 ```
 
 Additional documents are created when a real need appears, not in advance.

@@ -1,20 +1,30 @@
 ---
 title: "Skein landing page — skein.ariadnev.com"
 description: "Cinematic scroll-driven landing page for Skein, first title in the ariadnev ecosystem, deployed on Cloudflare Pages under skein.ariadnev.com root."
-status: in-progress
+status: cancelled
 priority: P2
 effort: "1–2 weeks (design + build), gated on artwork and content"
 tags: [landing, marketing, cloudflare-pages, astro, gsap]
 created: 2026-08-23
 blockedBy: [260828-2226-audit-fixes-p0-p3]
+superseded-by: 260828-2226-audit-fixes-p0-p3/phase-02
 ---
 
-> **Record note.** The live plan. Phase 1 (Astro skeleton, Cloudflare Pages preview)
-> and the static nine-scene shell with GSAP/ScrollTrigger/Lenis are merged or in
-> review — see [ariadnev-skein-web#1](https://github.com/bavanchun/ariadnev-skein-web/pull/1)
+> **Record note.** Superseded 2026-09-05. This plan no longer runs as its own
+> unit; its remaining scope moved to
+> [`260828-2226-audit-fixes-p0-p3/phase-02`](../260828-2226-audit-fixes-p0-p3/phase-02-p1a-landing-ship.md),
+> which now owns shipping the landing page. What already shipped stays shipped:
+> Phase 1 (Astro skeleton, Cloudflare Pages preview) and the static nine-scene
+> shell with GSAP/ScrollTrigger/Lenis — see
+> [ariadnev-skein-web#1](https://github.com/bavanchun/ariadnev-skein-web/pull/1)
 > (merged) and [#2](https://github.com/bavanchun/ariadnev-skein-web/pull/2) (draft).
-> Remaining work is blocked on real product screenshots and on the DNS/Worker
-> cutover, which needs maintainer approval before `skein.ariadnev.com` moves.
+> What is left is unchanged and still blocked on real product screenshots and on
+> the DNS/Worker cutover, which needs maintainer approval before
+> `skein.ariadnev.com` moves.
+>
+> The status reads `cancelled` because that is the only value `av plan status`
+> accepts for "closed, not completed" — the landing page has not shipped. Read it
+> as superseded, per `superseded-by` above.
 
 
 # Skein landing page

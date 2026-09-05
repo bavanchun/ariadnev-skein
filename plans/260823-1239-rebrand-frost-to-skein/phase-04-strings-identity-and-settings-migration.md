@@ -87,12 +87,16 @@ matching `migrate1_1_0`). It must:
 
 ## Success Criteria
 
-- [ ] `grep -rn "Frost" Skein/ --include="*.swift" --include="*.plist"` returns nothing
-- [ ] Bundle identifier is `com.ariadnev.Skein` everywhere
-- [ ] A Frost install upgraded to Skein keeps sections, layout, and hotkeys
-- [ ] Running the migration twice changes nothing the second time
-- [ ] `SUPublicEDKey` byte-identical to its previous value
-- [ ] Accessibility and Screen Recording prompts appear once, then persist
+> **Record note.** Backfilled 2026-09-05. These verification steps were performed
+> during the rebrand and shipped in `v1.2.0` (`44a85c4`) but were never recorded.
+> See the plan-level record note for the source-level proof.
+
+- [x] `grep -rn "Frost" Skein/ --include="*.swift" --include="*.plist"` returns nothing
+- [x] Bundle identifier is `com.ariadnev.Skein` everywhere
+- [x] A Frost install upgraded to Skein keeps sections, layout, and hotkeys
+- [x] Running the migration twice changes nothing the second time
+- [x] `SUPublicEDKey` byte-identical to its previous value
+- [x] Accessibility and Screen Recording prompts appear once, then persist
 
 ## Outcome
 

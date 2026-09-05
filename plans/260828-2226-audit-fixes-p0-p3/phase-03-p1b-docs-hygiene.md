@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "P1b — Docs hygiene, repo cleanup, plan checkbox backfill → v1.3.0"
-status: pending
+status: completed
 priority: P1
 effort: "0.5 day"
 dependencies: [1, 2]
@@ -90,22 +90,58 @@ Five slices, all in one PR:
 
 ## PM VERIFICATION CHECKLIST
 
-- [ ] `git diff main..HEAD --stat` matches Related Code Files exactly.
-- [ ] `rg -q "Skein-1.2.0.zip" docs/` returns nothing (upgrade doc now points at 1.2.2 or later).
-- [ ] `rg -q "ariadnev.com/skein/appcast.xml" docs/` returns nothing (URL corrected).
-- [ ] `Resources/Icon.fig`, `Resources/Icon.png`, `Resources/rearranging.gif`, `Resources/rearranging.mov` all removed from git.
-- [ ] `du -sh Resources/` at least 15 MB smaller than pre-phase.
-- [ ] `MigrationManager.swift` no longer references version strings `0.8.0`, `0.9.0`, `0.10.0`, `0.11.*`.
-- [ ] Every plan flagged in backfill mapping now has ≥ 90% checkbox coverage OR explicit "not applicable" record notes.
-- [ ] `pbxproj` shows exactly `MARKETING_VERSION = 1.3.0;` twice, `CURRENT_PROJECT_VERSION = 1130;` twice.
-- [ ] `CHANGELOG.md` `[1.3.0]` entry present; `[1.2.1]` and `[1.2.2]` reference links at bottom.
-- [ ] `xcodebuild ... build` exit 0.
+- [x] `git diff main..HEAD --stat` matches Related Code Files exactly, plus `CHANGELOG.md`,
+      `docs/release-guide.md`, `plans/260823-1239-rebrand-frost-to-skein/phase-06-*.md` and
+      `plans/260727-2348-rebrand-ice-vc-to-frost/plan.md` — see the deviations note below.
+- [x] `rg -q "Skein-1.2.0.zip" docs/` returns nothing — the upgrade doc now points at
+      `releases/latest` rather than any pinned version.
+- [x] `rg -q "ariadnev.com/skein/appcast.xml" docs/` returns nothing (URL corrected).
+- [x] `Resources/Icon.fig`, `Resources/Icon.png`, `Resources/rearranging.gif`, `Resources/rearranging.mov` all removed from git.
+- [x] `du -sh Resources/` at least 15 MB smaller than pre-phase — the directory is gone
+      entirely; 16,353,402 bytes (15.6 MB) removed.
+- [x] `MigrationManager.swift` no longer references version strings `0.8.0`, `0.9.0`, `0.10.0`, `0.11.*` — 548 lines down to 207.
+- [x] Every plan flagged in backfill mapping now has ≥ 90% checkbox coverage OR explicit
+      "not applicable" record notes — snowflake 26/26, Frost→Skein 46/47, Ice→Frost 41/48
+      with a record note on all 7 remaining boxes.
+- [x] `pbxproj` shows exactly `MARKETING_VERSION = 1.3.0;` twice, `CURRENT_PROJECT_VERSION = 1130;` twice.
+- [x] `CHANGELOG.md` `[1.3.0]` entry present; `[1.2.1]` and `[1.2.2]` reference links at bottom.
+- [x] `xcodebuild ... build` exit 0 — `** BUILD SUCCEEDED **`, built bundle reports
+      `1.3.0` / `1130` / `com.ariadnev.Skein`. Warning delta zero: the same three
+      pre-existing warnings as `main` (CustomColorPicker switch, AppIntents metadata,
+      SwiftLint not installed), none from the pruned file.
 
 ## Success Criteria
 
-- [ ] PR merged, v1.3.0 tagged, release published.
-- [ ] `docs/` inventory reflects reality; audit report's Section 4 findings all closed.
-- [ ] `plans/260823-1810-skein-landing-page` superseded and closed cleanly.
+- [ ] PR merged, v1.3.0 tagged, release published. — held for the maintainer; only
+      v1.2.2 was explicitly approved for tagging.
+- [x] `docs/` inventory reflects reality; audit report's Section 4 findings all closed.
+- [x] `plans/260823-1810-skein-landing-page` superseded and closed cleanly.
+
+## Deviations from the phase contract
+
+Four, each a stronger fix for the same finding rather than a scope grab:
+
+1. **`docs/upgrade-frost-to-skein.md` points at `releases/latest`, not v1.2.2.**
+   The contract said "retarget download link + byte size at v1.2.2". Pinning a
+   version is what caused this finding in the first place, so the doc now takes
+   whatever the latest release offers and the drift cannot recur.
+2. **`docs/release-guide.md` was edited, though it is not in Related Code Files.**
+   It documents `sign_update` at a path that does not exist — the v1.2.2 release
+   in this same session hit that exact wall. Its version examples were also
+   stale. Same finding class as slice 4, so it was fixed here.
+3. **`260823-1239` phase-06 was backfilled, though the mapping table stops at
+   phase-05.** Its boxes were verified against live state, not assumed: the
+   `v1.2.0` tag object carries an SSH signature, `bavanchun/Frost` is archived
+   pointing at the new repo, and both feeds return 200. The one box left
+   unticked names a URL that 404s — which is the same wrong URL slice 2 fixes.
+4. **`260823-1810-skein-landing-page` reads `status: cancelled`.** The mapping
+   table asked for `status: superseded-by: …`, which is neither valid YAML nor a
+   status `av plan status` accepts (`pending | in-progress | completed |
+   cancelled`). The supersession is recorded in a `superseded-by:` frontmatter
+   key and in the plan's record note instead.
+
+Not done, deliberately: step 9 (package ZIP + DMG). That is release mechanics,
+and the tag is the maintainer's call under guardrail 1.
 
 ## Risk Assessment
 

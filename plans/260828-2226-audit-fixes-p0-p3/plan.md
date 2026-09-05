@@ -24,7 +24,7 @@ Claude Code (this session) is the project manager: it delegates one phase at a t
 |---|------|----------|---------|
 | 1 | Fix 3 HIGH defects (memory leak, loop break, slice crash) and correct About URL; update AccentColor to rope orange | P0 | **completed** |
 | 2 | Ship landing page (finalize PR #2, capture real screenshots, verify Frost→Skein install migration) | P1 | v1.3.0 window |
-| 3 | Fix documentation drift, prune 16.4 MB of dead upstream Ice assets, backfill 50 stale plan checkboxes | P1 | v1.3.0 |
+| 3 | Fix documentation drift, prune 16.4 MB of dead upstream Ice assets, backfill 50 stale plan checkboxes | P1 | **completed** |
 | 4 | Cherry-port HIDEventManager + sourcePID resolution from `upstream/macos-26` to fix macOS 15+ click drops | P2 | v1.4.0 |
 | 5 | Cherry-port XPC MenuBarItemService from `upstream/macos-26` to remove main-thread beachball risk | P3 | v1.4.0 |
 

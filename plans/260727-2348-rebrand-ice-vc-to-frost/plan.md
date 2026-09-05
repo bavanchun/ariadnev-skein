@@ -65,11 +65,13 @@ Each phase ends with its own build/verify gate. A failure in one phase does not 
 - [x] `grep -rniE '\bice\b' Frost/ --include="*.swift"` returns zero matches except intentional GPL-derived comments (if any remain, they must be justified, not accidental)
 - [x] App launches and bundle ID is `com.vchun.Frost`; macOS registers it as "Frost"
 - [ ] Settings/About/menu bar context menu visually confirmed to display "Frost" (blocked until permissions are granted)
+      — Record: not applicable — superseded by Frost→Skein rebrand
 - [x] `LICENSE` contains both original Jordan Baird notices verbatim (required) and the user's own Frost fork copyright line beneath each
 - [x] GitHub repo lives at `bavanchun/Frost`; local `git remote -v` matches
 - [x] A full signed release (unsigned build + manual codesign inside-out) succeeds with the new bundle ID and produces a launchable `/Applications/Frost.app`
 - [x] Old `/Applications/Ice.app` removed
 - [ ] Accessibility + Screen Recording permissions re-granted to the new bundle ID (manual GUI step — pending user)
+      — Record: not applicable — superseded by Frost→Skein rebrand
 
 ## Unresolved Questions
 

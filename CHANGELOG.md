@@ -4,6 +4,22 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-05
+
+No app behavior changed in this release. It exists to record a documentation and
+repository cleanup that had accumulated across the Ice → Frost → Skein renames.
+
+### Changed
+
+- Documentation now matches reality: the upstream lineage table records the Skein bundle identifier from 1.2.0 rather than a 2.0.0 that never shipped, the Sparkle feed address is written as `https://skein.ariadnev.com/appcast.xml` everywhere, the upgrade guide points at whatever release is current instead of a pinned old one, the two issue numbers in `FREQUENT_ISSUES.md` are labelled as upstream Ice issues, and the docs inventory lists every file in `docs/`.
+- The release guide's `sign_update` path now points into `.release-output/DerivedData`, where the release build actually puts Sparkle's tools.
+
+### Removed
+
+- 16 MB of unreferenced design assets inherited from Ice: `Resources/Icon.fig`, `Resources/Icon.png`, `Resources/rearranging.gif`, and `Resources/rearranging.mov`. Nothing in the app or the README referenced them.
+- `Skein/Resources/Acknowledgements.rtf`, superseded by the PDF the About pane actually loads.
+- Migration code for Ice 0.8.0 through 0.11.10. Skein reads preferences under `com.ariadnev.Skein`, a domain that has only ever existed since 1.2.0, so those branches could never fire. One of them logged an error on every launch because its guard could not be satisfied; that noise is gone with it.
+
 ## [1.2.2] - 2026-09-05
 
 ### Fixed
@@ -88,7 +104,8 @@ macOS ties Accessibility and Screen Recording to an app's bundle identifier, so 
 
 Releases before this fork are documented in [jordanbaird/Ice](https://github.com/jordanbaird/Ice/releases).
 
-[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.1.0...v1.2.0
