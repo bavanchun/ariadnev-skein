@@ -12,13 +12,47 @@
 		1787C4272B16890B002F50DF /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1787C4262B16890B002F50DF /* AXSwift */; };
 		17F71BB52B880B4500905CBA /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 17F71BB42B880B4500905CBA /* CompactSlider */; };
 		7127A9FF2C4886D100D99DEF /* IfritStatic in Frameworks */ = {isa = PBXBuildFile; productRef = 7127A9FE2C4886D100D99DEF /* IfritStatic */; };
+		17403C6C1F6E46A29EC0066F /* MenuBarItemService.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 41BECD8899FC43438C235323 /* MenuBarItemService.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A2E3BDF4F586447FAB838961 /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11F59CB33BD545A1BA4169E6 /* AXSwift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D0B565F7169B4E49B910F296 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 716683222A767E6A006ABF84 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 049D6471177F41EFA5512ECA;
+			remoteInfo = MenuBarItemService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BA630B0836FD4356B9BBC613 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				17403C6C1F6E46A29EC0066F /* MenuBarItemService.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7166832A2A767E6A006ABF84 /* Skein.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skein.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		41BECD8899FC43438C235323 /* MenuBarItemService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = MenuBarItemService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E906C69D7909407B81D166CA /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 049D6471177F41EFA5512ECA /* MenuBarItemService */;
+		};
 		71BDFC6C2C978E2A00EF145F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -30,6 +64,8 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		71BDFBE12C978E2A00EF145F /* Skein */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (71BDFC6C2C978E2A00EF145F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Skein; sourceTree = "<group>"; };
+		FF7522CBE1A84267820BAC1B /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		B202484ED3F84ABA89D2255B /* MenuBarItemService */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (E906C69D7909407B81D166CA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MenuBarItemService; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,13 +81,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4E5302242E1408EAC6B5085 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2E3BDF4F586447FAB838961 /* AXSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		716683212A767E6A006ABF84 = {
 			isa = PBXGroup;
 			children = (
+				FF7522CBE1A84267820BAC1B /* Shared */,
 				71BDFBE12C978E2A00EF145F /* Skein */,
+				B202484ED3F84ABA89D2255B /* MenuBarItemService */,
 				7166832B2A767E6A006ABF84 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				7166832A2A767E6A006ABF84 /* Skein.app */,
+				41BECD8899FC43438C235323 /* MenuBarItemService.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,12 +122,15 @@
 				716683272A767E6A006ABF84 /* Frameworks */,
 				716683282A767E6A006ABF84 /* Resources */,
 				1720D48F2BB9B60500A7AC63 /* SwiftLint */,
+				BA630B0836FD4356B9BBC613 /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4EFC88F18BEB470287F5167E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				FF7522CBE1A84267820BAC1B /* Shared */,
 				71BDFBE12C978E2A00EF145F /* Skein */,
 			);
 			name = Skein;
@@ -95,6 +145,30 @@
 			productReference = 7166832A2A767E6A006ABF84 /* Skein.app */;
 			productType = "com.apple.product-type.application";
 		};
+		049D6471177F41EFA5512ECA /* MenuBarItemService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDB62888632C4B35AA0D2B62 /* Build configuration list for PBXNativeTarget "MenuBarItemService" */;
+			buildPhases = (
+				71B752E3997E4A8399DC3366 /* Sources */,
+				B4E5302242E1408EAC6B5085 /* Frameworks */,
+				63C70036FBFB43968FC086E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B202484ED3F84ABA89D2255B /* MenuBarItemService */,
+				FF7522CBE1A84267820BAC1B /* Shared */,
+			);
+			name = MenuBarItemService;
+			packageProductDependencies = (
+				11F59CB33BD545A1BA4169E6 /* AXSwift */,
+			);
+			productName = MenuBarItemService;
+			productReference = 41BECD8899FC43438C235323 /* MenuBarItemService.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -107,6 +181,9 @@
 				TargetAttributes = {
 					716683292A767E6A006ABF84 = {
 						CreatedOnToolsVersion = 14.3.1;
+					};
+					049D6471177F41EFA5512ECA = {
+						CreatedOnToolsVersion = 26.0;
 					};
 				};
 			};
@@ -131,12 +208,20 @@
 			projectRoot = "";
 			targets = (
 				716683292A767E6A006ABF84 /* Skein */,
+				049D6471177F41EFA5512ECA /* MenuBarItemService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		716683282A767E6A006ABF84 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63C70036FBFB43968FC086E9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -175,7 +260,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		71B752E3997E4A8399DC3366 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4EFC88F18BEB470287F5167E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 049D6471177F41EFA5512ECA /* MenuBarItemService */;
+			targetProxy = D0B565F7169B4E49B910F296 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		716683372A767E6B006ABF84 /* Debug */ = {
@@ -363,6 +463,57 @@
 			};
 			name = Release;
 		};
+		0619B917A05B41CFAE11249D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MenuBarItemService/Resources/Info.plist;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariadnev.Skein.MenuBarItemService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A9B72568B9024D418415052F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MenuBarItemService/Resources/Info.plist;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ariadnev.Skein.MenuBarItemService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -380,6 +531,15 @@
 			buildConfigurations = (
 				7166833A2A767E6B006ABF84 /* Debug */,
 				7166833B2A767E6B006ABF84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDB62888632C4B35AA0D2B62 /* Build configuration list for PBXNativeTarget "MenuBarItemService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0619B917A05B41CFAE11249D /* Debug */,
+				A9B72568B9024D418415052F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -454,6 +614,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7127A9FB2C4881BC00D99DEF /* XCRemoteSwiftPackageReference "Ifrit" */;
 			productName = IfritStatic;
+		};
+		11F59CB33BD545A1BA4169E6 /* AXSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1787C4252B16890B002F50DF /* XCRemoteSwiftPackageReference "AXSwift" */;
+			productName = AXSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

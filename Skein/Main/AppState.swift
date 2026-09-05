@@ -182,6 +182,11 @@ final class AppState: ObservableObject {
         configureCancellables()
         permissionsManager.stopAllChecks()
         menuBarManager.performSetup()
+        if #available(macOS 26.0, *) {
+            Task {
+                await MenuBarItemService.Connection.shared.start()
+            }
+        }
         appearanceManager.performSetup()
         eventManager.performSetup()
         settingsManager.performSetup()

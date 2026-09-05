@@ -173,49 +173,51 @@ final class MenuBarManager: ObservableObject {
                     return
                 }
 
-                if sections.contains(where: { $0.controlItem.state == .showItems }) {
-                    guard let screen = NSScreen.main else {
-                        return
-                    }
+                Task {
+                    if self.sections.contains(where: { $0.controlItem.state == .showItems }) {
+                        guard let screen = NSScreen.main else {
+                            return
+                        }
 
-                    let displayID = screen.displayID
+                        let displayID = screen.displayID
 
-                    // Get the application menu frame for the display.
-                    guard let applicationMenuFrame = getApplicationMenuFrame(for: displayID) else {
-                        return
-                    }
+                        // Get the application menu frame for the display.
+                        guard let applicationMenuFrame = self.getApplicationMenuFrame(for: displayID) else {
+                            return
+                        }
 
-                    // Get all items.
-                    var items = MenuBarItem.getMenuBarItems(on: displayID, onScreenOnly: false, activeSpaceOnly: true)
+                        // Get all items.
+                        var items = await MenuBarItem.getMenuBarItems(on: displayID, onScreenOnly: false, activeSpaceOnly: true)
 
-                    // Filter the items down according to the currently enabled/shown sections.
-                    if
-                        let alwaysHiddenSection = section(withName: .alwaysHidden),
-                        alwaysHiddenSection.isEnabled
-                    {
-                        if alwaysHiddenSection.controlItem.state == .hideItems {
-                            if let alwaysHiddenControlItem = items.firstIndex(matching: .alwaysHiddenControlItem).map({ items.remove(at: $0) }) {
-                                items.trimPrefix { $0.frame.maxX <= alwaysHiddenControlItem.frame.minX }
+                        // Filter the items down according to the currently enabled/shown sections.
+                        if
+                            let alwaysHiddenSection = self.section(withName: .alwaysHidden),
+                            alwaysHiddenSection.isEnabled
+                        {
+                            if alwaysHiddenSection.controlItem.state == .hideItems {
+                                if let alwaysHiddenControlItem = items.firstIndex(matching: .alwaysHiddenControlItem).map({ items.remove(at: $0) }) {
+                                    items.trimPrefix { $0.frame.maxX <= alwaysHiddenControlItem.frame.minX }
+                                }
+                            }
+                        } else {
+                            if let hiddenControlItem = items.firstIndex(matching: .hiddenControlItem).map({ items.remove(at: $0) }) {
+                                items.trimPrefix { $0.frame.maxX <= hiddenControlItem.frame.minX }
                             }
                         }
-                    } else {
-                        if let hiddenControlItem = items.firstIndex(matching: .hiddenControlItem).map({ items.remove(at: $0) }) {
-                            items.trimPrefix { $0.frame.maxX <= hiddenControlItem.frame.minX }
+
+                        // Get the leftmost item on the screen.
+                        guard let leftmostItem = items.min(by: { $0.frame.minX < $1.frame.minX }) else {
+                            return
                         }
-                    }
 
-                    // Get the leftmost item on the screen.
-                    guard let leftmostItem = items.min(by: { $0.frame.minX < $1.frame.minX }) else {
-                        return
+                        // If the minX of the item is less than or equal to the maxX of the
+                        // application menu frame, activate the app to hide the menu.
+                        if leftmostItem.frame.minX <= applicationMenuFrame.maxX {
+                            self.hideApplicationMenus()
+                        }
+                    } else if self.isHidingApplicationMenus {
+                        self.showApplicationMenus()
                     }
-
-                    // If the minX of the item is less than or equal to the maxX of the
-                    // application menu frame, activate the app to hide the menu.
-                    if leftmostItem.frame.minX <= applicationMenuFrame.maxX {
-                        hideApplicationMenus()
-                    }
-                } else if isHidingApplicationMenus {
-                    showApplicationMenus()
                 }
             }
             .store(in: &c)

@@ -15,6 +15,13 @@ struct MenuBarItem {
     /// The menu bar item info associated with this item.
     let info: MenuBarItemInfo
 
+    /// The process identifier of the application that created the item.
+    ///
+    /// Before macOS 26, this is the same as ``ownerPID``. From macOS 26 on,
+    /// item windows are owned by the Control Center, so the creating process
+    /// is resolved out of process and may be `nil` if resolution failed.
+    let sourcePID: pid_t?
+
     /// The identifier of the item's window.
     var windowID: CGWindowID {
         window.windowID
@@ -128,6 +135,19 @@ struct MenuBarItem {
     private init(uncheckedItemWindow itemWindow: WindowInfo) {
         self.window = itemWindow
         self.info = MenuBarItemInfo(uncheckedItemWindow: itemWindow)
+        self.sourcePID = itemWindow.ownerPID
+    }
+
+    /// Creates a menu bar item from the given window and source process identifier.
+    ///
+    /// This initializer does not perform any checks on the window to ensure that
+    /// it is a valid menu bar item window. Only call this initializer if you are
+    /// certain that the window is valid.
+    @available(macOS 26.0, *)
+    private init(uncheckedItemWindow itemWindow: WindowInfo, sourcePID: pid_t?) {
+        self.window = itemWindow
+        self.info = MenuBarItemInfo(uncheckedItemWindow: itemWindow, sourcePID: sourcePID)
+        self.sourcePID = sourcePID
     }
 
     /// Creates a menu bar item.
@@ -142,6 +162,24 @@ struct MenuBarItem {
             return nil
         }
         self.init(uncheckedItemWindow: itemWindow)
+    }
+
+    /// Creates a menu bar item with the given source process identifier.
+    ///
+    /// The parameters passed into this initializer are verified during the menu
+    /// bar item's creation. If `itemWindow` does not represent a menu bar item,
+    /// the initializer will fail.
+    ///
+    /// - Parameters:
+    ///   - itemWindow: A window that contains information about the item.
+    ///   - sourcePID: The process identifier of the application that created the
+    ///     item, or `nil` if it could not be resolved.
+    @available(macOS 26.0, *)
+    init?(itemWindow: WindowInfo, sourcePID: pid_t?) {
+        guard itemWindow.isMenuBarItem else {
+            return nil
+        }
+        self.init(uncheckedItemWindow: itemWindow, sourcePID: sourcePID)
     }
 
     /// Creates a menu bar item with the given window identifier.
@@ -172,6 +210,81 @@ extension MenuBarItem {
     ///   - activeSpaceOnly: A Boolean value that indicates whether only the menu bar items
     ///     that are on the active space should be returned.
     static func getMenuBarItems(on display: CGDirectDisplayID? = nil, onScreenOnly: Bool, activeSpaceOnly: Bool) -> [MenuBarItem] {
+        legacyMenuBarItems(on: display, onScreenOnly: onScreenOnly, activeSpaceOnly: activeSpaceOnly)
+    }
+
+    /// Returns an array of the current menu bar items, taking the process that owns
+    /// each item's window as the process that created it.
+    ///
+    /// This is the behavior of every system before macOS 26, and the fallback when
+    /// the menu bar item service cannot resolve a creating process.
+    private static func legacyMenuBarItems(on display: CGDirectDisplayID?, onScreenOnly: Bool, activeSpaceOnly: Bool) -> [MenuBarItem] {
+        let (windowIDs, titlePredicate) = itemWindowIDs(
+            on: display,
+            onScreenOnly: onScreenOnly,
+            activeSpaceOnly: activeSpaceOnly
+        )
+        return windowIDs.lazy
+            .compactMap { windowID in
+                MenuBarItem(windowID: windowID)
+            }
+            .filter(titlePredicate)
+            .sortedByOrderInMenuBar()
+    }
+
+    /// Returns an array of the current menu bar items in the menu bar on the given
+    /// display, resolving the application that created each item.
+    ///
+    /// On macOS 26 and later, item windows are owned by the Control Center, so the
+    /// creating application is resolved through the menu bar item service. Earlier
+    /// systems fall back to the synchronous getter, whose owning process is already
+    /// the creating one.
+    ///
+    /// - Parameters:
+    ///   - display: The display to retrieve the menu bar items on. Pass `nil` to return the
+    ///     menu bar items across all displays.
+    ///   - onScreenOnly: A Boolean value that indicates whether only the menu bar items that
+    ///     are on screen should be returned.
+    ///   - activeSpaceOnly: A Boolean value that indicates whether only the menu bar items
+    ///     that are on the active space should be returned.
+    static func getMenuBarItems(on display: CGDirectDisplayID? = nil, onScreenOnly: Bool, activeSpaceOnly: Bool) async -> [MenuBarItem] {
+        guard #available(macOS 26.0, *) else {
+            return legacyMenuBarItems(on: display, onScreenOnly: onScreenOnly, activeSpaceOnly: activeSpaceOnly)
+        }
+
+        let (windowIDs, titlePredicate) = itemWindowIDs(
+            on: display,
+            onScreenOnly: onScreenOnly,
+            activeSpaceOnly: activeSpaceOnly
+        )
+
+        var items = [MenuBarItem]()
+        for windowID in windowIDs {
+            // Check validity before the round trip, so a non-item window
+            // never costs a blocking accessibility call in the service.
+            guard let window = WindowInfo(windowID: windowID), window.isMenuBarItem else {
+                continue
+            }
+            let itemWindow = MenuBarItemService.ItemWindow(windowID: window.windowID, bounds: window.frame)
+            let sourcePID = await MenuBarItemService.Connection.shared.sourcePID(for: itemWindow)
+            guard let item = MenuBarItem(itemWindow: window, sourcePID: sourcePID) else {
+                continue
+            }
+            items.append(item)
+        }
+
+        return items
+            .filter(titlePredicate)
+            .sortedByOrderInMenuBar()
+    }
+
+    /// Returns the window identifiers of the current menu bar items, along with the
+    /// predicate that the items created from them must satisfy.
+    private static func itemWindowIDs(
+        on display: CGDirectDisplayID?,
+        onScreenOnly: Bool,
+        activeSpaceOnly: Bool
+    ) -> (windowIDs: [CGWindowID], titlePredicate: (MenuBarItem) -> Bool) {
         var option: Bridging.WindowListOption = [.menuBarItems]
 
         var titlePredicate: (MenuBarItem) -> Bool = { _ in true }
@@ -194,13 +307,7 @@ extension MenuBarItem {
             }
         }
 
-        return Bridging.getWindowList(option: option).lazy
-            .filter(boundsPredicate)
-            .compactMap { windowID in
-                MenuBarItem(windowID: windowID)
-            }
-            .filter(titlePredicate)
-            .sortedByOrderInMenuBar()
+        return (Bridging.getWindowList(option: option).filter(boundsPredicate), titlePredicate)
     }
 }
 
@@ -227,6 +334,33 @@ private extension MenuBarItemInfo {
     /// certain that the window is valid.
     init(uncheckedItemWindow itemWindow: WindowInfo) {
         if let bundleIdentifier = itemWindow.owningApplication?.bundleIdentifier {
+            self.namespace = Namespace(bundleIdentifier)
+        } else {
+            self.namespace = .null
+        }
+        if let title = itemWindow.title {
+            self.title = title
+        } else {
+            self.title = ""
+        }
+    }
+
+    /// Creates a simplified item from the given window, namespaced to the
+    /// application that created the item rather than the one that owns its window.
+    ///
+    /// This initializer does not perform any checks on the window to ensure that
+    /// it is a valid menu bar item window. Only call this initializer if you are
+    /// certain that the window is valid.
+    @available(macOS 26.0, *)
+    init(uncheckedItemWindow itemWindow: WindowInfo, sourcePID: pid_t?) {
+        var sourceApplication: NSRunningApplication? {
+            guard let sourcePID else {
+                return nil
+            }
+            return NSRunningApplication(processIdentifier: sourcePID)
+        }
+        let application = sourceApplication ?? itemWindow.owningApplication
+        if let bundleIdentifier = application?.bundleIdentifier {
             self.namespace = Namespace(bundleIdentifier)
         } else {
             self.namespace = .null

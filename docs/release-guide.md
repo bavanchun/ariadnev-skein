@@ -158,13 +158,16 @@ SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
 codesign --force --options runtime --sign "$CERT" "$SPARKLE/XPCServices/Downloader.xpc"
 codesign --force --options runtime --sign "$CERT" "$SPARKLE/XPCServices/Installer.xpc"
 
-# 2. Updater.app (nested helper)
+# 2. Skein's own XPC service (also innermost)
+codesign --force --options runtime --sign "$CERT" "$APP/Contents/XPCServices/MenuBarItemService.xpc"
+
+# 3. Updater.app (nested helper)
 codesign --force --options runtime --sign "$CERT" "$SPARKLE/Updater.app"
 
-# 3. Sparkle.framework itself
+# 4. Sparkle.framework itself
 codesign --force --options runtime --sign "$CERT" "$APP/Contents/Frameworks/Sparkle.framework"
 
-# 4. Main app, with entitlements, last
+# 5. Main app, with entitlements, last
 codesign --force --options runtime \
   --entitlements Skein/Skein.entitlements \
   --sign "$CERT" "$APP"
@@ -345,7 +348,7 @@ If missing, regenerate through Xcode Accounts → team → "Manage Certificates"
 - [ ] Bump `MARKETING_VERSION` + `CURRENT_PROJECT_VERSION` in `Skein.xcodeproj/project.pbxproj` (Debug + Release)
 - [ ] Commit changes on `main`
 - [ ] `xcodebuild build` (unsigned) → `.release-output/sign/Skein.app`
-- [ ] `codesign` inside-out (XPC services → Updater.app → Sparkle.framework → main app)
+- [ ] `codesign` inside-out (Sparkle's XPC services → `Contents/XPCServices/MenuBarItemService.xpc` → Updater.app → Sparkle.framework → main app)
 - [ ] `codesign --verify --verbose=4` confirms "valid on disk"
 - [ ] `ditto` zip + `sign_update` for EdDSA signature
 - [ ] Update `appcast.xml` (append `<item>`, bump `pubDate`)
@@ -363,4 +366,4 @@ If missing, regenerate through Xcode Accounts → team → "Manage Certificates"
 - **Personal Team signing, not distribution signing.** The `Apple Development` cert is not `Developer ID Application`, so the build is not notarized and Gatekeeper blocks the first launch on another Mac until the user right-clicks → Open or clears quarantine. The app embeds no provisioning profile, so it is not limited to registered devices. Notarization requires a paid Apple Developer Program membership.
 - **Upstream Ice is notarized; Skein is not.** `Ice.app` from `jordanbaird/Ice` carries `Developer ID Application: Jordan Baird (K2ATHQPJDP)`, `spctl` reports `source=Notarized Developer ID`, and `stapler validate` passes. Ice ships a ZIP and no DMG — not to dodge Gatekeeper, which it does not need to dodge, but because a ZIP is simpler and is what Sparkle consumes. The gap between Skein's download experience and Ice's is notarization, not packaging.
 - **`xcodebuild archive` cannot sign this app on a free Personal Team.** Confirmed across automatic and manual signing styles on Xcode 26.6 — always falls back to `xcodebuild build` (unsigned) + manual `codesign`. Do not spend time retrying archive-based signing flags on a fresh Personal Team; go straight to the unsigned-build path.
-- **Sign nested bundles before the outer one.** `codesign` on `Skein.app` alone does not re-sign `Sparkle.framework`'s nested `Updater.app`/`Downloader.xpc`/`Installer.xpc` — each needs its own `codesign` call, innermost first, or the outer signature's sealed resources will mismatch and `codesign --verify` fails.
+- **Sign nested bundles before the outer one.** `codesign` on `Skein.app` alone does not re-sign `Sparkle.framework`'s nested `Updater.app`/`Downloader.xpc`/`Installer.xpc`, nor Skein's own `Contents/XPCServices/MenuBarItemService.xpc` — each needs its own `codesign` call, innermost first, or the outer signature's sealed resources will mismatch and `codesign --verify` fails.

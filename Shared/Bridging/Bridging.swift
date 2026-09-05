@@ -269,6 +269,17 @@ extension Bridging {
         }
         return .responsive
     }
+
+    /// Sets the amount of time a process must be blocked before it is
+    /// considered unresponsive.
+    ///
+    /// - Parameter timeout: An amount of time, in seconds.
+    static func setProcessUnresponsiveTimeout(_ timeout: TimeInterval) {
+        let result = CGSEventSetAppIsUnresponsiveNotificationTimeout(CGSMainConnectionID(), timeout)
+        if result != .success {
+            Logger.bridging.error("CGSEventSetAppIsUnresponsiveNotificationTimeout failed with error \(result.logString)")
+        }
+    }
 }
 
 // MARK: - Logger

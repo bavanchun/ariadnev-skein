@@ -3,6 +3,7 @@
 //  Skein
 //
 
+import Foundation
 import OSLog
 
 /// A type that encapsulates logging behavior for Skein.
@@ -12,7 +13,7 @@ struct Logger {
 
     /// Creates a logger for Skein using the specified category.
     init(category: String) {
-        self.base = os.Logger(subsystem: Constants.bundleIdentifier, category: category)
+        self.base = os.Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: category)
     }
 
     /// Logs the given informative message to the logger.
