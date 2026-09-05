@@ -25,8 +25,8 @@ Claude Code (this session) is the project manager **and, since 2026-09-05, the c
 | 1 | Fix 3 HIGH defects (memory leak, loop break, slice crash) and correct About URL; update AccentColor to rope orange | P0 | **completed** |
 | 2 | Ship landing page (finalize PR #2, capture real screenshots, verify Frost→Skein install migration) | P1 | v1.3.0 window |
 | 3 | Fix documentation drift, prune 16.4 MB of dead upstream Ice assets, backfill 50 stale plan checkboxes | P1 | **completed** |
-| 4 | Port upstream's mouse-moved event tap (`292556f`) so hover detection survives a disabled tap | P2 | v1.4.0 |
-| 5 | Port the XPC MenuBarItemService so menu bar items resolve to their real owning app on macOS 26 | P3 | v1.4.0 |
+| 4 | Port upstream's mouse-moved event tap (`292556f`) so hover detection survives a disabled tap | P2 | **completed** |
+| 5 | Port the XPC MenuBarItemService so menu bar items resolve to their real owning app on macOS 26 | P3 | **completed** |
 | 6 | Size the dropped-click / item-movement work before contracting it — scout and re-plan, no code | P2 | none |
 
 ## Phases
@@ -36,8 +36,8 @@ Claude Code (this session) is the project manager **and, since 2026-09-05, the c
 | 1 | [P0 — v1.2.2 patch](./phase-01-p0-v1.2.2-patch.md) | v1.2.2 | 0.5 day | **Completed** — PR #19, v1.2.2 shipped |
 | 2 | [P1a — Landing ship & escort install](./phase-02-p1a-landing-ship.md) | v1.3.0 window | 1.0 day | **Partial** — workstream A shipped (PR #20); B blocked on maintainer screenshots |
 | 3 | [P1b — Docs hygiene & repo cleanup → v1.3.0](./phase-03-p1b-docs-hygiene.md) | v1.3.0 | 0.5 day | **Completed** — PR #21 merged; v1.3.0 tag pending maintainer |
-| 4 | [P2 — Port the mouse-moved event tap](./phase-04-p2-hid-source-pid-port.md) | v1.4.0 | 0.25 day | Pending — rescoped 2026-09-05 |
-| 5 | [P3 — Port the XPC source-PID resolver](./phase-05-p3-xpc-service-port.md) | v1.4.0 | 2.0 days | Pending — rescoped 2026-09-05, **do this first** |
+| 4 | [P2 — Port the mouse-moved event tap](./phase-04-p2-hid-source-pid-port.md) | v1.4.0 | 0.25 day | **Completed** — PR #24 merged; carries the 1.4.0 bump; hover protocol and tag pending maintainer |
+| 5 | [P3 — Port the XPC source-PID resolver](./phase-05-p3-xpc-service-port.md) | v1.4.0 | 2.0 days | **Completed** — PR #23 merged, six-step protocol run on hardware; spawned issues #25, #26 |
 | 6 | [P2 — Re-plan dropped-click and item-movement handling](./phase-06-p2-re-plan-dropped-click-and-item-movement-handling.md) | none | 1.0 day | Pending — scout + plan only, ships no code |
 
 ## Release Sequence
@@ -68,11 +68,11 @@ Phase 4. Phase 4 is now a 0.25-day, one-file port that can land whenever.
 - [ ] v1.2.2 tagged, released, `spctl`-verifiable, appcast enclosure byte-matched, ZIP + DMG uploaded, release notes call out the 3 crash/leak fixes.
 - [ ] Landing page PR #2 merged with real product screenshots (not placeholder cubes/rectangles) and Frost→Skein migration verified on maintainer's own Mac end-to-end.
 - [ ] v1.3.0 tagged; `CHANGELOG.md`, `docs/UPSTREAM.md`, `docs/upgrade-frost-to-skein.md`, `FREQUENT_ISSUES.md`, `docs/DEVELOPMENT_WORKFLOW.md` all match reality; `Resources/` slimmed by ≥16 MB; 50 stale plan checkboxes reconciled.
-- [ ] Upstream's mouse-moved event tap ported (`292556f`), and a tap disabled by timeout re-enables itself instead of leaving hover detection dead.
-- [ ] `MenuBarItemService.xpc` embedded and signed, and on macOS 26 menu bar items in Settings → Menu Bar Layout show their real owning application instead of Control Center — verified by the maintainer against a 1.3.x build.
-- [ ] Killing the XPC service process degrades the app to legacy pids without a crash or a hang.
+- [x] Upstream's mouse-moved event tap ported (`292556f`), and a tap disabled by timeout re-enables itself instead of leaving hover detection dead. — PR #24; `EventManager.swift:57` is the listen-only HID tap, `EventTap.swift:165-171` the re-enable branch. Not yet exercised on hardware.
+- [ ] `MenuBarItemService.xpc` embedded and signed, and on macOS 26 menu bar items in Settings → Menu Bar Layout show their real owning application instead of Control Center — verified by the maintainer against a 1.3.x build. — **half met.** Embedded, signed with the app's Team ID, and resolving source pids correctly on hardware. The Menu Bar Layout pane cannot show it: the pane is empty on macOS 26 (issue #25, also on v1.2.1) and `displayName` still reads `ownerPID` (issue #26). Verified through the manager's logs instead.
+- [x] Killing the XPC service process degrades the app to legacy pids without a crash or a hang. — `kill -9` on hardware: app alive, no crash report, items still rendering, service respawned on demand.
 - [ ] Dropped-click work is sized and a maintainer decision recorded, rather than contracted unsized.
-- [ ] v1.4.0 tagged, appcast rolls forward cleanly, no Sparkle byte-length mismatch.
+- [ ] v1.4.0 tagged, appcast rolls forward cleanly, no Sparkle byte-length mismatch. — the 1.4.0 / 1140 bump is on `main` (`07df28c`); the tag and release are the maintainer's, per guardrail 1.
 - [ ] No phase branch left orphaned; every worktree removed after its phase ships.
 
 ## Non-Negotiable Guardrails (apply to every phase)
@@ -166,6 +166,38 @@ and nothing else.
 rewritten against the verified upstream source and moved ahead of Phase 4.
 Dropped-click split out as Phase 6, which produces a plan rather than code.
 Both phase files carry `rescoped: 2026-09-05` in their frontmatter.
+
+## Record note — phases 4 and 5 shipped, 2026-09-05
+
+Three PRs merged to `main` in this order, all squash with `--delete-branch`:
+
+| PR | What | Merge commit |
+|---|---|---|
+| #22 | the 2026-09-05 rescope of the phase 4 and 5 contracts | `4a0f051` |
+| #23 | Phase 5 — the XPC source-PID resolver | `ef982aa` |
+| #24 | Phase 4 — the mouse-moved event tap, plus the 1.4.0 / 1140 bump | `07df28c` |
+
+Phase 5 went first by the ordering decision recorded above, and Phase 4 therefore
+carried the version bump under its own Release coupling rule. `main` now reads
+1.4.0 / 1140. **No tag exists and no release was published** — guardrail 1.
+
+Both phase files carry a `Record — as shipped` section with the deviations, the
+boxes deliberately left open, and the evidence behind the ones that are ticked.
+
+Two defects surfaced by the Phase 5 hardware run were filed rather than fixed,
+because both predate this plan and reproduce on shipped v1.2.1:
+
+- **#25** — Menu Bar Layout stays empty for the rest of the session after a
+  failed cache pass (`cacheItemsIfNeeded()` caches the window-ID set before the
+  guard that can bail).
+- **#26** — item labels still show window titles on macOS 26 because
+  `MenuBarItem.displayName` ignores `sourcePID`.
+
+Still owed on this plan: the Phase 4 hover protocol on hardware — which needs a
+1.4.0 build installed over `/Applications`, and so a fresh maintainer decision,
+since the one-time override granted on 2026-09-05 was spent on the Phase 5 run
+and the machine has been restored to v1.2.1 — the `v1.4.0` tag and release,
+Phase 2 workstream B's six landing screenshots, and Phase 6.
 
 ## Open Questions still standing
 

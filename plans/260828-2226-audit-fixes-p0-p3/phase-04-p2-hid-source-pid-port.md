@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "P2 — Port the mouse-moved event tap from upstream/macos-26"
-status: pending
+status: completed
 priority: P2
 effort: "0.25 day"
 dependencies: [3]
@@ -168,22 +168,22 @@ not carry because upstream had not written it yet:
 
 ## PM VERIFICATION CHECKLIST
 
-- [ ] `git diff main..HEAD --stat` shows exactly 3 files: `Skein/Events/EventManager.swift`, `Skein/Events/EventTap.swift`, `CHANGELOG.md`.
-- [ ] Swift diff under 80 lines.
-- [ ] `grep -n 'mouseMovedMonitor' Skein/Events/EventManager.swift` returns nothing.
-- [ ] `grep -n 'mouseMovedTap' Skein/Events/EventManager.swift` returns the tap declaration and its entry in `allMonitors`.
-- [ ] The tap is `options: .listenOnly` and `location: .hidEventTap` — a listen-only tap cannot swallow a user's event.
-- [ ] `allMonitors` is typed `[any EventMonitorProtocol]` and still lists all five entries.
-- [ ] `EventTap.performCallback` returns `nil` for `.tapDisabledByUserInput` and `.tapDisabledByTimeout` after calling `enable()`, and reaches it via `MainActor.assumeIsolated`.
-- [ ] The three existing `EventTap(` call sites in `MenuBarItemManager.swift` are untouched and still compile against the unchanged initializer.
-- [ ] Commit body cites upstream SHAs `292556f` and `eb5d14a`.
-- [ ] `xcodebuild` exit 0, warning delta zero.
-- [ ] No file outside Related Code Files touched.
+- [ ] `git diff main..HEAD --stat` shows exactly 3 files: `Skein/Events/EventManager.swift`, `Skein/Events/EventTap.swift`, `CHANGELOG.md`. — **four files.** `Skein.xcodeproj/project.pbxproj` was added, carrying the 1.4.0 / 1140 bump that Release coupling below assigns to whichever of Phase 4 and Phase 5 merges second. Phase 5 merged first at 1.3.0 / 1130, so the bump fell here. Disclosed in PR #24.
+- [x] Swift diff under 80 lines. — **51** (`+45 / −6`) across the two Swift files.
+- [x] `grep -n 'mouseMovedMonitor' Skein/Events/EventManager.swift` returns nothing. — 0 matches.
+- [x] `grep -n 'mouseMovedTap' Skein/Events/EventManager.swift` returns the tap declaration and its entry in `allMonitors`. — `EventManager.swift:57` and `:82`.
+- [x] The tap is `options: .listenOnly` and `location: .hidEventTap` — a listen-only tap cannot swallow a user's event. — `EventManager.swift:58-59`.
+- [x] `allMonitors` is typed `[any EventMonitorProtocol]` and still lists all five entries. — `EventManager.swift:78-84`: mouse down, up, dragged, `mouseMovedTap`, scroll wheel.
+- [x] `EventTap.performCallback` returns `nil` for `.tapDisabledByUserInput` and `.tapDisabledByTimeout` after calling `enable()`, and reaches it via `MainActor.assumeIsolated`. — `EventTap.swift:165-171`.
+- [x] The three existing `EventTap(` call sites in `MenuBarItemManager.swift` are untouched and still compile against the unchanged initializer. — the file is absent from the diff; the sites remain at `:706`, `:777`, `:809`.
+- [x] Commit body cites upstream SHAs `292556f` and `eb5d14a`. — both present in `07df28c`.
+- [x] `xcodebuild` exit 0, warning delta zero. — Release build exited 0; the 5 warnings (one `CustomColorPicker` switch-exhaustiveness, two AppIntents metadata, SwiftLint not installed) are all present on `main` too. CI on PR #24 green: Detect changes, SwiftLint, Build (unsigned) 2m26s.
+- [ ] No file outside Related Code Files touched. — **`project.pbxproj` was**, for the version-bump reason on the first box. Nothing else.
 
 ## Success Criteria
 
-- [ ] PR merged. This phase never runs `git tag`. See Release coupling below.
-- [ ] Manual test protocol run by the maintainer with all four checks passing.
+- [x] PR merged. This phase never runs `git tag`. See Release coupling below. — PR #24 squash-merged to `07df28c` on 2026-09-05. No tag was created.
+- [ ] Manual test protocol run by the maintainer with all four checks passing. — **not run.** It needs a 1.4.0 build installed over `/Applications/Skein.app`; the one-time override that allowed that earlier on 2026-09-05 was spent on the Phase 5 hardware run and the machine has been restored to v1.2.1. A fresh maintainer decision is required before another install.
 
 ## Risk Assessment
 
@@ -211,3 +211,25 @@ cut, the entry describes only what is on `main`.
 `v1.4.0` is tagged and published by the **maintainer**, never by this phase —
 see guardrail 1 in [`plan.md`](./plan.md). This phase stops at an open PR with
 green CI.
+
+## Record — as shipped, 2026-09-05
+
+Merged as PR #24 (`07df28c`), squash, branch deleted. Ported upstream `292556f`
+plus the tap-recovery branch from `eb5d14a`. Two deliberate departures from the
+contract above, both disclosed in the PR body before merge:
+
+1. **A fourth file.** `Skein.xcodeproj/project.pbxproj` carries
+   `MARKETING_VERSION` 1.3.0 → 1.4.0 and `CURRENT_PROJECT_VERSION` 1130 → 1140,
+   two occurrences each, on the main-app target only. The XPC service target
+   keeps `1` / `1.0` per Apple's convention for nested bundles. Phase 5 merged
+   first, so Release coupling above put the bump here. The built `Info.plist`
+   reads 1.4.0 / 1140.
+2. **A different PR title.** The contract specified
+   `feat(events): move show-on-hover onto a CGEvent tap (upstream 292556f)`; the
+   PR shipped as `release: 1.4.0 — hover event tap and the macOS 26 item-owner
+   fix`, matching how this repo already titles version-bumping PRs (cf.
+   `release: 1.3.0 — docs hygiene and repo cleanup (#21)`). Once the version
+   bump landed in this PR, the release-style title was the accurate one.
+
+Still open: the four-check hover protocol on hardware, and the `v1.4.0` tag and
+release — both the maintainer's, for the reasons recorded against those boxes.
