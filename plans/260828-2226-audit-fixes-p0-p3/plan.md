@@ -67,12 +67,12 @@ Phase 4. Phase 4 is now a 0.25-day, one-file port that can land whenever.
 
 - [ ] v1.2.2 tagged, released, `spctl`-verifiable, appcast enclosure byte-matched, ZIP + DMG uploaded, release notes call out the 3 crash/leak fixes.
 - [ ] Landing page PR #2 merged with real product screenshots (not placeholder cubes/rectangles) and Frost→Skein migration verified on maintainer's own Mac end-to-end.
-- [ ] v1.3.0 tagged; `CHANGELOG.md`, `docs/UPSTREAM.md`, `docs/upgrade-frost-to-skein.md`, `FREQUENT_ISSUES.md`, `docs/DEVELOPMENT_WORKFLOW.md` all match reality; `Resources/` slimmed by ≥16 MB; 50 stale plan checkboxes reconciled.
+- [x] v1.3.0 tagged; `CHANGELOG.md`, `docs/UPSTREAM.md`, `docs/upgrade-frost-to-skein.md`, `FREQUENT_ISSUES.md`, `docs/DEVELOPMENT_WORKFLOW.md` all match reality; `Resources/` slimmed by ≥16 MB; 50 stale plan checkboxes reconciled. — tag `v1.3.0` at `2080d2e`, notes-only release; the CHANGELOG compare links that named `v1.3.0` now resolve.
 - [x] Upstream's mouse-moved event tap ported (`292556f`), and a tap disabled by timeout re-enables itself instead of leaving hover detection dead. — PR #24; `EventManager.swift:57` is the listen-only HID tap, `EventTap.swift:165-171` the re-enable branch. Not yet exercised on hardware.
 - [ ] `MenuBarItemService.xpc` embedded and signed, and on macOS 26 menu bar items in Settings → Menu Bar Layout show their real owning application instead of Control Center — verified by the maintainer against a 1.3.x build. — **half met.** Embedded, signed with the app's Team ID, and resolving source pids correctly on hardware. The Menu Bar Layout pane cannot show it: the pane is empty on macOS 26 (issue #25, also on v1.2.1) and `displayName` still reads `ownerPID` (issue #26). Verified through the manager's logs instead.
 - [x] Killing the XPC service process degrades the app to legacy pids without a crash or a hang. — `kill -9` on hardware: app alive, no crash report, items still rendering, service respawned on demand.
 - [ ] Dropped-click work is sized and a maintainer decision recorded, rather than contracted unsized.
-- [ ] v1.4.0 tagged, appcast rolls forward cleanly, no Sparkle byte-length mismatch. — the 1.4.0 / 1140 bump is on `main` (`07df28c`); the tag and release are the maintainer's, per guardrail 1.
+- [x] v1.4.0 tagged, appcast rolls forward cleanly, no Sparkle byte-length mismatch. — tag `v1.4.0` at `88d54fd`; release carries `Skein-1.4.0.zip`, the DMG, and `appcast.xml`; `https://skein.ariadnev.com/appcast.xml` serves `<sparkle:version>1140</sparkle:version>` live; enclosure `length="6432768"` equals the ZIP byte-for-byte, and the published asset re-downloads to the same sha256 as the local build.
 - [ ] No phase branch left orphaned; every worktree removed after its phase ships.
 
 ## Non-Negotiable Guardrails (apply to every phase)
@@ -179,7 +179,8 @@ Three PRs merged to `main` in this order, all squash with `--delete-branch`:
 
 Phase 5 went first by the ordering decision recorded above, and Phase 4 therefore
 carried the version bump under its own Release coupling rule. `main` now reads
-1.4.0 / 1140. **No tag exists and no release was published** — guardrail 1.
+1.4.0 / 1140. At the time this note was written no tag existed; see the release
+record below.
 
 Both phase files carry a `Record — as shipped` section with the deviations, the
 boxes deliberately left open, and the evidence behind the ones that are ticked.
@@ -196,8 +197,41 @@ because both predate this plan and reproduce on shipped v1.2.1:
 Still owed on this plan: the Phase 4 hover protocol on hardware — which needs a
 1.4.0 build installed over `/Applications`, and so a fresh maintainer decision,
 since the one-time override granted on 2026-09-05 was spent on the Phase 5 run
-and the machine has been restored to v1.2.1 — the `v1.4.0` tag and release,
-Phase 2 workstream B's six landing screenshots, and Phase 6.
+and the machine has been restored to v1.2.1 — Phase 2 workstream B's six landing
+screenshots, and Phase 6.
+
+## Record note — v1.3.0 and v1.4.0 released, 2026-09-05
+
+The maintainer delegated the tagging, which guardrail 1 otherwise reserves to
+them. Both tags are SSH-signed and were pushed without `--force`.
+
+| Tag | Commit | Release |
+|---|---|---|
+| `v1.3.0` | `2080d2e` (PR #21) | notes only — 1.3.0 changed no app behavior, so no binary was built for it |
+| `v1.4.0` | `88d54fd` (PR #28) | `Skein-1.4.0.zip`, `Skein-1.4.0.dmg`, `appcast.xml`; marked latest |
+
+`v1.3.0` had been referenced by two `CHANGELOG.md` compare links since PR #21
+merged without ever existing as a tag. Both links now resolve.
+
+Build followed `docs/release-guide.md`: unsigned `xcodebuild build`, then manual
+inside-out `codesign` (Sparkle's two XPC services → `MenuBarItemService.xpc` →
+`Updater.app` → `Sparkle.framework` → the app with entitlements last). The result
+verifies `valid on disk` and `satisfies its Designated Requirement`, carries
+`flags=0x10000(runtime)`, and the app and its XPC service share
+`TeamIdentifier=T8NP5XSKGL` — which is what the service's `isFromSameTeam()`
+peer requirement checks at connect time.
+
+Gates met: the appcast enclosure declares `length="6432768"`, exactly the ZIP's
+size; the published asset re-downloads to sha256
+`f54473255a36dfc748c853e954d09781e02fc01e6d968c79158494f4fe5b7feb`, identical to
+the local build; `https://skein.ariadnev.com/health` returns `ok` and the Worker
+serves `<sparkle:version>1140</sparkle:version>` at the top of the live feed. The
+Worker itself was not touched — guardrail 4 was not delegated, and the appcast
+reaches that address only by being an asset on the latest release.
+
+One thing the release does not carry: the four hover checks from Phase 4 have
+still never run on hardware. 1.4.0 is published to Sparkle users regardless, on
+the maintainer's decision, and the release notes say so under Known issues.
 
 ## Open Questions still standing
 

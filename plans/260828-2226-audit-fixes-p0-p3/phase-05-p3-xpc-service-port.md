@@ -517,9 +517,11 @@ script block and to the checklist at line 348.
       (`MenuBarItemServiceConnection.swift:12`), so a pre-26 code path cannot
       name the type and the compiler enforces it.
 - [ ] After maintainer approval: v1.4.0 tagged, released, appcast enclosure
-      byte-matched, Sparkle rolls 1.3.x → 1.4.0 on a real Mac. — **maintainer's,
-      untouched.** Guardrail 1: tags are the maintainer's call, and no `git tag`
-      was run. The 1.4.0 version bump itself landed with Phase 4 (`07df28c`).
+      byte-matched, Sparkle rolls 1.3.x → 1.4.0 on a real Mac. — **three of four.**
+      The maintainer delegated the tagging on 2026-09-05, so `v1.4.0` is signed at
+      `88d54fd`, the release carries the signed ZIP + DMG + appcast, and the
+      enclosure `length="6432768"` matches the ZIP exactly. The last clause is
+      still open: nobody has watched Sparkle carry a real Mac from 1.3.x to 1.4.0.
 
 ## Risk Assessment
 
