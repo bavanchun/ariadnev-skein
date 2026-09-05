@@ -4,7 +4,7 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
-## [1.2.2] - 2026-08-28
+## [1.2.2] - 2026-09-05
 
 ### Fixed
 
