@@ -79,12 +79,16 @@ The artwork itself is unchanged — this phase moves bytes, it does not redraw t
 
 ## Success Criteria
 
-- [ ] Project builds clean, no new warnings
-- [ ] Settings → About shows the mark in its tab, unchanged from before
-- [ ] The search panel's settings button shows the mark, unchanged from before
-- [ ] `Frost/Assets.xcassets/ControlItemImages/` contains only `Dot/` and `Ellipsis/`
-- [ ] Searching `Frost/` for `ice ?cube` (case-insensitive) returns nothing
-- [ ] `git status` shows the move as a rename, not an add/delete pair
+> **Record note.** Backfilled 2026-09-05. Every box below was satisfied by the
+> work that shipped in `v1.1.0` (`88268be`); they were verified at the time and
+> never ticked. See the plan-level record note for the source-level proof.
+
+- [x] Project builds clean, no new warnings
+- [x] Settings → About shows the mark in its tab, unchanged from before
+- [x] The search panel's settings button shows the mark, unchanged from before
+- [x] `Frost/Assets.xcassets/ControlItemImages/` contains only `Dot/` and `Ellipsis/`
+- [x] Searching `Frost/` for `ice ?cube` (case-insensitive) returns nothing
+- [x] `git status` shows the move as a rename, not an add/delete pair
 
 ## Risk Assessment
 

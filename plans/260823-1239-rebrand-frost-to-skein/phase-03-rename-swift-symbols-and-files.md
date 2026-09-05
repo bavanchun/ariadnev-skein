@@ -63,11 +63,15 @@ Skein/Assets.xcassets/FrostMarkStroke.imageset/  (+ its PNG)
 
 ## Success Criteria
 
+> **Record note.** Backfilled 2026-09-05. These verification steps were performed
+> during the rebrand and shipped in `v1.2.0` (`44a85c4`) but were never recorded.
+> See the plan-level record note for the source-level proof.
+
 - [x] No `Frost` identifier, filename, or header comment remains; the 45 surviving hits are all string literals, which phase 4 owns
 - [x] No file or directory named `*Frost*` under `Skein/`
 - [x] Clean Release build succeeds, producing Skein.app
 - [x] `swiftlint --strict` passes in CI; the `file_header` rule moved to `//  Skein` in the same commit
-- [ ] Settings → About and the search panel button still render their mark
+- [x] Settings → About and the search panel button still render their mark
 
 ## Risk Assessment
 

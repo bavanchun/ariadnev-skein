@@ -56,12 +56,23 @@ install there is arguably no compatibility surface to break, which would make
 
 ## Success Criteria
 
-- [ ] `2.0.0` approved before the tag is cut
-- [ ] Release published with an SSH-signed tag
-- [ ] `https://ariadnev.com/skein/appcast.xml` returns the appcast
-- [ ] A clean `2.0.0` install polls the Worker route successfully
-- [ ] `bavanchun/Frost` archived, description points at the new repository
-- [ ] The old `appcast.xml` still resolves
+> **Record note.** Backfilled 2026-09-05, verified against live state rather than
+> assumed. This phase was written for a `2.0.0` release that shipped as
+> [`v1.2.0`](https://github.com/bavanchun/ariadnev-skein/releases/tag/v1.2.0)
+> (`44a85c4`) instead, so read "2.0.0" below as "the release this phase cut".
+> Evidence: the `v1.2.0` tag object carries an SSH signature;
+> `bavanchun/Frost` is archived with the description "Moved to
+> bavanchun/ariadnev-skein — Frost is now Skein."; and both
+> `https://skein.ariadnev.com/appcast.xml` and the old Frost appcast return 200.
+
+- [x] `2.0.0` approved before the tag is cut — approved and cut, numbered `1.2.0`
+- [x] Release published with an SSH-signed tag
+- [ ] `https://ariadnev.com/skein/appcast.xml` returns the appcast — that URL
+      404s and always did; the feed shipped at `https://skein.ariadnev.com/appcast.xml`,
+      which this box should have named
+- [x] A clean `2.0.0` install polls the Worker route successfully
+- [x] `bavanchun/Frost` archived, description points at the new repository
+- [x] The old `appcast.xml` still resolves
 
 ## Risk Assessment
 

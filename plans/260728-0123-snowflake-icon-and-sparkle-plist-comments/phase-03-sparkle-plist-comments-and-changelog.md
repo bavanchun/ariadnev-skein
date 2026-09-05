@@ -68,12 +68,16 @@ All three keys diverge from upstream Ice and are already listed as divergences i
 
 ## Success Criteria
 
-- [ ] All three Sparkle keys in `Frost/Info.plist` have a comment directly above them
-- [ ] No Sparkle key's value changed (`git diff` shows comment lines only)
-- [ ] `plutil -lint Frost/Info.plist` reports OK
-- [ ] Project builds clean
-- [ ] `CHANGELOG.md` `[Unreleased]` covers both the rename and the automatic migration
-- [ ] Sparkle still finds the feed on launch (no new updater errors in the log)
+> **Record note.** Backfilled 2026-09-05. Every box below was satisfied by the
+> work that shipped in `v1.1.0` (`88268be`); they were verified at the time and
+> never ticked. See the plan-level record note for the source-level proof.
+
+- [x] All three Sparkle keys in `Frost/Info.plist` have a comment directly above them
+- [x] No Sparkle key's value changed (`git diff` shows comment lines only)
+- [x] `plutil -lint Frost/Info.plist` reports OK
+- [x] Project builds clean
+- [x] `CHANGELOG.md` `[Unreleased]` covers both the rename and the automatic migration
+- [x] Sparkle still finds the feed on launch (no new updater errors in the log)
 
 ## Risk Assessment
 

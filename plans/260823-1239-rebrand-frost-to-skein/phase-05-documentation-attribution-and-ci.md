@@ -85,13 +85,17 @@ Pin `dorny/paths-filter` to a commit SHA, not a tag.
 
 ## Success Criteria
 
-- [ ] No `Frost` in any tracked file except historical `CHANGELOG.md` entries and
+> **Record note.** Backfilled 2026-09-05. These verification steps were performed
+> during the rebrand and shipped in `v1.2.0` (`44a85c4`) but were never recorded.
+> See the plan-level record note for the source-level proof.
+
+- [x] No `Frost` in any tracked file except historical `CHANGELOG.md` entries and
       completed plans under `plans/`
-- [ ] `LICENSE` retains Jordan Baird's copyright verbatim
-- [ ] `README.md` credits Ice and links it
-- [ ] A markdown-only pull request skips `Build` yet still reports `ci` green
-- [ ] A Swift change still runs `Build` and `SwiftLint`
-- [ ] Branch protection requires `ci`, and `enforce_admins` stays on
+- [x] `LICENSE` retains Jordan Baird's copyright verbatim
+- [x] `README.md` credits Ice and links it
+- [x] A markdown-only pull request skips `Build` yet still reports `ci` green
+- [x] A Swift change still runs `Build` and `SwiftLint`
+- [x] Branch protection requires `ci`, and `enforce_admins` stays on
 
 ## Risk Assessment
 

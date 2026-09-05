@@ -27,9 +27,11 @@ The project has carried three names. Both renames were complete sweeps across co
 |---|---|---|
 | Ice | `com.jordanbaird.Ice` | upstream |
 | Frost | `com.vchun.Frost` | 1.0.0 – 1.1.0 |
-| Skein | `com.ariadnev.Skein` | 2.0.0 onward |
+| Skein | `com.ariadnev.Skein` | 1.2.0 onward |
 
 `MigrationManager.migrate2_0_0` imports the Frost defaults domain on first launch, which is why it is the one place in the source that still names `com.vchun.Frost` and the old defaults keys. Those references are load-bearing; do not sweep them.
+
+The `2_0_0` in that name is not a product version. The rename was planned as a 2.0.0 release and shipped as 1.2.0, but the method name and its `hasMigrated2_0_0` defaults key were already written into every migrated install by then. Renaming them now would make Skein re-run a one-shot migration against a `com.vchun.Frost` domain the user has since deleted, so they stay as they are.
 
 ## Skein-specific changes
 
@@ -38,7 +40,7 @@ The project has carried three names. Both renames were complete sweeps across co
 - Xcode project, target, scheme, and source folder renamed from `Ice` to `Skein`
 - Swift symbols and filenames renamed from `Ice*` to `Skein*`
 - Menu bar icon options: upstream's "Ice Cube" entry is a Snowflake SF Symbol here, the `IceCube` image assets are gone, and the surviving stroke image is `SkeinMarkStroke` at the asset catalog root
-- Sparkle update configuration: `SUFeedURL` resolves through `https://ariadnev.com/skein/appcast.xml` rather than a repository URL, `SUPublicEDKey` is this project's key, and `SUEnableAutomaticChecks` suppresses the permission prompt that an accessory app cannot make clickable
+- Sparkle update configuration: `SUFeedURL` resolves through `https://skein.ariadnev.com/appcast.xml` rather than a repository URL, `SUPublicEDKey` is this project's key, and `SUEnableAutomaticChecks` suppresses the permission prompt that an accessory app cannot make clickable
 - Settings migration across both bundle identifier changes
 - Release infrastructure: unsigned build plus manual inside-out `codesign`, documented in [`release-guide.md`](release-guide.md)
 - Documentation: README, `FREQUENT_ISSUES.md`, [`DEVELOPMENT_WORKFLOW.md`](DEVELOPMENT_WORKFLOW.md), and this file

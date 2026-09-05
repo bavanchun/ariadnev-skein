@@ -106,8 +106,8 @@ When the correct bump is unclear, prefer PATCH over MINOR, and MINOR over MAJOR.
 Pick the new version per the Versioning Policy above, then edit `Skein.xcodeproj/project.pbxproj`:
 
 ```
-MARKETING_VERSION = <new.version>;       # e.g., 0.11.13
-CURRENT_PROJECT_VERSION = <build-num>;   # e.g., 1118
+MARKETING_VERSION = <new.version>;       # e.g., 1.3.0
+CURRENT_PROJECT_VERSION = <build-num>;   # e.g., 1130
 ```
 
 Both Debug and Release configs must match. Bump build number for every release, even tiny changes.
@@ -181,8 +181,8 @@ If any nested bundle is missing from `Contents/Frameworks/`, re-run `find "$APP"
 ### Step 4 — Zip, sign zip, generate appcast
 
 ```bash
-VERSION=1.0.1
-BUILD=1119
+VERSION=1.3.0
+BUILD=1130
 
 # Zip preserving .app bundle structure (ditto -k preserves resource forks/signature)
 cd .release-output/sign
@@ -190,7 +190,9 @@ ditto -c -k --keepParent Skein.app "../Skein-${VERSION}.zip"
 cd ../..
 
 # Sign the zip with Sparkle private key (auto-read from Keychain)
-SIGN_UPDATE=$(find ~/Library/Developer/Xcode/DerivedData/Skein-*/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update)
+# Step 3 built into .release-output/DerivedData, so Sparkle's tools are there too,
+# not under ~/Library/Developer/Xcode/DerivedData.
+SIGN_UPDATE=.release-output/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update
 "$SIGN_UPDATE" ".release-output/Skein-${VERSION}.zip"
 # Output: sparkle:edSignature="<sig>" length="<bytes>"
 ```

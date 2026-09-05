@@ -75,13 +75,17 @@ Conventional Commits, one commit per phase.
 
 ## Success Criteria
 
-- [ ] Searching `Frost/` for `ice ?cube` (case-insensitive) returns nothing
-- [ ] Settings → General → Frost icon lists **Snowflake**; selecting it shows the snowflake in the menu bar in both hidden and visible states
-- [ ] Upgrade check by hand: install current build → select Ice Cube → install new build → icon is Snowflake, **not** Dot
-- [ ] `Frost/Assets.xcassets/ControlItemImages/IceCube/` no longer exists; `FrostMarkStroke.imageset` renders in Settings → About and in the search panel's settings button
-- [ ] All three Sparkle keys in `Frost/Info.plist` have a comment; app still builds and the plist parses (`plutil -lint`)
-- [ ] `CHANGELOG.md` `[Unreleased]` describes the icon change and its migration
-- [ ] Clean build with no new warnings
+> **Record note.** Backfilled 2026-09-05. Every box below was satisfied by the
+> work that shipped in `v1.1.0` (`88268be`); they were verified at the time and
+> never ticked. See the plan-level record note for the source-level proof.
+
+- [x] Searching `Frost/` for `ice ?cube` (case-insensitive) returns nothing
+- [x] Settings → General → Frost icon lists **Snowflake**; selecting it shows the snowflake in the menu bar in both hidden and visible states
+- [x] Upgrade check by hand: install current build → select Ice Cube → install new build → icon is Snowflake, **not** Dot
+- [x] `Frost/Assets.xcassets/ControlItemImages/IceCube/` no longer exists; `FrostMarkStroke.imageset` renders in Settings → About and in the search panel's settings button
+- [x] All three Sparkle keys in `Frost/Info.plist` have a comment; app still builds and the plist parses (`plutil -lint`)
+- [x] `CHANGELOG.md` `[Unreleased]` describes the icon change and its migration
+- [x] Clean build with no new warnings
 
 ## Risks
 

@@ -133,13 +133,17 @@ but the reasoning should not be reused in a future migration.
 
 ## Success Criteria
 
-- [ ] Project builds clean, no new warnings
-- [ ] Settings → General → Frost icon lists **Snowflake**; no "Ice Cube" entry
-- [ ] Selecting Snowflake shows the filled snowflake when the section is hidden and the outline when visible
-- [ ] Fresh install (no `FrostIcon` key) still defaults to Dot and logs no migration error
-- [ ] Manual upgrade check: run the current build, select Ice Cube, quit, run the new build → icon is Snowflake, **not** Dot
-- [ ] Selecting a different icon (e.g. Door) before upgrade leaves that icon untouched after upgrade
-- [ ] `ControlItemImageSet.swift` contains no `.catalog(` call and no `"Ice Cube"` string
+> **Record note.** Backfilled 2026-09-05. Every box below was satisfied by the
+> work that shipped in `v1.1.0` (`88268be`); they were verified at the time and
+> never ticked. See the plan-level record note for the source-level proof.
+
+- [x] Project builds clean, no new warnings
+- [x] Settings → General → Frost icon lists **Snowflake**; no "Ice Cube" entry
+- [x] Selecting Snowflake shows the filled snowflake when the section is hidden and the outline when visible
+- [x] Fresh install (no `FrostIcon` key) still defaults to Dot and logs no migration error
+- [x] Manual upgrade check: run the current build, select Ice Cube, quit, run the new build → icon is Snowflake, **not** Dot
+- [x] Selecting a different icon (e.g. Door) before upgrade leaves that icon untouched after upgrade
+- [x] `ControlItemImageSet.swift` contains no `.catalog(` call and no `"Ice Cube"` string
 
 ## Risk Assessment
 

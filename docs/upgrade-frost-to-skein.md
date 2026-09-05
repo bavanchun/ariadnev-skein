@@ -8,10 +8,11 @@ appearance) is copied on Skein's first launch.
 
 Follow the steps in order.
 
-## 1. Download Skein 1.2.0
+## 1. Download Skein
 
-- Get `Skein-1.2.0.zip` from
-  <https://github.com/bavanchun/ariadnev-skein/releases/latest>.
+- Get `Skein-<version>.zip` from
+  <https://github.com/bavanchun/ariadnev-skein/releases/latest>. Take whatever
+  the latest release offers; there is no reason to pin an older one.
 - Double-click to unzip; you'll get `Skein.app`.
 
 ## 2. Move to /Applications

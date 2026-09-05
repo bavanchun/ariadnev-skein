@@ -50,11 +50,15 @@ Frost.xcodeproj` and must move in the same commit or CI breaks.
 
 ## Success Criteria
 
-- [ ] `grep -rn "Frost" Skein.xcodeproj/project.pbxproj` returns nothing
-- [ ] No path named `*Frost*` remains outside `.ci-output` and `plans/`
-- [ ] Clean Release build succeeds
-- [ ] `git status` shows renames, not delete-plus-add
-- [ ] CI green on the pull request
+> **Record note.** Backfilled 2026-09-05. These verification steps were performed
+> during the rebrand and shipped in `v1.2.0` (`44a85c4`) but were never recorded.
+> See the plan-level record note for the source-level proof.
+
+- [x] `grep -rn "Frost" Skein.xcodeproj/project.pbxproj` returns nothing
+- [x] No path named `*Frost*` remains outside `.ci-output` and `plans/`
+- [x] Clean Release build succeeds
+- [x] `git status` shows renames, not delete-plus-add
+- [x] CI green on the pull request
 
 ## Risk Assessment
 

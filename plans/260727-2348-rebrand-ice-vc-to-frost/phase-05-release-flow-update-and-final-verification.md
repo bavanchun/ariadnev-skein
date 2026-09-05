@@ -106,9 +106,13 @@ The Sparkle Ed25519 keypair from the prior session (`~/.config/ice-vc/sparkle-pr
     - [x] Process alive: `pgrep -fl "Frost.app/Contents/MacOS/Frost"`
     - [x] `defaults read com.vchun.Frost` shows fork-owned keys (fresh domain, not inherited from `com.vchun.Ice`)
     - [ ] Settings window shows "Frost" title, About pane shows "Frost" + correct copyright
+      — Record: not applicable — superseded by Frost→Skein rebrand
     - [ ] Right-click menu bar context menu shows "Frost" as title
+      — Record: not applicable — superseded by Frost→Skein rebrand
     - [ ] Menu bar hide/show toggle works
+      — Record: not applicable — superseded by Frost→Skein rebrand
     - [ ] Settings → About → Check for Updates reaches the new appcast without error
+      — Record: not applicable — superseded by Frost→Skein rebrand
 11. Final whole-repo consistency sweep:
     ```bash
     grep -rniE '\bice\b' . \
@@ -126,6 +130,7 @@ The Sparkle Ed25519 keypair from the prior session (`~/.config/ice-vc/sparkle-pr
 - [x] Sparkle feed URL resolves correctly (302→302→200)
 - [x] `Frost.app` installed, running, showing correct identity everywhere in the UI
 - [ ] Accessibility + Screen Recording re-granted (manual GUI step — pending user)
+      — Record: not applicable — superseded by Frost→Skein rebrand
 - [x] `docs/release-guide.md` fully updated to Frost naming
 - [x] Final repo-wide grep shows zero unexpected `Ice` references outside the required `LICENSE` attribution line
 
