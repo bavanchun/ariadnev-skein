@@ -1,134 +1,213 @@
 ---
 phase: 4
-title: "P2 — Port HID event taps + sourcePID from upstream/macos-26"
+title: "P2 — Port the mouse-moved event tap from upstream/macos-26"
 status: pending
 priority: P2
-effort: "2.0 days"
+effort: "0.25 day"
 dependencies: [3]
-release: "merges to main, does NOT tag alone — Phase 5 tags v1.4.0 together"
+release: "v1.4.0 — this phase never tags; see Release coupling"
+rescoped: 2026-09-05
+rescoped-from: "P2 — Port HID event taps + sourcePID from upstream/macos-26"
 ---
 
-# Phase 4: P2 — Port HID event taps + sourcePID resolution
+# Phase 4: P2 — Port the mouse-moved event tap
+
+> **Rescope note, 2026-09-05.** This phase originally claimed two sub-ports: a
+> `HIDEventManager` rewrite "replacing runloop event monitors with low-level
+> `CGEvent` taps to stop click drops", and a `sourcePID` computed property on
+> `WindowInfo`. Scouting `upstream/macos-26` found both descriptions false —
+> see [`plans/reports/scout-260905-phase-04-contract-check.md`](../reports/scout-260905-phase-04-contract-check.md)
+> for the evidence. In short: upstream turned exactly one monitor into a tap and
+> it is the hover one; the dropped-click work lives in `MenuBarItemManager.swift`,
+> which this phase's own OUT OF SCOPE section forbids; and `sourcePID` is an XPC
+> round-trip that structurally depends on Phase 5's service. The maintainer chose
+> on 2026-09-05 to narrow this phase to the one change that is real and in-gate,
+> move `sourcePID` into Phase 5 where its dependency actually points, and re-plan
+> the dropped-click work as Phase 6.
 
 ## Overview
 
-Selectively cherry-port two upstream `jordanbaird/Ice` improvements that fix real Skein bugs on macOS 15+ Sequoia: (a) `HIDEventManager` replacing runloop event monitors with low-level `CGEvent` taps to stop click drops and missed hover transitions, and (b) `sourcePID` resolution to correctly identify window owner when Control Center is the immediate owner on newer macOS. Direct `git merge upstream/macos-26` is fatal due to project-wide Frost/Skein renames — every commit must be cherry-picked, then adapted.
+Port upstream commit `292556f` — "Replace `mouseMoved` event monitor with an
+event tap" — onto `Skein/Events/EventManager.swift`. It moves the show-on-hover
+trigger off an `NSEvent` runloop monitor and onto a listen-only `CGEvent` tap at
+`.hidEventTap`. Upstream's stated motivation is the one this phase adopts:
+
+> "This should fix some performance issues that occur during mouse tracking
+> operations (e.g. highlighting a button on hover)."
+
+Nothing else from upstream is in this phase.
 
 ## Requirements
 
 ### Functional
-- After merge, on macOS 15+, clicking a menu bar item Skein manages must land on that item every time (no dropped clicks under moderate usage).
-- Hover-driven interactions (menu bar item bounding rect refresh, tooltip surface) must not skip frames when the user sweeps the mouse across the menu bar rapidly.
-- When Control Center owns a window Skein needs to identify, `sourcePID` resolution returns the real client PID, not `ControlCenter`'s PID.
+
+- Show-on-hover keeps working exactly as it does today: sweeping the mouse into
+  the menu bar reveals the hidden section under the same conditions and after
+  the same delay.
+- Hover-driven work does not skip frames when the mouse sweeps the menu bar
+  rapidly.
+- If the tap's mach port cannot be created, the app still launches and every
+  other feature still works. `EventTap` already logs and returns without a port
+  in that case (`Skein/Events/EventTap.swift:132`), so this is a check, not new
+  code.
+- A hover tap that the system disables must come back on its own. macOS disables
+  an event tap whose callback overruns, and `.mouseMoved` at `.hidEventTap` is
+  the highest-volume stream in the app, so this is the one new failure mode the
+  change introduces.
 
 ### Non-Functional
-- No new Swift dependencies.
-- No behavior change on macOS 14 (per project deployment target).
-- Diff must stay under 500 lines of Swift, split across at most 6 files.
+
+- No new Swift dependencies, no new files.
+- Diff confined to `Skein/Events/EventManager.swift`, `Skein/Events/EventTap.swift`
+  and `CHANGELOG.md`.
+- Under 80 lines of Swift.
+- No behavior change on macOS 14.
 
 ## Architecture
 
-Two logical sub-ports, PR'd together because they interact:
+`Skein/Events/EventTap` is already present and is byte-identical in its
+initializer to upstream's at `292556f^`:
 
-**Sub-port A: `HIDEventManager`**
-- Upstream file: `upstream/macos-26:Ice/Ice/Events/HIDEventManager.swift` (or the equivalent path — agy resolves via `git log`).
-- Adopts `CGEvent.tapCreate(...)` at `.hidEventTap` location with the appropriate event mask. Wires into Skein's existing `EventManager`.
-- Fallback path: if `AXIsProcessTrusted()` returns false (permissions not granted), fall back to the current runloop monitor behavior — do NOT crash.
+```swift
+init(
+    label: String = #function,
+    options: CGEventTapOptions,
+    location: Location,
+    place: CGEventTapPlacement,
+    types: [CGEventType],
+    callback: @MainActor @escaping (_ proxy: Proxy, _ type: CGEventType, _ event: CGEvent) -> CGEvent?
+)
+```
 
-**Sub-port B: `sourcePID` resolution**
-- Upstream file: `upstream/macos-26:Ice/Ice/Utilities/WindowInfo.swift` new `sourcePID` computed property.
-- Uses `_CGSCopyWindowProperty` (or the closest available API upstream chose) to walk from immediate owner to source client.
-- Adopted at every WindowInfo call site that currently trusts `windowOwnerPID`.
+It already has `Location.hidEventTap` and `enable()` / `disable()`;
+`UniversalEventMonitor` already has `start()` / `stop()`. So the port is three
+edits inside one file:
+
+1. Replace `mouseMovedMonitor` (a `UniversalEventMonitor(mask: .mouseMoved)`)
+   with `mouseMovedTap`, an `EventTap(options: .listenOnly, location:
+   .hidEventTap, place: .tailAppendEventTap, types: [.mouseMoved])`.
+2. Type `allMonitors` as `[any EventMonitorProtocol]` so the array can hold both
+   kinds.
+3. Add the private `EventMonitorProtocol` (`start()` / `stop()`) at the bottom of
+   the file, with conformances for `UniversalEventMonitor` and `EventTap`.
+
+A fourth edit is needed in `Skein/Events/EventTap.swift`, which `292556f` did
+not carry because upstream had not written it yet:
+
+4. In `performCallback` (`Skein/Events/EventTap.swift:152`), re-enable the tap
+   when the system hands back `.tapDisabledByUserInput` or
+   `.tapDisabledByTimeout`, and swallow that notification event. Upstream added
+   exactly this later, in `eb5d14a`:
+
+   ```swift
+   if type == .tapDisabledByUserInput || type == .tapDisabledByTimeout {
+       tap.enable()
+       return nil
+   }
+   ```
+
+   Without it a timed-out hover tap stays dead until the app is relaunched, and
+   the user sees show-on-hover silently stop working. Skein's three existing
+   `EventTap` users in `MenuBarItemManager.swift` are short-lived taps for click
+   synthesis and are barely exposed to this; a long-lived `.mouseMoved` tap is.
+
+**Two adaptations from upstream.**
+
+- Upstream's pre-image had already refactored handlers to take `appState:` and
+  `screen:` (commit `f17729e`, which Skein has not taken). Skein's
+  `handleShowOnHover()` takes no arguments. Keep Skein's call shape; do not pull
+  `f17729e` in to make the diff match.
+- Upstream's `EventTap` is not `@MainActor`; Skein's is
+  (`Skein/Events/EventTap.swift:11`), and `performCallback` is
+  `nonisolated static`. Reach `enable()` through `MainActor.assumeIsolated`, not
+  a `Task`: the tap's run loop source is added to the `CFRunLoopGetCurrent()`
+  captured at init on the main actor, so the callback already runs on the main
+  thread, and a `Task` hop would let events arrive before the tap is back.
 
 ## Related Code Files
 
-- Create: `Skein/Events/HIDEventManager.swift` (new file, ported)
-- Modify: `Skein/Events/EventManager.swift` (thread HID manager in, fallback path)
-- Modify: `Skein/Utilities/WindowInfo.swift` (add sourcePID property, wire call sites)
-- Modify: `Skein/Bridging/Shims/Private.swift` (add any missing `@_silgen_name` for CGS APIs the port needs)
-- Modify: `Skein.xcodeproj/project.pbxproj` (add HIDEventManager.swift to synced group — synced folders may auto-pick it, verify)
-- Modify: `CHANGELOG.md` (Unreleased section — do not bump version)
+- Modify: `Skein/Events/EventManager.swift`
+- Modify: `Skein/Events/EventTap.swift` (tap re-enable only — nothing else)
+- Modify: `CHANGELOG.md` (`[Unreleased]` section — do not bump version)
 
 ## OUT OF SCOPE
 
-- Any refactor of `MenuBarItemManager.swift` (deferred to a separate plan even though it lives in the same subsystem).
-- XPC service extraction (Phase 5).
-- `ScreenCaptureKit` migration for `ScreenCapture.swift` (separate concern, upstream still uses `CGWindowList` too).
-- Any additional upstream improvements beyond the two named sub-ports even if they look "quick" — scope discipline. PM will not accept surprise ports.
+- `Skein/Events/EventMonitors/*` — unchanged.
+- Everything in `Skein/Events/EventTap.swift` except the re-enable branch. Do
+  not adopt upstream's later `EventTap` rewrite (`type:location:placement:option:`
+  initializer, dropped `@MainActor`, `Proxy` removal) — the existing three call
+  sites in `MenuBarItemManager.swift` depend on the current signature.
+- Renaming `EventManager` to `HIDEventManager`. That rename (`f8828cd`) comes
+  with an enabled-state stack and reworked handler signatures; it is not needed
+  for this change and would blow the diff budget.
+- Upstream's `EventMonitor.swift` factory (`EventMonitor.universal(for:)`).
+- `MenuBarItemManager.swift` in any form — Phase 6 owns it.
+- `sourcePID` in any form — Phase 5 owns it.
+- Any other upstream commit, however small it looks.
 
 ## Implementation Steps
 
-1. Branch `feat/phase-04-p2-hid-source-pid-port` from `main` (must include Phase 3's merged v1.3.0 tag).
-2. `git fetch upstream` — must complete cleanly.
-3. `git log --oneline upstream/macos-26 -- Ice/Events/ Ice/Utilities/WindowInfo.swift | head -50` to identify the exact commits to cherry-pick.
-4. Draft a cherry-pick list (2–8 commits, agy justifies each in PR body).
-5. For each commit: `git cherry-pick <SHA>` with rename resolution: expect conflicts on every path due to Ice→Skein renames; resolve by moving Ice/* content to Skein/* mechanically, then applying the upstream diff on top.
-6. Post-cherry-pick: rename all `Ice`/`Frost` symbols the upstream files still reference to their Skein equivalents (use `git grep` to find residual references).
-7. `xcodebuild ... build` exit 0.
-8. **Manual test protocol** (agy writes; maintainer executes and reports back):
-   - macOS 15+ target Mac.
-   - Add 5 real menu bar items.
-   - Click each 20 times in rapid succession — count drops. Expected: 0.
-   - Sweep hover across bar for 30 seconds. Watch for tooltip artefacts / stale highlights.
-   - Open Control Center, invoke a Skein feature that needs sourcePID (e.g. menu bar item search including Control Center children).
-9. Open PR titled `feat(events): port HIDEventManager + sourcePID from upstream/macos-26 for macOS 15+ reliability`. Body includes the cherry-pick manifest and the test protocol result.
+1. Branch `feat/phase-04-p2-mouse-moved-event-tap` from `main`.
+2. `git show 292556f` for the reference diff. Do not `git cherry-pick` it — the
+   pre-image differs (path rename plus the `f17729e` handler signatures Skein
+   never took), so a cherry-pick produces a conflict whose resolution is the
+   manual edit anyway. Apply the three edits by hand and cite the upstream SHA
+   in the commit body.
+3. `xcodebuild build -scheme Skein -project Skein.xcodeproj -configuration Release -derivedDataPath <scratch>/DD CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO` — exit 0, warning delta zero against `main`.
+4. Add a `CHANGELOG.md` `[Unreleased]` → `### Changed` line.
+5. **Manual test protocol** (written here, maintainer executes):
+   - Sweep the mouse into and out of the menu bar 20 times. The hidden section
+     shows and rehides each time, with no missed reveal.
+   - Hold the pointer still just outside the menu bar for 10 seconds. No
+     spurious reveal.
+   - With "Show on hover" disabled in Settings, sweep 10 times. Nothing reveals.
+   - Watch Activity Monitor while sweeping continuously for 30 seconds. Skein's
+     CPU should not exceed its pre-change baseline, and hover must still work at
+     the end of the sweep — that is the tap-re-enable path under test.
+6. Open PR `feat(events): move show-on-hover onto a CGEvent tap (upstream 292556f)`.
 
 ## PM VERIFICATION CHECKLIST
 
-- [ ] `git log --oneline main..HEAD` cherry-picks are only from `upstream/macos-26` and each references its upstream SHA in the trailer.
-- [ ] `git diff main..HEAD --stat` under 500 Swift LOC, ≤6 files.
-- [ ] `rg -q "class Ice" Skein/` returns nothing (no residual Ice symbol names).
-- [ ] `rg -q "com.jordanbaird" Skein/` returns nothing.
-- [ ] New `HIDEventManager.swift` has a fallback path when AX permission not granted (grep for `AXIsProcessTrusted` in that file).
-- [ ] `EventManager.swift` diff shows HID wiring behind a compile-time or runtime gate that keeps macOS 14 behavior intact.
-- [ ] `WindowInfo.sourcePID` implementation matches upstream semantically; PM cross-reads.
-- [ ] `xcodebuild ... build` exit 0.
-- [ ] Manual test protocol results attached in PR body — maintainer confirms.
+- [ ] `git diff main..HEAD --stat` shows exactly 3 files: `Skein/Events/EventManager.swift`, `Skein/Events/EventTap.swift`, `CHANGELOG.md`.
+- [ ] Swift diff under 80 lines.
+- [ ] `grep -n 'mouseMovedMonitor' Skein/Events/EventManager.swift` returns nothing.
+- [ ] `grep -n 'mouseMovedTap' Skein/Events/EventManager.swift` returns the tap declaration and its entry in `allMonitors`.
+- [ ] The tap is `options: .listenOnly` and `location: .hidEventTap` — a listen-only tap cannot swallow a user's event.
+- [ ] `allMonitors` is typed `[any EventMonitorProtocol]` and still lists all five entries.
+- [ ] `EventTap.performCallback` returns `nil` for `.tapDisabledByUserInput` and `.tapDisabledByTimeout` after calling `enable()`, and reaches it via `MainActor.assumeIsolated`.
+- [ ] The three existing `EventTap(` call sites in `MenuBarItemManager.swift` are untouched and still compile against the unchanged initializer.
+- [ ] Commit body cites upstream SHAs `292556f` and `eb5d14a`.
+- [ ] `xcodebuild` exit 0, warning delta zero.
+- [ ] No file outside Related Code Files touched.
 
 ## Success Criteria
 
-- [ ] PR merged. NO tag yet — Phase 5 tags v1.4.0 together.
-- [ ] Dropped-click regression fixed (maintainer-confirmed reproduce-then-verify).
-- [ ] sourcePID returns non-ControlCenter PID for a Control Center-child window in a spot test.
+- [ ] PR merged. This phase never runs `git tag`. See Release coupling below.
+- [ ] Manual test protocol run by the maintainer with all four checks passing.
 
 ## Risk Assessment
 
-- **HID event tap requires Accessibility permission at a stricter level.** Signal: launch app on a fresh Mac, HID tap fails to install. Response: fallback path activates; app degrades to macOS-14-level behavior. Add UI hint in Permissions pane telling user they need to re-grant.
-- **Cherry-pick chain drift.** Signal: an upstream commit depends on another commit not in the cherry-pick list. Response: expand the manifest, re-justify. If manifest exceeds 8 commits or 500 LOC, STOP and ask PM whether to split into two phases.
-- **Xcode 26 SDK compatibility.** Signal: build fails on `@_silgen_name` or CGS bridging headers. Response: agy invokes `/ak:advise` for kongming counsel; PM makes the go/no-go call.
+- **Tap creation needs Accessibility, which a runloop monitor also needed.**
+  `EventTap` logs and returns with no mach port if creation fails, so a denied
+  permission degrades hover only, not the app. Signal: no reveal on hover after
+  a fresh install before permissions are granted. Response: none needed — this
+  matches current behavior, since `UniversalEventMonitor` is equally inert
+  without permission.
+- **Listen-only taps get disabled by the system under load.** macOS disables a
+  tap whose callback overruns and posts `.tapDisabledByTimeout`. Verified: local
+  `Skein/Events/EventTap.swift` does **not** handle those event types today —
+  `grep -c tapDisabled` returns 0 — which is why the re-enable branch is part of
+  this phase rather than deferred. Signal: hover stops working after sustained
+  load and does not recover. Response: confirm the branch fires by checking the
+  `EventTap` logger for a re-enable entry after a stress sweep.
 
----
+## Release coupling
 
-## AGY BRIEF (feed this verbatim to agy)
+Phase 4 and Phase 5 are independent and may land in either order. **The version
+bump to 1.4.0 belongs to whichever of the two merges second**, and that PR's
+`CHANGELOG.md` entry describes both. If only one has merged when a release is
+cut, the entry describes only what is on `main`.
 
-Bạn thực thi Phase 4. Đọc `phase-04-p2-hid-source-pid-port.md`.
-
-CWD: `/Users/vchun/Codes/My-projects/tools/Menubar-Manager/Skein`
-Branch: `feat/phase-04-p2-hid-source-pid-port` từ `main` (sau khi v1.3.0 đã merge).
-
-### Skills bắt buộc
-- `/ak:scout` — đọc `plans/reports/scout-260828-2201-upstream-drift.md` để có bối cảnh 77 commits ahead. Cross-reference vào `git log upstream/macos-26`.
-- `/ak:fix` — apply cherry-pick + adapt.
-- `/ak:test` — build + manual test protocol setup.
-- `/ak:code-review` — self-review diff, đặc biệt symbol rename residuals.
-- `/ak:advise` — bắt buộc dùng nếu manifest > 6 commits, OR nếu cherry-pick > 3 conflict, OR nếu build không pass sau adapt.
-
-### Hard rules
-1. KHÔNG `git merge upstream/macos-26`. Chỉ `git cherry-pick`.
-2. KHÔNG port thêm commit nào ngoài 2 sub-port đã đặt tên. Thấy commit "hay" khác → note trong PR body, không cherry-pick.
-3. KHÔNG rename thêm file trong Skein/ ngoài file mới `HIDEventManager.swift`.
-4. Manual test bạn KHÔNG chạy được (bạn không dùng UI). Bạn viết test protocol trong PR body, maintainer chạy.
-5. Nếu diff > 500 Swift LOC hoặc > 6 file: DỪNG, không open PR, báo PM để split.
-6. KHÔNG `git tag`, KHÔNG merge.
-
-### Deliverables
-1. PR với cherry-pick manifest + test protocol trong body.
-2. CI xanh.
-3. Diff trong ngưỡng.
-4. In: `PHASE_4_DONE: <PR URL> | commits: <N> | LOC: <N>`
-
-## Kongming checkpoint (PM run)
-
-**Before agy starts cherry-picking:** PM asks kongming: "Given the Skein fork's project-wide rename to `com.ariadnev.Skein` and Skein/ path convention, what's the safest cherry-pick strategy for these 2 sub-ports, and which conflicts should agy expect to hit?" Pass: upstream commit list, current renamed file tree.
-
-**After PR opened, before merge:** PM asks kongming to spot-check the ported HIDEventManager for permission fallback correctness and CGEvent tap lifecycle (memory, invalidation on quit).
+`v1.4.0` is tagged and published by the **maintainer**, never by this phase —
+see guardrail 1 in [`plan.md`](./plan.md). This phase stops at an open PR with
+green CI.

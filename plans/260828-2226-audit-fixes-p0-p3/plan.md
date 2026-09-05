@@ -1,6 +1,6 @@
 ---
 title: "Audit fixes P0-P3 — three-release ship train"
-description: "Ship the P0/P1/P2/P3 findings from plans/reports/antigravity-260828-2201-project-audit.md as three sequential releases (v1.2.2 patch → v1.3.0 minor → v1.4.0 minor). Claude Code is the project manager and reviewer; agy (Antigravity CLI) executes each phase as the coder."
+description: "Ship the P0/P1/P2/P3 findings from plans/reports/antigravity-260828-2201-project-audit.md as three sequential releases (v1.2.2 patch → v1.3.0 minor → v1.4.0 minor). Claude Code is project manager, reviewer, and — since 2026-09-05 — the coder."
 status: in-progress
 priority: P1
 effort: "5-7 days total across ~2 weeks calendar"
@@ -16,7 +16,7 @@ blocks: [260823-1810-skein-landing-page]
 
 The 2026-08-28 Antigravity audit (`plans/reports/antigravity-260828-2201-project-audit.md`) surfaced four tiers of work: three critical bugs plus visual polish (P0), landing-page completion (P1a), documentation and repo hygiene (P1b), and two selective upstream ports (P2 HID/sourcePID, P3 XPC service). This plan sequences that work into three releases so blast radius stays small and users get value early.
 
-Claude Code (this session) is the project manager: it delegates one phase at a time to `agy` running in an Orca terminal, verifies the result independently before merge, tags releases, and owns coordination. `agy` never merges its own PRs, never tags, never renames files outside the phase scope, and never widens scope beyond the phase brief. Every phase invokes named `/ak:*` skills (which `agy` has installed in `~/.gemini/config/skills/ak-*/`) so behavior stays consistent with the maintainer's workflow.
+Claude Code (this session) is the project manager **and, since 2026-09-05, the coder** — see the Resolved Decisions for that date. It executes one phase at a time, verifies the result against the phase's own checklist before merge, and owns coordination; the maintainer approves and tags. The original delegation model is described below as written; where it says `agy`, read "whoever executes the phase". `agy` never merges its own PRs, never tags, never renames files outside the phase scope, and never widens scope beyond the phase brief. Every phase invokes named `/ak:*` skills (which `agy` has installed in `~/.gemini/config/skills/ak-*/`) so behavior stays consistent with the maintainer's workflow.
 
 ## Goals
 
@@ -25,40 +25,53 @@ Claude Code (this session) is the project manager: it delegates one phase at a t
 | 1 | Fix 3 HIGH defects (memory leak, loop break, slice crash) and correct About URL; update AccentColor to rope orange | P0 | **completed** |
 | 2 | Ship landing page (finalize PR #2, capture real screenshots, verify Frost→Skein install migration) | P1 | v1.3.0 window |
 | 3 | Fix documentation drift, prune 16.4 MB of dead upstream Ice assets, backfill 50 stale plan checkboxes | P1 | **completed** |
-| 4 | Cherry-port HIDEventManager + sourcePID resolution from `upstream/macos-26` to fix macOS 15+ click drops | P2 | v1.4.0 |
-| 5 | Cherry-port XPC MenuBarItemService from `upstream/macos-26` to remove main-thread beachball risk | P3 | v1.4.0 |
+| 4 | Port upstream's mouse-moved event tap (`292556f`) so hover detection survives a disabled tap | P2 | v1.4.0 |
+| 5 | Port the XPC MenuBarItemService so menu bar items resolve to their real owning app on macOS 26 | P3 | v1.4.0 |
+| 6 | Size the dropped-click / item-movement work before contracting it — scout and re-plan, no code | P2 | none |
 
 ## Phases
 
 | # | Phase | Release | Effort | Status |
 |---|-------|---------|--------|--------|
-| 1 | [P0 — v1.2.2 patch](./phase-01-p0-v1.2.2-patch.md) | v1.2.2 | 0.5 day | Pending |
-| 2 | [P1a — Landing ship & escort install](./phase-02-p1a-landing-ship.md) | v1.3.0 window | 1.0 day | Pending |
-| 3 | [P1b — Docs hygiene & repo cleanup → v1.3.0](./phase-03-p1b-docs-hygiene.md) | v1.3.0 | 0.5 day | Pending |
-| 4 | [P2 — Port HID event taps + sourcePID](./phase-04-p2-hid-source-pid-port.md) | v1.4.0 | 2.0 days | Pending |
-| 5 | [P3 — Port XPC MenuBarItemService → v1.4.0](./phase-05-p3-xpc-service-port.md) | v1.4.0 | 3.0 days | Pending |
+| 1 | [P0 — v1.2.2 patch](./phase-01-p0-v1.2.2-patch.md) | v1.2.2 | 0.5 day | **Completed** — PR #19, v1.2.2 shipped |
+| 2 | [P1a — Landing ship & escort install](./phase-02-p1a-landing-ship.md) | v1.3.0 window | 1.0 day | **Partial** — workstream A shipped (PR #20); B blocked on maintainer screenshots |
+| 3 | [P1b — Docs hygiene & repo cleanup → v1.3.0](./phase-03-p1b-docs-hygiene.md) | v1.3.0 | 0.5 day | **Completed** — PR #21 merged; v1.3.0 tag pending maintainer |
+| 4 | [P2 — Port the mouse-moved event tap](./phase-04-p2-hid-source-pid-port.md) | v1.4.0 | 0.25 day | Pending — rescoped 2026-09-05 |
+| 5 | [P3 — Port the XPC source-PID resolver](./phase-05-p3-xpc-service-port.md) | v1.4.0 | 2.0 days | Pending — rescoped 2026-09-05, **do this first** |
+| 6 | [P2 — Re-plan dropped-click and item-movement handling](./phase-06-p2-re-plan-dropped-click-and-item-movement-handling.md) | none | 1.0 day | Pending — scout + plan only, ships no code |
 
 ## Release Sequence
 
 ```
-Phase 1 → cut v1.2.2 (patch: crash + leak fixes + accent)
+Phase 1 → cut v1.2.2 (patch: crash + leak fixes + accent)          [DONE]
    ↓
-Phase 2 (landing ship, no version change — content only, deploys via Cloudflare Pages)
+Phase 2 (landing ship, no version change — content only)            [workstream A done]
    ↓
-Phase 3 → cut v1.3.0 (docs cleanup, no user-facing app behavior change but tag anyway to close the docs delta cleanly)
+Phase 3 → cut v1.3.0 (docs cleanup)                                 [merged, tag pending]
    ↓
-Phase 4 → merge to main, do NOT tag yet
+Phase 5 and Phase 4 — independent, either order.
+   The version bump to 1.4.0 belongs to whichever merges SECOND,
+   and that PR's CHANGELOG entry describes both.
    ↓
-Phase 5 → cut v1.4.0 (P2 + P3 together — both are upstream ports touching MenuBar/Events subsystems, safer to ship together with one round of user regression testing)
+v1.4.0 tagged by the maintainer once both have landed.
+
+Phase 6 runs after Phase 5 and produces a plan, not a release.
 ```
+
+**Ordering, decided 2026-09-05:** Phase 5 goes first. The macOS 26 window-ownership
+bug is live on the maintainer's own machine (26.6.2), and `sourcePID` — which the
+old Phase 4 claimed to deliver — is produced by Phase 5's XPC service, not by
+Phase 4. Phase 4 is now a 0.25-day, one-file port that can land whenever.
 
 ## Success Criteria
 
 - [ ] v1.2.2 tagged, released, `spctl`-verifiable, appcast enclosure byte-matched, ZIP + DMG uploaded, release notes call out the 3 crash/leak fixes.
 - [ ] Landing page PR #2 merged with real product screenshots (not placeholder cubes/rectangles) and Frost→Skein migration verified on maintainer's own Mac end-to-end.
 - [ ] v1.3.0 tagged; `CHANGELOG.md`, `docs/UPSTREAM.md`, `docs/upgrade-frost-to-skein.md`, `FREQUENT_ISSUES.md`, `docs/DEVELOPMENT_WORKFLOW.md` all match reality; `Resources/` slimmed by ≥16 MB; 50 stale plan checkboxes reconciled.
-- [ ] HID event taps + sourcePID resolution ported, tested on macOS 15+, dropped-click regression reproduced-then-verified-fixed.
-- [ ] XPC `SkeinMenuBarItemService` scaffolded and wired for Accessibility API queries; main thread never touches AX calls that block for a hung third-party status item.
+- [ ] Upstream's mouse-moved event tap ported (`292556f`), and a tap disabled by timeout re-enables itself instead of leaving hover detection dead.
+- [ ] `MenuBarItemService.xpc` embedded and signed, and on macOS 26 menu bar items in Settings → Menu Bar Layout show their real owning application instead of Control Center — verified by the maintainer against a 1.3.x build.
+- [ ] Killing the XPC service process degrades the app to legacy pids without a crash or a hang.
+- [ ] Dropped-click work is sized and a maintainer decision recorded, rather than contracted unsized.
 - [ ] v1.4.0 tagged, appcast rolls forward cleanly, no Sparkle byte-length mismatch.
 - [ ] No phase branch left orphaned; every worktree removed after its phase ships.
 
@@ -113,6 +126,46 @@ For each phase, PM does the following in order:
 - **Phase 3 semver:** v1.3.0 minor. Docs-drift chapter closed cleanly.
 - **Phase 5 XPC bundle id:** `com.ariadnev.Skein.MenuBarItemService` (nested, Apple convention).
 - **agy warm-up:** skipped. Phase 1 spec + PM verification checklist + kongming pre-merge counsel are the safety net.
+
+## Resolved Decisions (maintainer approved 2026-09-05)
+
+- **Coder identity: Claude Code writes the code directly.** The agy/Antigravity
+  delegation model in the Overview and in "agy Delegation Protocol" below is no
+  longer how phases are executed. **The Non-Negotiable Guardrails still bind
+  unchanged** — read "agy" there as "whoever is executing the phase". Nothing in
+  that list was waived; in particular tags stay the maintainer's call, and one
+  phase is still one PR.
+- **Scope:** phases 2-5 of this plan, executed in sequence.
+- **Phase 4/5 rescope.** See the record note below.
+
+## Record note — 2026-09-05 rescope of phases 4 and 5
+
+A contract check against `upstream/macos-26`
+([`plans/reports/scout-260905-phase-04-contract-check.md`](../reports/scout-260905-phase-04-contract-check.md))
+found the Phase 4 and Phase 5 contracts were written against an imagined
+upstream rather than the real one. Three findings drove the rescope:
+
+1. **Phase 4 named commits that are not event-tap work.** Of the commits it
+   listed, only `292556f` replaces a monitor with a tap. It is one file,
+   +34/−9.
+2. **The dropped-click fix is not in Phase 4's file list.** It lives in
+   `MenuBarItemManager.swift`, which every phase marks OUT OF SCOPE, and
+   upstream reworked it across `8d4b6a5`, `e3c63f2` and `b0a1942` — roughly
+   1,800 lines of churn in that one file.
+3. **The `sourcePID` dependency ran backwards.** Phase 4 was written as though
+   it delivered `sourcePID` and Phase 5 depended on it. In upstream, `sourcePID`
+   is produced by the XPC service — Phase 5's work. Phase 4 never touches it.
+
+Phase 5's contract additionally described an `@objc` `NSXPCConnection` protocol
+with `windowsForItem(withIdentifier:reply:)` and `frameForItem(withIdentifier:reply:)`.
+No such protocol exists upstream; the real service is Swift-native
+`XPCListener`/`XPCSession` carrying `Codable` enums, and it resolves a source pid
+and nothing else.
+
+**Outcome:** Phase 4 shrunk to `292556f` alone (0.25 day, independent). Phase 5
+rewritten against the verified upstream source and moved ahead of Phase 4.
+Dropped-click split out as Phase 6, which produces a plan rather than code.
+Both phase files carry `rescoped: 2026-09-05` in their frontmatter.
 
 ## Open Questions still standing
 
