@@ -112,8 +112,11 @@ Five slices, all in one PR:
 
 ## Success Criteria
 
-- [ ] PR merged, v1.3.0 tagged, release published. — held for the maintainer; only
-      v1.2.2 was explicitly approved for tagging.
+- [x] PR merged, v1.3.0 tagged, release published. — PR #21 (`2080d2e`); tag
+      `v1.3.0` is SSH-signed at that commit; the release is deliberately
+      notes-only. 1.3.0 changed no app behavior, so shipping a binary for it
+      would only hand Sparkle a second archive to choose between. The release
+      page says so and points at 1.4.0.
 - [x] `docs/` inventory reflects reality; audit report's Section 4 findings all closed.
 - [x] `plans/260823-1810-skein-landing-page` superseded and closed cleanly.
 
