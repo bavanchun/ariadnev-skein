@@ -2,7 +2,11 @@
 
 All notable changes to Skein are recorded here. Skein follows Semantic Versioning; the bump rules and approval gate are defined in [`docs/release-guide.md`](docs/release-guide.md).
 
-## [Unreleased]
+## [1.4.0] - 2026-09-05
+
+### Changed
+
+- Show-on-hover now listens for pointer movement through a listen-only `CGEvent` tap instead of an `NSEvent` run loop monitor. Mouse tracking elsewhere in the system — hovering a button, sweeping across a toolbar — no longer competes with Skein for the same event delivery, which is where the stutter came from. A tap that macOS disables for overrunning its callback now turns itself back on, so hover keeps working after a burst of load instead of going quiet until the next launch. (Ported from upstream Ice `292556f`, with the recovery branch from `eb5d14a`.)
 
 ### Fixed
 
@@ -112,7 +116,8 @@ macOS ties Accessibility and Screen Recording to an app's bundle identifier, so 
 
 Releases before this fork are documented in [jordanbaird/Ice](https://github.com/jordanbaird/Ice/releases).
 
-[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.0...v1.2.1
