@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "P3 — Port the MenuBarItemService XPC source-PID resolver from upstream/macos-26"
-status: pending
+status: completed
 priority: P3
 effort: "2.0 days"
 dependencies: [3]
@@ -404,48 +404,122 @@ script block and to the checklist at line 348.
 
 - [ ] `git diff -M --stat main..HEAD` shows the four moved files as renames with
       zero content change (except `Logging.swift`'s one-line subsystem swap).
+      — **renames yes, zero content change no.** All four are detected as
+      renames (`Bridging.swift` 94%, `Deprecated.swift` 100%, `Private.swift`
+      94%, `Logging.swift`). But two carry additions the service needs:
+      `Bridging.swift` +11 (`setProcessUnresponsiveTimeout(_:)`) and
+      `Private.swift` +6 (the `CGSEventSetAppIsUnresponsiveNotificationTimeout`
+      `@_silgen_name` shim). `Logging.swift` is +3/−1 (the subsystem swap plus
+      `import Foundation`); `Deprecated.swift` is clean. Disclosed as deviation
+      1 in PR #23.
 - [ ] New Swift LOC, excluding renames, is under 800. `git diff -M --numstat`
-      is the measurement; a diff without `-M` is not.
-- [ ] `grep -rn 'NSXPCConnection\|@objc protocol' Shared/ MenuBarItemService/ Skein/`
-      returns nothing.
-- [ ] The service target in `project.pbxproj` has
+      is the measurement; a diff without `-M` is not. — **877 added / 105
+      removed, net 772**, rename-excluded, measured with `-M` against
+      `2080d2e..ef982aa`. Passes on net, fails on added lines. Both readings
+      were reported rather than the passing one picked, and the gate was
+      **waived by ruling on PR #23**: the 800 ceiling was set against a
+      pre-rescope design (a thin `NSXPCConnection` shim) that does not exist
+      upstream, this phase's own contract forbids splitting the PR, and the
+      churn the gate actually bounds — existing Swift outside the new service,
+      the new client, and `Shared/` — is **+211/−105 across six files**, with
+      `MenuBarItemManager.swift` moving only +28/−28.
+- [x] `grep -rn 'NSXPCConnection\|@objc protocol' Shared/ MenuBarItemService/ Skein/`
+      returns nothing. — 0 matches.
+- [x] The service target in `project.pbxproj` has
       `productType = "com.apple.product-type.xpc-service"`,
       `PRODUCT_BUNDLE_IDENTIFIER = com.ariadnev.Skein.MenuBarItemService`,
       `ENABLE_APP_SANDBOX = NO`, `ENABLE_HARDENED_RUNTIME = YES`,
-      `SKIP_INSTALL = YES`, and no `CODE_SIGN_ENTITLEMENTS`.
-- [ ] `Shared` appears in `fileSystemSynchronizedGroups` of **both** targets.
-- [ ] The `Embed XPC Services` copy phase has
-      `dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices"` and `dstSubfolderSpec = 16`.
-- [ ] `MenuBarItemService/Resources/Info.plist` is in a
-      `membershipExceptions` list, not compiled.
-- [ ] Every `MenuBarItem` construction site is enumerated in the PR body with a
+      `SKIP_INSTALL = YES`, and no `CODE_SIGN_ENTITLEMENTS`. — all present: product type ×1, bundle id ×2,
+      `ENABLE_APP_SANDBOX = NO` ×2, `SKIP_INSTALL = YES` ×2,
+      `ENABLE_HARDENED_RUNTIME = YES` ×4 (app 2 + service 2). The only two
+      `CODE_SIGN_ENTITLEMENTS` lines are `:407` and `:439`, both in main-app
+      configuration blocks; the service blocks have none.
+- [x] `Shared` appears in `fileSystemSynchronizedGroups` of **both** targets. — pbxproj `:132-135` (Skein) and `:160-163` (MenuBarItemService).
+- [x] The `Embed XPC Services` copy phase has
+      `dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices"` and `dstSubfolderSpec = 16`. — pbxproj `:33` and `:34`.
+- [x] `MenuBarItemService/Resources/Info.plist` is in a
+      `membershipExceptions` list, not compiled. — in the exception set targeting
+      `MenuBarItemService`, pbxproj `:51`.
+- [x] Every `MenuBarItem` construction site is enumerated in the PR body with a
       one-line statement of whether it resolves `sourcePID` or falls back to
-      `ownerPID`, and why that is correct there.
-- [ ] `MenuBarItemInfo` derives its namespace from `sourcePID` on macOS 26 —
-      not just `MenuBarItem.sourcePID` being stored and unread.
-- [ ] The three synchronous call sites in the table are unchanged.
-- [ ] `MenuBarItemService.Connection` and the 2-argument `MenuBarItem`
-      initializer are both `@available(macOS 26.0, *)`.
-- [ ] `xcodebuild -project Skein.xcodeproj -scheme Skein -configuration Release build`
-      exits 0 with zero new warnings against `main`.
-- [ ] `find Skein.app -name '*.xpc'` finds the service inside
+      `ownerPID`, and why that is correct there. — the PR body tables all three
+      (`MenuBarItem.swift:229` legacy/fallback, `:270` the resolving path,
+      `MenuBarItemManager.swift:1302` liveness check that reads only
+      `isOnScreen`), and notes the two `EventManager.swift` grep hits are
+      `setIsDraggingMenuBarItem`, not constructions.
+- [x] `MenuBarItemInfo` derives its namespace from `sourcePID` on macOS 26 —
+      not just `MenuBarItem.sourcePID` being stored and unread. — `MenuBarItem.swift:354-373`: the
+      macOS 26 initializer resolves `NSRunningApplication(processIdentifier:)`
+      from `sourcePID` and takes its bundle identifier for the namespace,
+      falling back to `itemWindow.owningApplication` only when that is nil.
+      Confirmed live on hardware: with every layer-25 window reporting
+      `ownerPID = 459` / Control Center, the manager still logged
+      `Moving com.steipete.codexbar:codexbar-merged to left of
+      com.electron.dockerdesktop:Item-0`.
+- [x] The three synchronous call sites in the table are unchanged. — `MenuBarOverlayPanel.swift:573`,
+      `EventManager.swift:493`, `ScreenCapture.swift:13`, all left as they were,
+      and the overlay was verified still drawing on hardware.
+- [x] `MenuBarItemService.Connection` and the 2-argument `MenuBarItem`
+      initializer are both `@available(macOS 26.0, *)`. — `MenuBarItemServiceConnection.swift:12`
+      and `:81`; `MenuBarItem.swift:146`, `:177`, `:354`.
+- [x] `xcodebuild -project Skein.xcodeproj -scheme Skein -configuration Release build`
+      exits 0 with zero new warnings against `main`. — exit 0, `** BUILD SUCCEEDED **`. Warning delta zero:
+      2 warnings on both sides, the same `CustomColorPicker.swift:115:9`
+      switch-exhaustiveness one, measured by building `main` from scratch in a
+      throwaway worktree rather than assumed. CI on PR #23 green.
+- [x] `find Skein.app -name '*.xpc'` finds the service inside
       `Contents/XPCServices/`, and `codesign -dv` on it reports the same Team ID
-      as the app.
-- [ ] ZIP size delta against v1.3.x is ≤ 300 KB.
-- [ ] `docs/release-guide.md` signs the new `.xpc` before the main app.
+      as the app. — on hardware:
+      `/Applications/Skein.app/Contents/XPCServices/MenuBarItemService.xpc`,
+      `Identifier=com.ariadnev.Skein.MenuBarItemService`,
+      `flags=0x10000(runtime)`, `TeamIdentifier=T8NP5XSKGL` — the app's team.
+- [x] ZIP size delta against v1.3.x is ≤ 300 KB. — `main` 6,099,456 B → branch
+      6,365,327 B = **+265,871 B (+259.6 KB)**, about 41 KB of headroom.
+- [x] `docs/release-guide.md` signs the new `.xpc` before the main app. — `docs/release-guide.md:161-162` in the
+      script block, `:351` in the checklist, `:369` in the pitfall note.
 - [ ] Manual test protocol results pasted into the PR body by the maintainer,
       including the before/after Menu Bar Layout screenshots from step 1.
+      — **results yes, screenshots no.** All six steps were run on hardware
+      (macOS 26.6.2 / 25G83) against a signed 1.3.0 build installed over
+      `/Applications`, and the full write-up is a comment on PR #23. The
+      before/after screenshots could not be taken: Menu Bar Layout renders
+      **empty** on this machine, on this branch and identically on shipped
+      v1.2.1, so there is nothing to photograph. That defect is filed as
+      issue #25 and is not caused by this phase. The layout state was instead
+      read through the Accessibility API (`SA1 = 0, SA2 = 0` on both builds).
 
 ## Success Criteria
 
-- [ ] PR opened, CI green, PM checklist complete.
+- [ ] PR opened, CI green, PM checklist complete. — PR #23 opened and CI green;
+  squash-merged to `ef982aa` on 2026-09-05. The checklist is **not** complete:
+  three boxes stay open with the reasons recorded against them (rename content
+  additions, the LOC gate, the missing screenshots).
 - [ ] On macOS 26, menu bar items in Settings → Menu Bar Layout show their real
       owning application, verified by the maintainer against a 1.3.x build.
-- [ ] Killing the service process does not crash or hang the app.
-- [ ] Below macOS 26 the app never opens an XPC session — verifiable by the
+      — **cannot be verified through that pane.** Two separate defects sit in
+      front of it, both pre-existing and both now filed: Menu Bar Layout is
+      empty on macOS 26 (issue #25, reproduces identically on v1.2.1), and
+      `MenuBarItem.displayName` still resolves through `owningApplication`
+      rather than `sourcePID`, so on macOS 26 it always lands in the
+      `.controlCenter` branch and returns the raw window title (issue #26).
+      What this phase actually delivers — namespacing by the creating process —
+      **is** verified on hardware through the manager's own logs, recorded
+      against the `MenuBarItemInfo` box above.
+- [x] Killing the service process does not crash or hang the app. — verified on
+      hardware with `kill -9` (SIGTERM was ignored, so the harsher case was the
+      one tested). Skein stayed alive, Settings intact, no crash report, items
+      kept rendering, Show the Hidden Section kept working; the disconnect was
+      logged cleanly as `XPC.XPCRichError error 1` and the service respawned on
+      demand at the next resolution with no user action and no app restart.
+- [x] Below macOS 26 the app never opens an XPC session — verifiable by the
       `@available` gates alone, since the client type cannot be referenced there.
+      — `MenuBarItemService.Connection` is `@available(macOS 26.0, *)`
+      (`MenuBarItemServiceConnection.swift:12`), so a pre-26 code path cannot
+      name the type and the compiler enforces it.
 - [ ] After maintainer approval: v1.4.0 tagged, released, appcast enclosure
-      byte-matched, Sparkle rolls 1.3.x → 1.4.0 on a real Mac.
+      byte-matched, Sparkle rolls 1.3.x → 1.4.0 on a real Mac. — **maintainer's,
+      untouched.** Guardrail 1: tags are the maintainer's call, and no `git tag`
+      was run. The 1.4.0 version bump itself landed with Phase 4 (`07df28c`).
 
 ## Risk Assessment
 
@@ -480,3 +554,56 @@ script block and to the checklist at line 348.
 Every change is additive or a rename. Reverting the merge commit restores the
 pre-phase state; no data migration, no user defaults touched, no appcast change
 until the maintainer tags.
+
+## Record — as shipped, 2026-09-05
+
+Merged as PR #23 (`ef982aa`), squash, branch deleted. `+1092 / −111` across 22
+files in one commit, no version bump — the 1.4.0 / 1140 bump went to Phase 4,
+which merged second, per that phase's Release coupling.
+
+Four deviations were disclosed in the PR body before merge, beyond the two
+checklist boxes annotated above:
+
+1. **Step 2 / step 6 ordering.** The contract has the files move at step 2 and
+   `Shared` registered in the pbxproj at step 6. That cannot work: a file moved
+   out of `Skein/` leaves the synchronised group and so leaves the app target
+   immediately, breaking the build until `Shared` is registered. The
+   registration was folded into step 2.
+2. **Logger naming.** Per-file `private extension Logger` rather than one shared
+   `Logger.default`, matching what the rest of this codebase already does.
+3. **The §4 table is wrong about `MenuBarManager.swift:189`.** It describes that
+   site as "inside a Task → async", which is why it was expected to error. It is
+   actually a synchronous Combine `.sink { [weak self] }`, so it never errored —
+   but it still needed the async path, because it locates control items via
+   `items.firstIndex(matching: .hiddenControlItem)`, matching on `info`, which
+   is exactly what breaks on macOS 26 without `sourcePID`. It was wrapped in a
+   `Task` rather than left alone.
+4. **`ScreenCapture.checkPermissions()` left on the legacy pid**, as the Risk
+   Assessment above instructs. Recorded as a known follow-up in the PR body.
+
+### Findings from the hardware run, filed rather than fixed
+
+- **#25** — Menu Bar Layout stays empty for the rest of the session after a
+  failed cache pass. `MenuBarItemManager.cacheItemsIfNeeded()` assigns
+  `cachedItemWindowIDs` *before* the `guard let hiddenControlItem` that can
+  bail, so one failed pass poisons the cache permanently: `.activeSpace`
+  includes off-screen items, so showing or hiding a section never changes the ID
+  set and every later call returns early. Deterministic 2/2 on this branch and
+  2/2 on shipped v1.2.1, which has no XPC service — **not a Phase 5 regression.**
+  Toggling `ShowSkeinIcon` 1→0→1 does not recover it. The fix is to move the
+  assignment after the guard.
+- **#26** — Menu bar item labels still show window titles on macOS 26 because
+  `MenuBarItem.displayName` (`MenuBarItem.swift:77-115`) ignores `sourcePID` and
+  resolves through `owningApplication`. Feeds `LayoutBarItemView.swift:78`,
+  `SkeinBar.swift:406`/`:433`, `MenuBarSearchPanel.swift:277`/`:440`, and several
+  `MenuBarItemManager` alert strings.
+
+Two other observations from the same run, recorded here because they belong to
+other phases: the Settings UI renders **green rather than rope orange `#E86A33`
+because the macOS system accent overrides the AccentColor asset — which matters
+for the Phase 2 landing screenshots — and Sparkle self-update 1.2.1 → 1.2.2 on
+hardware is still unproven, since nothing in this run exercised it.
+
+The machine was restored afterwards: `/Applications/Skein.app` back to v1.2.1
+(1122) with a valid signature, all 38 `com.ariadnev.Skein` defaults keys
+byte-identical, `codexbar-merged` returned to the visible section.
