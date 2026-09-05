@@ -155,6 +155,20 @@ final class EventTap {
         type: CGEventType,
         event: CGEvent
     ) -> Unmanaged<CGEvent>? {
+        // The system disables a tap whose callback overruns its timeout, and
+        // announces it by delivering one of these two types instead of a real
+        // event. Turning the tap back on here is the only way it recovers
+        // short of relaunching the app. The tap's run loop source was added to
+        // the main run loop, so this callback is already on the main thread —
+        // hop synchronously rather than through a Task, which would let events
+        // arrive while the tap is still off.
+        if type == .tapDisabledByUserInput || type == .tapDisabledByTimeout {
+            MainActor.assumeIsolated {
+                Logger.eventTap.warning("Re-enabling disabled event tap \"\(eventTap.label)\"")
+                eventTap.enable()
+            }
+            return nil
+        }
         let callback = eventTap.callback
         return callback(eventTap, proxy, type, event)
     }

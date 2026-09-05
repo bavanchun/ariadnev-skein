@@ -53,10 +53,13 @@ final class EventManager {
         return event
     }
 
-    /// Monitor for mouse moved events.
-    private(set) lazy var mouseMovedMonitor = UniversalEventMonitor(
-        mask: .mouseMoved
-    ) { [weak self] event in
+    /// Tap for mouse moved events.
+    private(set) lazy var mouseMovedTap = EventTap(
+        options: .listenOnly,
+        location: .hidEventTap,
+        place: .tailAppendEventTap,
+        types: [.mouseMoved]
+    ) { [weak self] _, _, event in
         self?.handleShowOnHover()
         return event
     }
@@ -72,11 +75,11 @@ final class EventManager {
     // MARK: All Monitors
 
     /// All monitors maintained by the app.
-    private lazy var allMonitors = [
+    private lazy var allMonitors: [any EventMonitorProtocol] = [
         mouseDownMonitor,
         mouseUpMonitor,
         mouseDraggedMonitor,
-        mouseMovedMonitor,
+        mouseMovedTap,
         scrollWheelMonitor,
     ]
 
@@ -547,6 +550,28 @@ extension EventManager {
             return false
         }
         return skeinIconFrame.contains(mouseLocation)
+    }
+}
+
+// MARK: - EventMonitor Helpers
+
+/// Helper protocol to enable group operations across event
+/// monitoring types.
+@MainActor
+private protocol EventMonitorProtocol {
+    func start()
+    func stop()
+}
+
+extension UniversalEventMonitor: EventMonitorProtocol { }
+
+extension EventTap: EventMonitorProtocol {
+    fileprivate func start() {
+        enable()
+    }
+
+    fileprivate func stop() {
+        disable()
     }
 }
 
