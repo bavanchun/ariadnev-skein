@@ -4,6 +4,19 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-08-28
+
+### Fixed
+
+- Closed memory leak in `ScreenCapture.captureWindows` by ensuring allocated unsafe buffer pointer is deallocated on scope exit.
+- Fixed premature loop termination in menu bar item spacing manager so non-matching apps continue instead of aborting the restart loop.
+- Clamped CGS window list array slice bounds across private bridging helpers to eliminate out-of-bounds crash risks under high window churn.
+- Updated repository URL in the About settings pane to point to the renamed `bavanchun/ariadnev-skein` repository.
+
+### Changed
+
+- Updated application `AccentColor` to warm rope orange (`#E86A33`) to align with the new app icon identity.
+
 ## [1.2.1] - 2026-08-28
 
 ### Changed
@@ -75,7 +88,9 @@ macOS ties Accessibility and Screen Recording to an app's bundle identifier, so 
 
 Releases before this fork are documented in [jordanbaird/Ice](https://github.com/jordanbaird/Ice/releases).
 
-[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/bavanchun/ariadnev-skein/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/bavanchun/ariadnev-skein/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/bavanchun/ariadnev-skein/compare/v1.0.0...v1.0.1
