@@ -4,6 +4,14 @@ All notable changes to Skein are recorded here. Skein follows Semantic Versionin
 
 ## [Unreleased]
 
+### Fixed
+
+- On macOS 26, menu bar items are attributed to the app that created them again. macOS 26 changed which process owns an item's window — every menu bar item now reports Control Center as its owner — so Skein saw a bar full of identically-named items, could not tell them apart in Menu Bar Layout, and could not reliably locate its own control items. Skein now resolves each item's real owning process and identifies items by that instead. macOS 14 and 15 are unaffected: they still run the previous owner-based path, which is also the fallback if the helper below cannot be reached.
+
+### Added
+
+- `MenuBarItemService`, an XPC helper embedded in `Skein.app/Contents/XPCServices/`, answers which application created a given menu bar item. The accessibility queries that answer that question can block on an unresponsive app, so they now run in the helper rather than in Skein itself, and a hung status item can no longer stall the interface. The helper accepts connections only from a process signed by the same team.
+
 ## [1.3.0] - 2026-09-05
 
 No app behavior changed in this release. It exists to record a documentation and

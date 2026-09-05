@@ -333,7 +333,7 @@ extension MenuBarItemManager {
             cachedItemWindowIDs = itemWindowIDs
         }
 
-        var items = MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
+        var items = await MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
 
         let hiddenControlItem = items.firstIndex(matching: .hiddenControlItem).map { items.remove(at: $0) }
         let alwaysHiddenControlItem = items.firstIndex(matching: .alwaysHiddenControlItem).map { items.remove(at: $0) }
@@ -1325,39 +1325,39 @@ extension MenuBarItemManager {
 
         Logger.itemManager.info("Temporarily showing \(item.logString)")
 
-        var items = MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
-
-        guard let destination = getReturnDestination(for: item, in: items) else {
-            Logger.itemManager.warning("No return destination for \(item.logString)")
-            return
-        }
-
-        // Remove all items up to the hidden control item.
-        items.trimPrefix { $0.info != .hiddenControlItem }
-        // Remove the hidden control item.
-        items.removeFirst()
-        // Remove all offscreen items.
-        items.trimPrefix { !$0.isOnScreen }
-
-        let maxX = if let rightArea = screen.auxiliaryTopRightArea {
-            max(rightArea.minX + 20, applicationMenuFrame.maxX)
-        } else {
-            applicationMenuFrame.maxX
-        }
-
-        // Remove items until we have enough room to show this item.
-        items.trimPrefix { $0.frame.minX - item.frame.width <= maxX }
-
-        guard let targetItem = items.first else {
-            let alert = NSAlert()
-            alert.messageText = "Not enough room to show \"\(item.displayName)\""
-            alert.runModal()
-            return
-        }
-
-        let initialWindows = WindowInfo.getOnScreenWindows()
-
         Task {
+            var items = await MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
+
+            guard let destination = getReturnDestination(for: item, in: items) else {
+                Logger.itemManager.warning("No return destination for \(item.logString)")
+                return
+            }
+
+            // Remove all items up to the hidden control item.
+            items.trimPrefix { $0.info != .hiddenControlItem }
+            // Remove the hidden control item.
+            items.removeFirst()
+            // Remove all offscreen items.
+            items.trimPrefix { !$0.isOnScreen }
+
+            let maxX = if let rightArea = screen.auxiliaryTopRightArea {
+                max(rightArea.minX + 20, applicationMenuFrame.maxX)
+            } else {
+                applicationMenuFrame.maxX
+            }
+
+            // Remove items until we have enough room to show this item.
+            items.trimPrefix { $0.frame.minX - item.frame.width <= maxX }
+
+            guard let targetItem = items.first else {
+                let alert = NSAlert()
+                alert.messageText = "Not enough room to show \"\(item.displayName)\""
+                alert.runModal()
+                return
+            }
+
+            let initialWindows = WindowInfo.getOnScreenWindows()
+
             if clickWhenFinished {
                 do {
                     try await slowMove(item: item, to: .leftOfItem(targetItem))
@@ -1423,7 +1423,7 @@ extension MenuBarItemManager {
 
         var failedContexts = [TempShownItemContext]()
 
-        let items = MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
+        let items = await MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
 
         MouseCursor.hide()
 

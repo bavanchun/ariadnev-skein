@@ -97,18 +97,20 @@ final class LayoutBarPaddingView: NSView {
 
         if let index = arrangedViews.firstIndex(of: draggingSource) {
             if arrangedViews.count == 1 {
-                // dragging source is the only view in the layout bar, so we
-                // need to find a target item
-                let items = MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
-                let targetItem: MenuBarItem? = switch section.name {
-                case .visible: nil // visible section always has more than 1 item
-                case .hidden: items.first { $0.info == .hiddenControlItem }
-                case .alwaysHidden: items.first { $0.info == .alwaysHiddenControlItem }
-                }
-                if let targetItem {
-                    move(item: draggingSource.item, to: .leftOfItem(targetItem))
-                } else {
-                    Logger.layoutBar.error("No target item for layout bar drag")
+                Task {
+                    // dragging source is the only view in the layout bar, so we
+                    // need to find a target item
+                    let items = await MenuBarItem.getMenuBarItems(onScreenOnly: false, activeSpaceOnly: true)
+                    let targetItem: MenuBarItem? = switch section.name {
+                    case .visible: nil // visible section always has more than 1 item
+                    case .hidden: items.first { $0.info == .hiddenControlItem }
+                    case .alwaysHidden: items.first { $0.info == .alwaysHiddenControlItem }
+                    }
+                    if let targetItem {
+                        move(item: draggingSource.item, to: .leftOfItem(targetItem))
+                    } else {
+                        Logger.layoutBar.error("No target item for layout bar drag")
+                    }
                 }
             } else if arrangedViews.indices.contains(index + 1) {
                 // we have a view to the right of the dragging source

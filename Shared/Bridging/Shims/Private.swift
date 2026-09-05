@@ -60,6 +60,12 @@ func CGSEventIsAppUnresponsive(
     _ psn: inout ProcessSerialNumber
 ) -> Bool
 
+@_silgen_name("CGSEventSetAppIsUnresponsiveNotificationTimeout")
+func CGSEventSetAppIsUnresponsiveNotificationTimeout(
+    _ cid: CGSConnectionID,
+    _ timeout: Double
+) -> CGError
+
 // MARK: - CGSSpace Functions
 
 @_silgen_name("CGSGetActiveSpace")
