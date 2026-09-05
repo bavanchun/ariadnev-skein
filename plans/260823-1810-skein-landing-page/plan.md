@@ -6,6 +6,7 @@ priority: P2
 effort: "1–2 weeks (design + build), gated on artwork and content"
 tags: [landing, marketing, cloudflare-pages, astro, gsap]
 created: 2026-08-23
+blockedBy: [260828-2226-audit-fixes-p0-p3]
 ---
 
 > **Record note.** The live plan. Phase 1 (Astro skeleton, Cloudflare Pages preview)
