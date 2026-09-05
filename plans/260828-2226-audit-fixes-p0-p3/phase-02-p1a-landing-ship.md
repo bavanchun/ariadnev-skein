@@ -86,9 +86,9 @@ Two workstreams run inside this phase, coordinated by PM:
 
 ## PM VERIFICATION CHECKLIST
 
-- [ ] `plans/handoffs/02c-install-escort-v1.2.2-20260828.md` exists, byte size matches the actual v1.2.2 ZIP on GitHub.
-- [ ] All 4 migration checks passed on maintainer's Mac (PM asks maintainer directly, does not assume).
-- [ ] `~/frost-prefs-backup-260828.plist` still exists (safety net not deleted).
+- [x] `plans/handoffs/02c-install-escort-v1.2.2-20260828.md` exists, byte size matches the actual v1.2.2 ZIP on GitHub (6,178,231; published asset re-downloaded and confirmed byte-identical to the local signed build).
+- [ ] All 4 migration checks passed on maintainer's Mac (PM asks maintainer directly, does not assume). — the Frost→Skein migration itself is already complete and verified by prefs diff (37/37 keys accounted for: 26 identical, 5 renamed with values intact, 6 live drift; `hasMigrated2_0_0` set). What remains is the maintainer's UI-level confirmation after the 1.2.1 → 1.2.2 upgrade.
+- [x] `~/frost-prefs-backup-260828.plist` still exists (safety net not deleted) — 65 KB, verified 2026-09-05.
 - [ ] Screenshots in `plans/reports/screenshots-260828/`: ≥6 files, each ≥1920×1200, no PII visible on visual inspection.
 - [ ] Landing PR diff replaces every `<div class="placeholder">` and every `<div class="menu-bar overflow">…</div>` block (except where a hand-drawn illustration is intentionally kept — PM decides case-by-case).
 - [ ] `pnpm build` output in PR CI shows 0 errors.
