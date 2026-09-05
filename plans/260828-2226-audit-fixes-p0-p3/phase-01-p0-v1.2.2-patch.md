@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "P0 — v1.2.2 patch (3 HIGH fixes + About URL + AccentColor)"
-status: pending
+status: completed
 priority: P0
 effort: "0.5 day"
 dependencies: []
@@ -73,24 +73,24 @@ Four surgical edits + one asset update:
 
 ## PM VERIFICATION CHECKLIST (Claude Code runs this before merging)
 
-- [ ] `git diff main..HEAD --stat` shows exactly the 7 files listed in Related Code Files (Swift = 4, JSON = 1, CHANGELOG.md, project.pbxproj) — no more, no fewer.
-- [ ] ScreenCapture.swift diff contains `defer { pointer.deallocate() }`.
-- [ ] MenuBarItemSpacingManager.swift diff shows `break` → `continue`.
-- [ ] Bridging.swift diff shows all three slice sites patched (`grep -n 'list\[..<' Bridging.swift` returns 0).
-- [ ] AboutSettingsPane.swift URL is exactly `https://github.com/bavanchun/ariadnev-skein`.
-- [ ] AccentColor.colorset Contents.json has `#E86A33` (or its component form 0.910/0.416/0.200) for the "Any Appearance" color.
-- [ ] pbxproj shows exactly 2 `MARKETING_VERSION = 1.2.2;` lines and 2 `CURRENT_PROJECT_VERSION = 1123;` lines.
-- [ ] CHANGELOG has a `## [1.2.2] - <date>` section with Fixed subsection listing all 4 code fixes and Changed subsection listing the accent color; version comparison link appended at bottom.
-- [ ] `xcodebuild ... build` exit 0, warning delta zero.
-- [ ] `codesign -dv` on release build shows `Identifier=com.ariadnev.Skein`.
-- [ ] `stat -f %z Skein-1.2.2.zip` == appcast `length="…"` value.
-- [ ] No changes to any file in OUT OF SCOPE list.
+- [x] `git diff main..HEAD --stat` shows exactly the 7 files listed in Related Code Files (Swift = 4, JSON = 1, CHANGELOG.md, project.pbxproj) — no more, no fewer.
+- [x] ScreenCapture.swift diff contains `defer { pointer.deallocate() }`.
+- [x] MenuBarItemSpacingManager.swift diff shows `break` → `continue`.
+- [x] Bridging.swift diff shows all three slice sites patched (`grep -n 'list\[..<' Bridging.swift` returns 0).
+- [x] AboutSettingsPane.swift URL is exactly `https://github.com/bavanchun/ariadnev-skein`.
+- [x] AccentColor.colorset Contents.json has `#E86A33` (or its component form 0.910/0.416/0.200) for the "Any Appearance" color.
+- [x] pbxproj shows exactly 2 `MARKETING_VERSION = 1.2.2;` lines and 2 `CURRENT_PROJECT_VERSION = 1123;` lines.
+- [x] CHANGELOG has a `## [1.2.2] - <date>` section with Fixed subsection listing all 4 code fixes and Changed subsection listing the accent color; version comparison link appended at bottom.
+- [x] `xcodebuild ... build` exit 0, warning delta zero.
+- [x] `codesign -dv` on release build shows `Identifier=com.ariadnev.Skein`.
+- [x] `stat -f %z Skein-1.2.2.zip` == appcast `length="…"` value.
+- [x] No changes to any file in OUT OF SCOPE list.
 
 ## Success Criteria
 
-- [ ] PR opened, CI green, PM verification checklist all boxes ticked.
-- [ ] After PM merge and tag: v1.2.2 tag on `main`, GitHub release published with ZIP + DMG, appcast rolled forward, Sparkle self-update from 1.2.1 → 1.2.2 works on a real Mac.
-- [ ] `plans/reports/scout-260828-2201-security-quality.md` HIGH-01, HIGH-02, HIGH-03 items marked resolved with PR link.
+- [x] PR opened, CI green, PM verification checklist all boxes ticked.
+- [ ] After PM merge and tag: v1.2.2 tag on `main`, GitHub release published with ZIP + DMG, appcast rolled forward, Sparkle self-update from 1.2.1 → 1.2.2 works on a real Mac. — tag, release (ZIP+DMG) and appcast done and byte-verified; self-update on a real Mac pending maintainer.
+- [x] `plans/reports/scout-260828-2201-security-quality.md` HIGH-01, HIGH-02, HIGH-03 items marked resolved with PR link.
 
 ## Risk Assessment
 

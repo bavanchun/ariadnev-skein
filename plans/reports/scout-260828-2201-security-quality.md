@@ -51,7 +51,7 @@ A comprehensive security, memory safety, concurrency, and code quality audit was
 
 ## 3. High Severity Findings
 
-### [HIGH-01] Memory Leak in Unsafe Pointer Allocation (`ScreenCapture.swift:64`)
+### [HIGH-01] Memory Leak in Unsafe Pointer Allocation (`ScreenCapture.swift:64`) — **RESOLVED** in [PR #17](https://github.com/bavanchun/ariadnev-skein/pull/17), shipped in [v1.2.2](https://github.com/bavanchun/ariadnev-skein/releases/tag/v1.2.2)
 - **File**: `Skein/Utilities/ScreenCapture.swift` (Lines 63–72)
 - **Impact**: Memory leak every time menu bar items or overlay window images are captured or cached.
 - **Root Cause**: `UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: windowIDs.count)` allocates heap memory for the `CFArrayCreate` call, but `pointer.deallocate()` is **never called**.
@@ -73,7 +73,7 @@ static func captureWindows(_ windowIDs: [CGWindowID], screenBounds: CGRect? = ni
 
 ---
 
-### [HIGH-02] Premature Loop Termination with `break` in App Relauncher (`MenuBarItemSpacingManager.swift:169`)
+### [HIGH-02] Premature Loop Termination with `break` in App Relauncher (`MenuBarItemSpacingManager.swift:169`) — **RESOLVED** in [PR #17](https://github.com/bavanchun/ariadnev-skein/pull/17), shipped in [v1.2.2](https://github.com/bavanchun/ariadnev-skein/releases/tag/v1.2.2)
 - **File**: `Skein/MenuBar/Spacing/MenuBarItemSpacingManager.swift` (Lines 163–171)
 - **Impact**: Applying item spacing offsets silently fails to restart remaining menu bar applications.
 - **Root Cause**: The loop iterating over menu bar owner PIDs encounters a `guard ... else { break }`. If the first or intermediate PID belongs to Skein itself (`app == .current`) or ControlCenter (`app.bundleIdentifier == "com.apple.controlcenter"`), the loop executes `break` instead of `continue`, instantly terminating the task group dispatch for all subsequent applications.
@@ -96,7 +96,7 @@ await withTaskGroup(of: Void.self) { group in
 
 ---
 
-### [HIGH-03] Potential Buffer Overflow / Out-of-Bounds Crash in CGS Window List Shims (`Bridging.swift:104,122,140`)
+### [HIGH-03] Potential Buffer Overflow / Out-of-Bounds Crash in CGS Window List Shims (`Bridging.swift:104,122,140`) — **RESOLVED** in [PR #17](https://github.com/bavanchun/ariadnev-skein/pull/17), shipped in [v1.2.2](https://github.com/bavanchun/ariadnev-skein/releases/tag/v1.2.2)
 - **File**: `Skein/Bridging/Bridging.swift` (Lines 89–141)
 - **Impact**: Fatal crash (`Array slice index out of range`) under high window churn.
 - **Root Cause**: `getWindowList()` queries `getWindowCount()` to allocate an array of size `windowCount`, then invokes `CGSGetWindowList(..., &list, &realCount)`. If another process creates a window in the microsecond interval between the two CGS calls, `realCount` can exceed `windowCount`. Slicing `list[..<Int(realCount)]` will cause an uncaught index out-of-bounds trap.
